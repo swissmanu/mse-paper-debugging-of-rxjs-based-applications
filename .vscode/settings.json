@@ -1,0 +1,13 @@
+{
+    "latex-workshop.docker.enabled": true,
+    "editor.wordWrap": "wordWrapColumn",
+    "files.exclude": {
+        "**/*.aux": true,
+        "**/*.bbl": true,
+        "**/*.blg": true,
+        "**/*.fdb_latexmk": true,
+        "**/*.fls": true,
+        "**/*.synctex.gz": true,
+        "**/*.out": true
+    }
+}
