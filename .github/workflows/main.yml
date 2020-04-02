@@ -7,12 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Build template
-        uses: xu-cheng/latex-action@master
+      - name: Build paper
+        uses: swissmanu/latex-action@master
         with:
-          root_file: index.tex
-          extra_packages: ccicons
+          root_file: paper.tex
+          args: -pdf -file-line-error -interaction=nonstopmode -shell-escape # allows minted to do its work
       - uses: actions/upload-artifact@master
         with:
           name: PDF
-          path: index.pdf
+          path: paper.pdf
