@@ -2,14 +2,14 @@
 \usepackage{ccicons}
 \usepackage{hyperref}
 
-\newcommand{\version}{v0.1 Outline}
+\newcommand{\version}{v0.2 Draft}
 
 \begin{document}
 \begin{centering}
 
 	\Large{Workshop Paper}
 	\par
-	\Huge{tbd. ``Reactive Debugging for modern Frontend Web Applications''}
+	\Huge{Debugging of Modern RxJS-based Frontend Web Applications}
 	\par
 	\vspace{2ex}
 
@@ -41,62 +41,86 @@
 	\end{quotation}
 \end{centering}
 
-\section{Overview}
+\section{Introduction}
+
+\emph{Brief summary over this paper}
+
+\emph{What is RP?}
+
+\emph{What is debugging?}
+
+\emph{Debug concepts in RP}
+
+\emph{Research so far}
+
+\emph{Tooling development so far}
+
+\emph{Conclude with Research Questions}
+
 \begin{itemize}
-	\item What is RP?
-	\item What is debugging?
-	\item Debug concepts in RP
-	\item Research so far
-	\item Tooling development so far
-	\item Research questions:
-	\begin{itemize}
-		\item RQ1 How do web frontend engineers debug RP code?
-		\item RQ2 How can we improve the debugging experience for FE?
-		\item RQ3 Does a specific RP debugger for FE improve the debugging experience?
-	\end{itemize}
-	\item \bf{DEBUGGING EXPERIENCE: How to measure? Use ``time'' instead?}
+	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS based code?}
+	\item \emph{RQ2: How can the experience of frontend engineers during debugging of RxJS based code be improved?}
+	\item \emph{RQ3: What is the impact of a proposed solution on the debugging experience of a frontend engineer?}
 \end{itemize}
 
-\section{``Current State''}
+\subsection{Reactive Programming with RxJS}
+
+\subsection{Debugging Concepts}
+\begin{itemize}
+	\item Imperative
+	\item Declarative
+	\item Omniscient
+\end{itemize}
+
+\subsection{Specialized Reactive Programming Tooling}
+
+\begin{itemize}
+	\item Brief overview on specific tooling
+	\item For frontend, but also other tiers
+	\item Rxviz \footnote{\url{https://rxviz.com/}} see also \url{https://rxviz.com/feedback} for input?
+	\item rxjs-spy \footnote{\url{https://github.com/cartant/rxjs-spy}}
+	\item rxfiddle \cite{10.1145/3180155.3180156}
+	\item reactive-inspector \cite{10.1145/2884781.2884815}
+	\item TOD \cite{5287015}
+\end{itemize}
+
+
+\section{Interviews and War Stories}
+\begin{itemize}
+	\item We answer RQ1 here
+	\item Present results of own informal interviews
+	\item Combine with war stories
+	\item Extract 3 main challenges
+\end{itemize}
+
+\section{Discussion}
 \begin{itemize}
 	\item Closer look to past Research
 	\item \dots and the tools which were built based on it
-	\item Pick up gaps/deficiencies from past research/tools
-
-\end{itemize}
-
-\section{Interviews}
-\begin{itemize}
-	\item Answer RQ1
-	\item Reference previous research
-	\item Present results of own informal interviews
-	\begin{itemize}
-		\item Validate/invalidate results of past research based on interviews
-	\end{itemize}
-	\item Lead over to frontend engineering
-	\item Compose past research with interview results
-\end{itemize}
-
-\section{Solution Design}
-\begin{itemize}
-	\item Work out concepts for FE debugger tooling to answer RQ2
-	\item What do we want to improve compared to existing/previous approaches?
-	\item Lay out user stories
+	\item Set up war story extract to be replicated with existing tooling
 \end{itemize}
 
 \section{Study Design}
 \begin{itemize}
-	\item Propose ways how to validate the proposed solution in order to answer RQ3
+	\item Use prev section to build experiments using existing tooling
+	\item Validate stories and interviews
+\end{itemize}
+
+\section{Future Work}
+\begin{itemize}
+	\item Pick up results from war stories and experiment
+	\item Propose one solution per challenges
+	\item Sketch how this could look like
+	\item This answers RQ2
 \end{itemize}
 
 \section{Threats to Validity}
 \begin{itemize}
-	\item Informal interviews only
+	\item Informal interviews/war stories only
 	\begin{itemize}
 		\item Describe background of interview partners
 		\item Frontend engineering heavy
 	\end{itemize}
-	\item Real study to validate/reassure?
 \end{itemize}
 
 \section{Conclusion}
@@ -111,7 +135,7 @@
 
 
 \bibliographystyle{splncs04}
-\bibliography{index.bib}
+\bibliography{bibliography.bib}
 
 \section*{License}
 \ccby\thinspace\thinspace This work is licensed under a \href{https://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International License}.
