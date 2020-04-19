@@ -8,3 +8,4 @@
 *.pdf
 *.synctex.gz
 *.out
+_minted-*/

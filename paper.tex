@@ -1,6 +1,9 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage{ccicons}
 \usepackage{hyperref}
+\usepackage{minted}
+
+\setminted{autogobble=true, tabsize=2, linenos=true, frame=single, breaklines=true}
 
 \newcommand{\version}{v0.2 Draft}
 
@@ -31,39 +34,56 @@
 			\noindent\textbf{Abstract}---\input{./abstract.tex}
 		}
 		\par
-		\vspace{2ex}
-
-		\small{
-			\noindent\textbf{Keywords}: tbd.
-		}
-		\par
 		\vspace{4ex}
 	\end{quotation}
 \end{centering}
 
 \section{Introduction}
 
-\emph{Brief summary over this paper}
+The debugger is an essential tool to get a deeper understanding of the runtime behavior of a software system. Software engineers use it to understand why particular circumstances lead to an unexpected failure during execution or to step through unknown program code in order to get themselves accustomed with it.
 
-\emph{What is RP?}
+IDEs as well as the developer tools of modern web browsers provide battle-tested debugger utilities \footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Debugger}} to inspect frontend application code at runtime. With an imperative programming model in mind, they let the user jump from program statement to statement, stop execution upon hitting a breakpoint while having a closer look at the values currently assigned to variables. By the time they are even able to preserve call stacks for asynchronously executed code which was a hassle before \footnote{\url{https://developers.google.com/web/tools/chrome-devtools/javascript/reference\#call-stack}}.
 
-\emph{What is debugging?}
+Modern web frontend applications use the browser for rendering sophisticated, reactive user interfaces. Reactive applications contrast more traditional computer programs: Where i.e. the conversion from one image format to another is a one-off process with clearly defined start and end point, a reactive application handles a continuos flow of stimuli: While moving the cursor over UI elements, the application provides steady feedback to the user on the display.
 
-\emph{Debug concepts in RP}
+Todays state of the art debugger tools can be used to work with reactive applications as well. (Conditional) breakpoints are essential to interrupt the code execution at the right moment to inspect the inner workings of the reactive program. As we will see later though, software engineers tend to fall back to a log-based debugging approach when the complexity of a system increases.
 
-\emph{Research so far}
+% Previous research \cite{10.1145/3180155.3180156} \cite{10.1145/2884781.2884815} in the field of debugging for reactive applications as well as our own experience, particular with RxJS\footnote{\url{https://rxjs.dev/}}-based web applications, show that another review on this area may yield new insights.
 
-\emph{Tooling development so far}
-
-\emph{Conclude with Research Questions}
+Within this paper, we will work on the following two research questions:
 
 \begin{itemize}
 	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS based code?}
-	\item \emph{RQ2: How can the experience of frontend engineers during debugging of RxJS based code be improved?}
+	\item \emph{RQ2: How can the experience of frontend engineers during debugging of RxJS-based code be improved?}
+\end{itemize}
+
+Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give us insight in the challenges they face in their day-to-day jobs. We will evaluate and validate three scenarios extracted from their statements in order to answer \emph{RQ1}.
+
+Later, we propose for \emph{RQ2} three solution concepts to resolve previously identified problems which ultimately should improve the debugging experience for RxJS-based code.
+
+The implementation and validation of these proposals is then part of a third research question \emph{RQ3} and will be part of a future iteration on the topic:
+
+\begin{itemize}
 	\item \emph{RQ3: What is the impact of a proposed solution on the debugging experience of a frontend engineer?}
 \end{itemize}
 
+This introductory section will conclude with the clarification of important terms. Section~\ref{sec:interviews} presents the interview results along with the collected war stories and formalizes three recurrent challenges. With Section~\ref{sec:discussion}, we will have a look at current and previous research regarding debugging of reactive applications as well as specific tooling. We are going to validate presented challenges against currently available tools within Section~\ref{sec:study} and give an outlook on future iterations on this papers topic right after.
+
+\subsection{Reactive Applications}
+
 \subsection{Reactive Programming with RxJS}
+
+\emph{What is RP?}
+
+
+\begin{listing}[H]
+	\begin{minted}{TypeScript}
+		// Add Example
+		const x: string = 'Hello World';
+	\end{minted}
+	\caption{Reactive Programming with RxJS}
+	\label{lst:rp-with-rxjs}
+\end{listing}
 
 \subsection{Debugging Concepts}
 \begin{itemize}
@@ -86,6 +106,8 @@
 
 
 \section{Interviews and War Stories}
+\label{sec:interviews}
+
 \begin{itemize}
 	\item We answer RQ1 here
 	\item Present results of own informal interviews
@@ -94,6 +116,8 @@
 \end{itemize}
 
 \section{Discussion}
+\label{sec:discussion}
+
 \begin{itemize}
 	\item Closer look to past Research
 	\item \dots and the tools which were built based on it
@@ -101,12 +125,16 @@
 \end{itemize}
 
 \section{Study Design}
+\label{sec:study}
+
 \begin{itemize}
 	\item Use prev section to build experiments using existing tooling
 	\item Validate stories and interviews
 \end{itemize}
 
 \section{Future Work}
+\label{sec:future}
+
 \begin{itemize}
 	\item Pick up results from war stories and experiment
 	\item Propose one solution per challenges
@@ -115,6 +143,8 @@
 \end{itemize}
 
 \section{Threats to Validity}
+\label{sec:threats}
+
 \begin{itemize}
 	\item Informal interviews/war stories only
 	\begin{itemize}
@@ -124,6 +154,8 @@
 \end{itemize}
 
 \section{Conclusion}
+\label{sec:conclusion}
+
 \begin{itemize}
 	\item Recap Past Developments in RP Debugging
 	\item Recap proposed solution
