@@ -71,10 +71,33 @@ This introductory section will conclude with the clarification of important term
 
 \subsection{Reactive Applications}
 
-\subsection{Reactive Programming with RxJS}
+Salvaneschi et al. \cite{comprehendingReactiveApplications} define the ``Reactive Application'' \emph{(RA)} as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
 
-\emph{What is RP?}
+\begin{figure}[h]
+	\centering
+	\emph{TODO}
 
+	\caption{Traditional vs. Reactive Application}
+	\label{fig:reactive-application}
+\end{figure}
+
+Further Salvaneschi et al. provide a set of examples of what a reactive application might achieve with their three-parted classification schema: A \emph{synthetic application} transforms and processes streams of information. hence multiple image conversions one after another or in parallel could be implemented as a synthetic, reactive application. Beside the modelling of pure data flows, reactive applications are prevalent in the area of user interfaces \emph{(UI)}: They can be identified as \emph{interactive applications} and \emph{graphical animations} here.
+
+Various ways of implementing reactive applications emerged over time. The Observer design pattern \cite{observerDesignPattern}, originated in Object Oriented Programming \emph{(OOP)}, is a basic pattern we can find in many of todays API implementations providing reactivity \cite{ownPaper}. Functional Programming \emph{(FP)} experiments with reactive language extensions like the on animations specialized library Fran (Haskell) \cite{SurveyOnReactiveProgramming} or more recently the reactive runtime and DSL REScala (Scala) \cite{10.1145/2577080.2577083}. The declarative nature of FP lead finally to what we understand as ``Reactive Programming'' today.
+
+\subsection{Reactive Programming}
+
+Reactive programming \emph{(RP)} is a programming paradigm.
+
+\subsection{Debugging Concepts}
+
+\begin{itemize}
+	\item Imperative
+	\item Declarative
+	\item Omniscient
+\end{itemize}
+
+\subsection{RxJS}
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
@@ -84,25 +107,6 @@ This introductory section will conclude with the clarification of important term
 	\caption{Reactive Programming with RxJS}
 	\label{lst:rp-with-rxjs}
 \end{listing}
-
-\subsection{Debugging Concepts}
-\begin{itemize}
-	\item Imperative
-	\item Declarative
-	\item Omniscient
-\end{itemize}
-
-\subsection{Specialized Reactive Programming Tooling}
-
-\begin{itemize}
-	\item Brief overview on specific tooling
-	\item For frontend, but also other tiers
-	\item Rxviz \footnote{\url{https://rxviz.com/}} see also \url{https://rxviz.com/feedback} for input?
-	\item rxjs-spy \footnote{\url{https://github.com/cartant/rxjs-spy}}
-	\item rxfiddle \cite{10.1145/3180155.3180156}
-	\item reactive-inspector \cite{10.1145/2884781.2884815}
-	\item TOD \cite{5287015}
-\end{itemize}
 
 
 \section{Interviews and War Stories}
@@ -123,6 +127,17 @@ This introductory section will conclude with the clarification of important term
 	\item \dots and the tools which were built based on it
 	\item Set up war story extract to be replicated with existing tooling
 \end{itemize}
+
+\begin{itemize}
+	\item Brief overview on specific tooling
+	\item For frontend, but also other tiers
+	\item Rxviz \footnote{\url{https://rxviz.com/}} see also \url{https://rxviz.com/feedback} for input?
+	\item rxjs-spy \footnote{\url{https://github.com/cartant/rxjs-spy}}
+	\item rxfiddle \cite{10.1145/3180155.3180156}
+	\item reactive-inspector \cite{10.1145/2884781.2884815}
+	\item TOD \cite{5287015}
+\end{itemize}
+
 
 \section{Study Design}
 \label{sec:study}
