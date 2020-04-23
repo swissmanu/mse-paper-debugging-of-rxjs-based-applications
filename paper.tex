@@ -87,7 +87,17 @@ Various ways of implementing reactive applications emerged over time. The Observ
 
 \subsection{Reactive Programming}
 
-Reactive programming \emph{(RP)} is a programming paradigm.
+Reactive programming \emph{(RP)} is a declarative programming paradigm. Where engineers use imperative programing languages to tell a program every step \emph{how} to do something, a declarative language allows to describe \emph{what} wants to be achieved. The languages runtime system then figures out a way to satisfy that given description. RP specifically allows the description of a dependency graph of values and transformations over time.
+
+\begin{figure}[h]
+	\centering
+	\emph{TODO}
+
+	\caption{Reactive Programming Graph}
+	\label{fig:reactive-programming}
+\end{figure}
+
+An RP environment provides (i) language constructs to describe mentioned graphs, often in form of a domain specific language \emph{(DSL)} \cite{REScala} \cite{otherRPDSL}. At program runtime, a (ii) runtime system takes care that changed values are propagated through the graph, transformations are recomputed where necessary and a consistent state is maintained.
 
 \subsection{Debugging Concepts}
 
