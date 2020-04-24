@@ -50,7 +50,7 @@ Todays state of the art debugger tools can be used to work with reactive applica
 
 % Previous research \cite{10.1145/3180155.3180156} \cite{10.1145/2884781.2884815} in the field of debugging for reactive applications as well as our own experience, particular with RxJS\footnote{\url{https://rxjs.dev/}}-based web applications, show that another review on this area may yield new insights.
 
-Within this paper, we will work on the following two research questions:
+Within this paper, we will answer the following two research questions:
 
 \begin{itemize}
 	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS based code?}
@@ -61,17 +61,17 @@ Transcripts of informal interviews and ``war stories'' collected from multiple p
 
 Later, we propose for \emph{RQ2} three solution concepts to resolve previously identified problems which ultimately should improve the debugging experience for RxJS-based code.
 
-The implementation and validation of these proposals is then part of a third research question \emph{RQ3} and will be part of a future iteration on the topic:
+The implementation and validation of these proposals is then part of a third research question \emph{RQ3} and will be part of a future iteration on the topic and not part of this paper:
 
 \begin{itemize}
 	\item \emph{RQ3: What is the impact of a proposed solution on the debugging experience of a frontend engineer?}
 \end{itemize}
 
-This introductory section will conclude with the clarification of important terms. Section~\ref{sec:interviews} presents the interview results along with the collected war stories and formalizes three recurrent challenges. With Section~\ref{sec:discussion}, we will have a look at current and previous research regarding debugging of reactive applications as well as specific tooling. We are going to validate presented challenges against currently available tools within Section~\ref{sec:study} and give an outlook on future iterations on this papers topic right after.
+We will conclude this introductory section with the clarification of important terms. Section~\ref{sec:interviews} presents the interview results along with the collected war stories and formalizes three recurrent challenges. With Section~\ref{sec:discussion}, we will have a look at current and previous research regarding debugging of reactive applications as well as specific tooling. We are going to validate presented challenges against currently available tools within Section~\ref{sec:study}, show threats to the validity of our work with Section~\ref{sec:threats} and finally end with an outlook on future iterations.
 
 \subsection{Reactive Applications}
 
-Salvaneschi et al. \cite{comprehendingReactiveApplications} define the ``Reactive Application'' \emph{(RA)} as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
+Salvaneschi et al. \cite{comprehendingReactiveApplications} define the Reactive Application \emph{(RA)} as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
 
 \begin{figure}[h]
 	\centering
@@ -81,9 +81,9 @@ Salvaneschi et al. \cite{comprehendingReactiveApplications} define the ``Reactiv
 	\label{fig:reactive-application}
 \end{figure}
 
-Further Salvaneschi et al. provide a set of examples of what a reactive application might achieve with their three-parted classification schema: A \emph{synthetic application} transforms and processes streams of information. hence multiple image conversions one after another or in parallel could be implemented as a synthetic, reactive application. Beside the modelling of pure data flows, reactive applications are prevalent in the area of user interfaces \emph{(UI)}: They can be identified as \emph{interactive applications} and \emph{graphical animations} here.
+Further, Salvaneschi et al. provide a set of examples of what a RA might achieve using a three-parted classification schema: A \emph{synthetic application} transforms and processes streams of information. hence multiple image conversions one after another or in parallel could be implemented as a synthetic, RA. Beside the modelling of pure data flows, RAs are prevalent in the area of user interfaces \emph{(UI)}: They can be identified as \emph{interactive applications} and \emph{graphical animations} here.
 
-Various ways of implementing reactive applications emerged over time. The Observer design pattern \cite{observerDesignPattern}, originated in Object Oriented Programming \emph{(OOP)}, is a basic pattern we can find in many of todays API implementations \cite{ownPaper}. Functional Programming \emph{(FP)} shines with specific reactive language extensions like Fran (Haskell) \cite{SurveyOnReactiveProgramming} or more recently REScala (Scala) \cite{10.1145/2577080.2577083}. The declarativeness of FP finally lead to what we understand under ``Reactive Programming'' today.
+Various ways of implementing RAs emerged over time. The Observer design pattern \cite{observerDesignPattern}, originated in Object Oriented Programming \emph{(OOP)}, is a basic pattern we can find in many of todays API implementations \cite{ownPaper}. Functional Programming \emph{(FP)} shines with specific reactive language extensions like Fran (Haskell) \cite{SurveyOnReactiveProgramming} or more recently REScala (Scala) \cite{10.1145/2577080.2577083}. The declarativeness of FP finally lead to what we understand under ``Reactive Programming'' today.
 
 \subsection{Reactive Programming}
 
@@ -101,18 +101,18 @@ An RP environment provides (i) language constructs to describe mentioned graphs,
 
 \subsection{Debugging Concepts}
 
-We divide debugging concepts roughly into three categories: Traditional \textbf{imperative-focused} debuggers provide basic functionality to interact with programs at runtime: Once code execution is paused (i.e. using a breakpoint at a given statement), we gain access to the current call stack and the values assigned to variables of a given frame. Manual control of the programs execution allows to inspect the programs behavior step by step as well as assigning new values to variables ``on-the-fly''.
+We divide debugging concepts roughly into three categories: Traditional \textbf{imperative-focused debuggers} provide basic functionality to interact with programs at runtime: Once code execution is paused (i.e. using a breakpoint at a given statement), we gain access to the current call stack and the values assigned to variables of a given frame. Manual control of the programs execution allows to inspect the programs behavior step by step as well as assigning new values to variables ``on-the-fly''.
 
-Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the greater model of the dependency graph. In fact, RP provides its own challenges to debuggers: So are call stacks spoiled with invocations of RP runtime system internal matter or breakpoints can only be used on the imperative parts of transformations rather than on the data flow within the graph. Various \textbf{reactive} debuggers and visualization tools for specific RP runtimes emerged over the past few years \cite{REDebuggerSalvaneschi} \cite{RxViz} \cite{RxFiddle} exploring this field. They have knowledge of the dependency graph and therefore allow improved interaction with RP concepts.
+Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the greater model of the dependency graph. In fact, RP provides its own challenges to debuggers: So are call stacks spoiled with invocations of RP runtime system internal matter or breakpoints can only be used on the imperative parts of transformations rather than on the data flow within the graph. Various \textbf{reactive debuggers} and visualization tools for specific RP runtimes emerged over the past few years \cite{REDebuggerSalvaneschi} \cite{RxViz} \cite{RxFiddle} exploring this field. They have knowledge of the dependency graph and therefore allow improved interaction with RP concepts.
 
-In matters of time, traditional as well as reactive debuggers work with the present state of the programs execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient} debugger \cite{omniscientDebuggerPaper} \cite{mozillaRR} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and fore through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges, i.e. demands on storage capacity or efficient user experience \emph{(UX)} design. \cite{omniscientDebuggerProblems}
+In matters of time, traditional as well as reactive debuggers work with the present state of the programs execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient debugger} \cite{omniscientDebuggerPaper} \cite{mozillaRR} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and fore through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges, i.e. demands on storage capacity or efficient user experience \emph{(UX)} design. \cite{omniscientDebuggerProblems}
 
 \subsection{ReactiveX and RxJS}
-Reactive Extensions is an open source project providing an API description for RP concepts. It describes itself as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming'' \cite{reactivex}.  The API specification introduces the concept of the  \mintedinline{Observable} at its core. An \mintedinline{Observable} has the ability to be composed with other \mintedinline{Observable}s and eventually describe the dependency graph known in RP. A multitude of operators allow the transformation of values and \mintedinline{Observable}s within the graph.
+Reactive Extensions is an open source project providing an API description for RP concepts. It describes itself as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming'' \cite{reactivex}.  The API specification introduces the concept of the  \mintinline{TypeScript}{Observable} at its core. An \mintinline{TypeScript}{Observable} has the ability to be composed with other \mintinline{TypeScript}{Observable}s and eventually describe the dependency graph known in RP. A multitude of operators allow the transformation of values and \mintinline{TypeScript}{Observable}s within the graph.
 
-The ReactiveX community works on a variety of reference implementations\footnote{\url{http://reactivex.io/languages.html}}: Libraries for Java, C#, JavaScript and many more allow to work with similar API semantics on different software architecture levels.
+The ReactiveX community works on a variety of reference implementations\footnote{\url{http://reactivex.io/languages.html}}: Libraries for Java, C\#, JavaScript and many more allow to work with similar API semantics on different software architecture levels.
 
-RxJS is the reference implementation for JavaScript. Its current major version 6 is completely done in TypeScript\footnote{\url{https://www.typescriptlang.org/}} and provides the core elements of the ReactiveX API specification. Large projects like Angular embed and use RxJS\cite{angularrxjs}. The Listing \ref{lst:rp-with-rxjs} shows a short example of RP using RxJS.
+RxJS is the reference implementation for JavaScript. Its current major version 6 is completely done in TypeScript\footnote{\url{https://www.typescriptlang.org/}} and provides the core elements of the ReactiveX API specification. Large projects like Angular embed and use RxJS\cite{angualrrxjs}. The Listing \ref{lst:rp-with-rxjs} shows a short example of RP using RxJS.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
