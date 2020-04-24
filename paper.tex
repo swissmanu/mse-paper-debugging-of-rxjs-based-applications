@@ -107,8 +107,12 @@ Where individual transformations of an RP based program can be inspected using t
 
 In matters of time, traditional as well as reactive debuggers work with the present state of the programs execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient} debugger \cite{omniscientDebuggerPaper} \cite{mozillaRR} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and fore through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges, i.e. demands on storage capacity or efficient user experience \emph{(UX)} design. \cite{omniscientDebuggerProblems}
 
-\subsection{RxJS}
+\subsection{ReactiveX and RxJS}
+Reactive Extensions is an open source project providing an API description for RP concepts. It describes itself as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming'' \cite{reactivex}.  The API specification introduces the concept of the  \mintedinline{Observable} at its core. An \mintedinline{Observable} has the ability to be composed with other \mintedinline{Observable}s and eventually describe the dependency graph known in RP. A multitude of operators allow the transformation of values and \mintedinline{Observable}s within the graph.
 
+The ReactiveX community works on a variety of reference implementations\footnote{\url{http://reactivex.io/languages.html}}: Libraries for Java, C#, JavaScript and many more allow to work with similar API semantics on different software architecture levels.
+
+RxJS is the reference implementation for JavaScript. Its current major version 6 is completely done in TypeScript\footnote{\url{https://www.typescriptlang.org/}} and provides the core elements of the ReactiveX API specification. Large projects like Angular embed and use RxJS\cite{angularrxjs}. The Listing \ref{lst:rp-with-rxjs} shows a short example of RP using RxJS.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
