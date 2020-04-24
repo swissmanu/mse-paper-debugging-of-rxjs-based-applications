@@ -1,4 +1,5 @@
-# 🎓 Master Study Paper: PA1
+# Debugging of Modern RxJS-based Frontend Web Applications
+## *🎓 Master Study Workshop Paper*
 
 > Abstract tbd.
 
