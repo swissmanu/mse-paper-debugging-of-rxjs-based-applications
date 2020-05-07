@@ -126,12 +126,39 @@ RxJS is the reference implementation for JavaScript. Its current major version 6
 \section{Interviews and War Stories}
 \label{sec:interviews}
 
+\subsection{Informal Interviews}
+
+In order to answer RQ1 and get an insight in how software engineers apply RP, we started with an early series of informal interviews. The only requirement to qualify for the interview was to apply RP in some way, hence no restriction in regards of tech stack was given. In the end we interviewed five engineers: Four work or worked more recently with Angular\footnote{\url{todo}} and ngrx\footnote{\url{todo}} to develop frontend applications. Two of them stated to have more explicit experience with RxJS further. The fifth subject works currently with a combination of akka\footnote{\url{todo}} and akka-streams\footnote{\url{todo}} in Scala to create backend applications. The agenda available in Appendix~\ref{sec:interviewquestions} was used to maintain focus during the interview sessions.
+
+We identified several recurring topics throughout all the interviews. All of the subjects noted that they think of RP as an invaluable tool to describe and model dependencies between multiple data sources. Most of them appreciate how RP allows them to implement data transformations in a concise and composable way. The complexity of concurrent programming can be hidden well behind a simple DSL one subject noted further.
+
+For the implementation, all subjects noted that a language with a strong type system is to be preferred: The compiler gives the guarantee of basic code correctness which is why e.g. TypeScript is used by all the subjects working with RxJS and Angular. 
+
+None of the subjects remembered debugging RP code to be enjoyable in particular, nonetheless the technology used to do so. All of the subjects use traditional debugging tools. Redux DevTools \footnote{\url{todo}} is in use by all four subjects working with ngrx. There was mention of any more specific debugging tool in regards of akka and akka-streams.
+
+One particular subject with more in-depth knowledge on RxJS described situations where they would have wished for tools which could ``understand'' the actual \mintinline{TypeScript}{Observable} graph better: (i) When an error is thrown within the function passed to an operator, the generated stack trace reflects where the operator called the function rather than the actual location where the function is implemented. (ii) In order to understand how data traverses through the graph, subjects augmumented code manually with the \mintinline{TypeScript}{tap}\footnote{\url{TODO}} operator to log values. A less invasive way would be preferable as stated.
+
+\subsection{War Stories}
+
+
+
+\subsection{Main Challenges}
+
+
+
+
+
+
+
+
+
 \begin{itemize}
 	\item We answer RQ1 here
 	\item Present results of own informal interviews
 	\item Combine with war stories
 	\item Extract 3 main challenges
 \end{itemize}
+
 
 \section{Discussion}
 \label{sec:discussion}
@@ -193,7 +220,17 @@ RxJS is the reference implementation for JavaScript. Its current major version 6
 \end{itemize}
 
 
+\section{Appendix}
 
+\subsection{Interview Questions}
+\label{sec:interviewquestions}
+
+\begin{itemize}
+	\item When did you last apply RP?
+	\item What technology did you use RP with?
+	\item What was the best experience you had with RP?
+	\item \dots and what was the worst? \dots Can you elaborate on the concrete situation?
+\end{itemize}
 
 \bibliographystyle{splncs04}
 \bibliography{bibliography.bib}
