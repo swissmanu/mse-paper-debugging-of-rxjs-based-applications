@@ -133,7 +133,7 @@ In order to prepare to give an answer on the first research question, we started
 
 We identified several recurring topics throughout all the interviews. All of the subjects noted that they think of RP as an invaluable tool to describe and model dependencies between multiple data sources. Most of them appreciate how RP allows them to implement data transformations in a concise and composable way. The complexity of concurrent programming can be hidden well behind a simple DSL one subject noted further.
 
-For the implementation, all subjects noted that a language with a strong type system is to be preferred: The compiler gives the guarantee of basic code correctness which is why e.g. TypeScript is used by all the subjects working with RxJS and Angular. 
+For the implementation, all subjects noted that a language with a strong type system is to be preferred: The compiler gives the guarantee of basic code correctness which is why e.g. TypeScript is used by all the subjects working with RxJS and Angular.
 
 None of the subjects remembered debugging RP code to be a positive experience, independent of the technology used. All of the subjects use traditional debugging tools. Redux DevTools \footnote{\url{todo}} is in use by all four subjects working with ngrx. There was mention of any more specific debugging tool in regards of akka and akka-streams.
 
@@ -173,10 +173,6 @@ Our work is not the first approach on understanding and improving on the struggl
 \subsection{Reactive Inspector}
 
 Salvaneschi et al. did focus their research heavily on RP during the mid 2010s. Beside the creation of REScala in 2014 \cite{REScala}, an RP DSL and runtime for the Scala programming language, they looked into the debugging habits of software engineers as well. In the paper ``Debugging for Reactive Programming'' \cite{positiveEffectsRP}, Salvaneschi et al. elaborate on the necessity of RP debugging tools which can understand the specific language abstractions. With the plugin \emph{Reactive Inspector} \footnote{\url{http://guidosalva.github.io/reactive-inspector/}} for the Eclipse IDE, they provide a debugger which understands the RP language abstractions of REScala. One of its main features is the visualization of the internal dependency graph. The new class of  breakpoints, the ``reactive breakpoints'', builds upon the visualized graph as well: They do not depend on a specific line of code or statement rather then on a specific node in the graph. The execution of the program can be interrupted e.g. once a node retains a specific output value or an event of interest takes place in the runtime. Along with the RP specific debugging features, \emph{Reactive Inspector} implements omniscient debugging concepts as well: Time travel allows to record and replay runtime behavior at any time.
-
-\begin{itemize}
-	\item Visualization of the graph
-	\item Omniscient
 
 Herman Benken \cite{rxfiddle}
 
