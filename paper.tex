@@ -73,14 +73,6 @@ We will conclude this introductory section with the clarification of important t
 
 Salvaneschi et al. \cite{7827078} define the Reactive Application \emph{(RA)} as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
 
-\begin{figure}[h]
-	\centering
-	\emph{TODO}
-
-	\caption{Traditional vs. Reactive Application}
-	\label{fig:reactive-application}
-\end{figure}
-
 Further, Salvaneschi et al. provide a set of examples of what a RA might achieve using a three-parted classification schema: A \emph{synthetic application} transforms and processes streams of information. hence multiple image conversions one after another or in parallel could be implemented as a synthetic, RA. Beside the modelling of pure data flows, RAs are prevalent in the area of user interfaces \emph{(UI)}: They can be identified as \emph{interactive applications} and \emph{graphical animations} here.
 
 Various ways of implementing RAs emerged over time. The Observer design pattern \cite{gamma1995design}, originated in Object Oriented Programming \emph{(OOP)}, is a basic pattern we can find in many of todays API implementations \cite{alabor:2019:reactiveappllications}. Functional Programming \emph{(FP)} shines with specific reactive language extensions like Fran (Haskell) \cite{10.1145/2501654.2501666} or more recently REScala (Scala) \cite{10.1145/2577080.2577083}. The declarativeness of FP finally lead to what we understand under ``Reactive Programming'' today.
@@ -88,14 +80,6 @@ Various ways of implementing RAs emerged over time. The Observer design pattern 
 \subsection{Reactive Programming}
 
 Reactive programming \emph{(RP)} is a declarative programming paradigm. Where engineers use imperative programing languages to tell a program every step \emph{how} to do something, a declarative language allows to describe \emph{what} wants to be achieved. The languages runtime system then figures out a way to satisfy that given description. RP specifically allows the description of a dependency graph of values and transformations over time.
-
-\begin{figure}[h]
-	\centering
-	\emph{TODO}
-
-	\caption{Reactive Programming Graph}
-	\label{fig:reactive-programming}
-\end{figure}
 
 An RP environment provides (i) language constructs to describe mentioned graphs, often in form of a domain specific language \emph{(DSL)} \cite{10.1145/2577080.2577083}. At program runtime, a (ii) runtime system takes care that changed values are propagated through the graph, transformations are recomputed where necessary and a consistent state is maintained.
 
@@ -157,10 +141,10 @@ It is crucial to the engineers to \textbf{understand data flows}  within the \mi
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
-		timer().pipe(
-		  map(i => i * 2),
+		interval(1000).pipe(      // Increasing numbers with 1s delay
+		  map(i => i * 2),        // Breakpoint on i * 2
 		  map(i => i - 1)
-		).subscribe();
+		).subscribe(console.log); // -1, 1, 3, 5, 7, ...
 	\end{minted}
 	\caption{Example RxJS Stream With Breakpoint on Line 2 Within the Arrow Function}
 	\label{lst:rxjs-step-controls}
