@@ -117,10 +117,12 @@ RxJS is the reference implementation for JavaScript. Its current major version 6
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
-		// Add Example
-		const x: string = 'Hello World';
+		of('hello', 'foo', 'world').pipe(
+			filter(s => s !== 'foo'),
+			map(s => s.toUpperCase())
+		).subscribe(console.log)             // HELLO, WORLD
 	\end{minted}
-	\caption{Reactive Programming with RxJS}
+	\caption{RxJS Code Example}
 	\label{lst:rp-with-rxjs}
 \end{listing}
 
