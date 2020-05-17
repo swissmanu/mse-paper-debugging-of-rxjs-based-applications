@@ -87,7 +87,7 @@ An RP environment provides (i) language constructs to describe mentioned graphs,
 
 We divide debugging concepts roughly into three categories: Traditional \textbf{imperative-focused debuggers} provide basic functionality to interact with programs at runtime: Once code execution is paused (i.e. using a breakpoint at a given statement), we gain access to the current call stack and the values assigned to variables of a given frame. Manual control of the programs execution allows to inspect the programs behavior step by step as well as assigning new values to variables ``on-the-fly''.
 
-Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the greater model of the dependency graph. In fact, RP provides its own challenges to debuggers: So are call stacks spoiled with invocations of RP runtime system internal matter or breakpoints can only be used on the imperative parts of transformations rather than on the data flow within the graph. Various \textbf{reactive debuggers} and visualization tools for specific RP runtimes emerged over the past few years \cite{10.1145/2884781.2884815} \cite{rxviz} \cite{10.1145/3180155.3180156} exploring this field. They have knowledge of the dependency graph and therefore allow improved interaction with RP concepts.
+Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the greater model of the dependency graph. In fact, RP provides its own challenges to debuggers: So are call stacks spoiled with invocations of RP runtime system internal matter or breakpoints can only be used on the imperative parts of transformations rather than on the data flow within the graph. Various \textbf{reactive debuggers} and visualization tools for specific RP runtimes emerged over the past few years \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} \cite{rxviz} exploring this field. They have knowledge of the dependency graph and therefore allow improved interaction with RP concepts.
 
 In matters of time, traditional as well as reactive debuggers work with the present state of the programs execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient debugger} \cite{5287015} \cite{DBLP:journals/corr/OCallahanJFHNP17} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and fore through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges, i.e. demands on storage capacity or efficient user experience \emph{(UX)} design. \cite{omniscientDebuggerProblems}
 
@@ -131,7 +131,7 @@ Based on the results of the interviews, we compiled a request for more specific 
 
 We could verify previously gathered interview data with the results from the new reports: The subjects tend to manually add log statements to their code in order to understand its behavior, especially when things get more complex. Three subjects even claimed using specialized logging functionalities provided through rxjs-spy. This library allows to ``tag'' specific points in the \mintinline{TypeScript}{Observable} graph with a probe. In addition to report values traversing the graph, each probe notifies about events when an observer subscribes or unsubscribes to them or when the source \mintinline{TypeScript}{Observable} completes \cite{rxjslifecycle}. As the subjects stated, the knowledge about these additional events helps in situations where they need to find problems within a graph composing multiple asynchronous data sources on multiple levels. Without it, they were blind to what actually happens within the system.
 
-In addition to more sophisticated logging, three subjects reported that they built a habit of decomposing complex graphs into smaller, simpler bits and running those in a dedicated environment like Rx Visualizer\footnote{\url{https://rxviz.com/}} or StackBlitz\footnote{\url{https://stackblitz.com/}}.
+In addition to more sophisticated logging, three subjects reported that they built a habit of decomposing complex graphs into smaller, simpler bits and running those in a dedicated environment like Rx Visualizer\cite{rxviz} or StackBlitz\footnote{\url{https://stackblitz.com/}}.
 
 \subsection{Summary}
 
@@ -168,7 +168,7 @@ The reference implementation supports event collection for RxJS-based code in ve
 
 \subsection{rxjs-spy}
 
-Software engineers tend to augment their code with additional log trace statements in the situation where they have to track down a problem as we saw earlier. \emph{rxjs-spy}\footnote{\url{https://cartant.github.io/rxjs-spy/}} wants to improve on this by introducing the \mintinline{TypeScript}{tag} operator. Instead of adding log traces at debug-time, ``tagged'' \mintinline{TypeScript}{Observable}s are created right at the moment the \mintinline{TypeScript}{Observable} itself is defined. A tag as shown in Listing~\ref{lst:rxjs-spy-tag} does not influence runtime behavior at first.
+Software engineers tend to augment their code with additional log trace statements in the situation where they have to track down a problem as we saw earlier. \emph{rxjs-spy}\cite{rxjsspy} wants to improve on this by introducing the \mintinline{TypeScript}{tag} operator. Instead of adding log traces at debug-time, ``tagged'' \mintinline{TypeScript}{Observable}s are created right at the moment the \mintinline{TypeScript}{Observable} itself is defined. A tag as shown in Listing~\ref{lst:rxjs-spy-tag} does not influence runtime behavior at first.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
@@ -188,8 +188,11 @@ The library provides further features to interact with tagged \mintinline{TypeSc
 
 Additional features are available through the debuggers console interface. A tagged \mintinline{TypeScript}{Observable} can be paused so it collects incoming values. They can then be emitted one after another or resumed at once.
 
-\subsection{RxViz}
+\subsection{Rx Vizualizer}
 
+The \emph{Rx Visualizer}\cite{rxviz} is a utility available online in the browser. It is an ``animated playground for Rx Observables''\cite{rxviz} and allows to visualize snippets of RxJS code using marble diagrams.
+
+\subsection{Summary}
 
 
 
