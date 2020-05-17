@@ -174,7 +174,7 @@ Software engineers tend to augment their code with additional log trace statemen
 	\begin{minted}{TypeScript}
 		interval(1000).pipe(
 		  map(i => i * 2),
-		  tag('multiply'),
+		  tag('multiply'),        // Create tag "multiply"
 		  map(i => i - 1)
 		).subscribe(console.log);
 	\end{minted}
