@@ -129,7 +129,7 @@ One particular subject with more in-depth knowledge on RxJS described situations
 
 Based on the results of the interviews, we compiled a request for more specific factual reports. We asked professional software engineers about their most recent debugging experience in regards of RxJS, either good or bad. We were able to gather responses from one RxJS core team member, two Google Developer Experts and two engineers building web and mobile applications for a fintech company eventually.
 
-We could verify previously gathered interview data with the results from the new reports: The subjects tend to manually add log statements to their code in order to understand its behavior, especially when things get more complex. Three subjects even claimed using specialized logging functionalities provided through rxjs-spy\footnote{\url{https://cartant.github.io/rxjs-spy/}}. This library allows to ``tag'' specific points in the \mintinline{TypeScript}{Observable} graph with a probe. In addition to report values traversing the graph, each probe notifies about events when an observer subscribes or unsubscribes to them or when the source \mintinline{TypeScript}{Observable} completes \cite{rxjslifecycle}. As the subjects stated, the knowledge about these additional events helps in situations where they need to find problems within a graph composing multiple asynchronous data sources on multiple levels. Without it, they were blind to what actually happens within the system.
+We could verify previously gathered interview data with the results from the new reports: The subjects tend to manually add log statements to their code in order to understand its behavior, especially when things get more complex. Three subjects even claimed using specialized logging functionalities provided through rxjs-spy. This library allows to ``tag'' specific points in the \mintinline{TypeScript}{Observable} graph with a probe. In addition to report values traversing the graph, each probe notifies about events when an observer subscribes or unsubscribes to them or when the source \mintinline{TypeScript}{Observable} completes \cite{rxjslifecycle}. As the subjects stated, the knowledge about these additional events helps in situations where they need to find problems within a graph composing multiple asynchronous data sources on multiple levels. Without it, they were blind to what actually happens within the system.
 
 In addition to more sophisticated logging, three subjects reported that they built a habit of decomposing complex graphs into smaller, simpler bits and running those in a dedicated environment like Rx Visualizer\footnote{\url{https://rxviz.com/}} or StackBlitz\footnote{\url{https://stackblitz.com/}}.
 
@@ -154,7 +154,7 @@ It is crucial to the engineers to \textbf{understand data flows}  within the \mi
 \section{Discussion of Previous Efforts}
 \label{sec:discussion}
 
-Our work is not the first approach on understanding and improving on the struggles software engineers have to overcome when working on RP code, either with or without RxJS. We are going to present four of this tools in this section. The list is not meant to be exhaustive. It contains tools we either got to know during our research, because they were mentioned in one of the interviews or we worked with it personally in the past.
+Our work is not the first approach on understanding and improving on the struggles software engineers have to overcome when working on RP code, either with or without RxJS. We are going to present four of this tools in this section. The list is not meant to be exhaustive. It contains tools we either got to know during our research, because they were mentioned in one of the interviews or we worked with them personally in the past.
 
 \subsection{Reactive Inspector}
 
@@ -168,7 +168,7 @@ The reference implementation supports event collection for RxJS-based code in ve
 
 \subsection{rxjs-spy}
 
-Software engineers tend to augment their code with additional log trace statements in the situation where they have to track down a problem as we saw earlier. \emph{rxjs-spy} wants to improve on this by introducing the new \mintinline{TypeScript}{tag} operator. Instead of adding log traces at debug-time, ``tagged'' \mintinline{TypeScript}{Observable}s are, hopefully, created right at the moment the \mintinline{TypeScript}{Observable} itself is defined.
+Software engineers tend to augment their code with additional log trace statements in the situation where they have to track down a problem as we saw earlier. \emph{rxjs-spy}\footnote{\url{https://cartant.github.io/rxjs-spy/}} wants to improve on this by introducing the \mintinline{TypeScript}{tag} operator. Instead of adding log traces at debug-time, ``tagged'' \mintinline{TypeScript}{Observable}s are created right at the moment the \mintinline{TypeScript}{Observable} itself is defined. A tag as shown in Listing~\ref{lst:rxjs-spy-tag} does not influence runtime behavior at first.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
@@ -182,9 +182,14 @@ Software engineers tend to augment their code with additional log trace statemen
 	\label{lst:rxjs-spy-tag}
 \end{listing}
 
-Later, \emph{rxjs-spy} can be told to log events (subscribe, emit, error, complete and unsubscribe) of matching tags directly to the console without touching any \mintinline{TypeScript}{Observable} code at all.
+Later, \emph{rxjs-spy} can be advised to log events such as subscribe, emit, error, complete and unsubscribe of matching tags directly to the console without touching any \mintinline{TypeScript}{Observable} code at all. It is worth to mention that manual log traces, without additional effort, only show values flowing by. The additional events logged by \emph{rxjs-spy} proofed being invaluable in our own experience multiple times.
+
+The library provides further features to interact with tagged \mintinline{TypeScript}{Observable}s through the debuggers console.
+
+Additional features are available through the debuggers console interface. A tagged \mintinline{TypeScript}{Observable} can be paused so it collects incoming values. They can then be emitted one after another or resumed at once.
 
 \subsection{RxViz}
+
 
 
 
