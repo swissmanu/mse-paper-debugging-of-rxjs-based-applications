@@ -154,7 +154,7 @@ It is crucial to the engineers to \textbf{understand data flows}  within the \mi
 \section{Discussion of Previous Efforts}
 \label{sec:discussion}
 
-Our work is not the first approach on understanding and improving on the struggles software engineers face when working on RP code, no matter of using RxJS or not. We are going to present academic as well as non-academic efforts which contributed in the field of RP debugging in the past.
+Our work is not the first approach on understanding and improving on the struggles software engineers have to overcome when working on RP code, either with or without RxJS. We are going to present four of this tools in this section. The list is not meant to be exhaustive. It contains tools we either got to know during our research, because they were mentioned in one of the interviews or we worked with it personally in the past.
 
 \subsection{Reactive Inspector}
 
@@ -165,6 +165,27 @@ Salvaneschi et al. did focus their research heavily on RP during the mid 2010s. 
 \emph{rxfiddle} proposed by Banken et al. is the first reference implementation of their RP debugger architecture for the ReactiveX API specification described in their paper ``Debugging Data Flows in Reactive Programs'' \cite{10.1145/3180155.3180156}. The design defines two independent parts: The (i) \emph{Host instrumentation} instruments a ReactiveX implementation to emit events at runtime (e.g. when an \mintinline{TypeScript}{Observable} is created or subscribed) which get collected. The (ii) \emph{Visualizer} component interprets these events and presents them along two dimensions: The StoryFlow graph \cite{YWu2013a} shows when an \mintinline{TypeScript}{Observable} is created and how it interacts with other \mintinline{TypeScript}{Observable}s. An additional marble diagram\footnote{Marble diagrams are used in the ReactiveX community to describe the behavior of an \mintinline{TypeScript}{Observable} over its life time. They are considered valuable for documentation \cite{marblediagrams} as well as for testing \cite{marbletesting}} for every \mintinline{TypeScript}{Observable} is used to display the values it emits over time.
 
 The reference implementation supports event collection for RxJS-based code in version 4 and 5. It can either be used on a local development machine on existing projects or by copying code snippets to the online available.
+
+\subsection{rxjs-spy}
+
+Software engineers tend to augment their code with additional log trace statements in the situation where they have to track down a problem as we saw earlier. \emph{rxjs-spy} wants to improve on this by introducing the new \mintinline{TypeScript}{tag} operator. Instead of adding log traces at debug-time, ``tagged'' \mintinline{TypeScript}{Observable}s are, hopefully, created right at the moment the \mintinline{TypeScript}{Observable} itself is defined.
+
+\begin{listing}[H]
+	\begin{minted}{TypeScript}
+		interval(1000).pipe(
+		  map(i => i * 2),
+		  tag('multiply'),
+		  map(i => i - 1)
+		).subscribe(console.log);
+	\end{minted}
+	\caption{Usage of \emph{rxjs-spy} \mintinline{TypeScript}{tag} Operator}
+	\label{lst:rxjs-spy-tag}
+\end{listing}
+
+Later, \emph{rxjs-spy} can be told to log events (subscribe, emit, error, complete and unsubscribe) of matching tags directly to the console without touching any \mintinline{TypeScript}{Observable} code at all.
+
+\subsection{RxViz}
+
 
 
 \section{Study Design}
