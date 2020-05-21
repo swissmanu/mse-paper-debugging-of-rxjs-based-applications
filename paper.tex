@@ -40,17 +40,13 @@
 
 \section{Introduction}
 
-The debugger is an essential tool to get a deeper understanding of the runtime behavior of a software system. Software engineers use it to understand why particular circumstances lead to an unexpected failure during execution or to step through unknown program code in order to get themselves accustomed with it.
+An application providing a user interface (\emph{UI}) is a reactive application (\emph{RA}): It handles continuos flow of user and system events in order to give the user a representation of the applications state as timely as possible. One way of implementing reactive behavior is the Observer design pattern \cite{gamma1995design} where an observer (e.g. the UI rendering code) is repeatedly informed about changed application state. Different ways to implement a RA were developed since the emergence of the Observer pattern as well. Reactive Programming (\emph{RP}) enabled through language extensions, runtime environemnts and domain specific languages (\emph{DSL}) is based on functional programming (\emph{FP}) principles and allows to describe dependencies and transformations within a RA declerativly.
 
-IDEs as well as the developer tools of modern web browsers provide battle-tested debugger utilities\footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Debugger}} to inspect frontend application code at runtime. With an imperative programming model in mind, they let the user jump from program statement to statement, stop execution upon hitting a breakpoint while having a closer look at the values currently assigned to variables. By the time they are even able to preserve call stacks for asynchronously executed code which was a hassle before\footnote{\url{https://developers.google.com/web/tools/chrome-devtools/javascript/reference\#call-stack}}.
+Debugging tools are essential to software engineers in order to get deeper understanding of the runtime behavior of a software system. Engineers use them to understand why particular circumstances lead to unexpected failures during execution or to step through unknown source code getting themselves accustomed with it. IDEs as well as the developer tools of modern web browsers\footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Debugger}} provide battle-tested debugger utilities to inspect code. They let engineers step from program statement to statement, stop execution upon hitting a breakpoint and give insight on the values assigned to variables.
 
-Modern web frontend applications use the browser for rendering sophisticated, reactive user interfaces. Reactive applications contrast more traditional computer programs: Where i.e. the conversion from one image format to another is a one-off process with clearly defined start and end point, a reactive application handles a continuos flow of stimuli: While moving the cursor over UI elements, the application provides steady feedback to the user on the display.
+Todays debugging tools can not understand abstractions introduced by RP libraries. E.g. where the engineer can use the stack trace to track a problem to its root cause in a traditional imperative program, this does not work when an RP environment is used: The debugger does not have any knowledge of the underlying data flow graph which would allow a similar backtracking from graph node to node.
 
-Todays state of the art debugger tools can be used to work with reactive applications as well. (Conditional) breakpoints are essential to interrupt the code execution at the right moment to inspect the inner workings of the reactive program. As we will see later though, software engineers tend to fall back to a log-based debugging approach when the complexity of a system increases.
-
-% Previous research \cite{10.1145/3180155.3180156} \cite{10.1145/2884781.2884815} in the field of debugging for reactive applications as well as our own experience, particular with RxJS\footnote{\url{https://rxjs.dev/}}-based web applications, show that another review on this area may yield new insights.
-
-Within this paper, we will answer the following two research questions:
+We will elaborate on such challenges in the field of RxJS-based frontend web applications and search answers to the following two research questions:
 
 \begin{itemize}
 	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS based code?}
@@ -59,9 +55,9 @@ Within this paper, we will answer the following two research questions:
 
 Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give us insight in the challenges they face in their day-to-day jobs. We will evaluate and validate three cases extracted from their statements in order to answer \emph{RQ1}.
 
-Later, we propose for \emph{RQ2} three solution concepts to resolve previously identified problems which ultimately should improve the debugging experience for RxJS-based code.
+Later, we propose three solution concepts for \emph{RQ2} to resolve previously identified problems which ultimately should improve the debugging experience for RxJS-based code.
 
-The implementation and validation of these proposals is then part of a third research question \emph{RQ3} and will be part of a future iteration on the topic and not part of this paper:
+The future implementation and validation of these proposals leads to a third research question \emph{RQ3} which will be part of future work not part of this paper:
 
 \begin{itemize}
 	\item \emph{RQ3: What is the impact of a proposed solution on the debugging experience of a frontend engineer?}
@@ -71,7 +67,7 @@ We will conclude this introductory section with the clarification of important t
 
 \subsection{Reactive Applications}
 
-Salvaneschi et al. \cite{7827078} define the Reactive Application \emph{(RA)} as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
+Salvaneschi et al. \cite{7827078} define the RA as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
 
 Further, Salvaneschi et al. provide a set of examples of what a RA might achieve using a three-parted classification schema: A \emph{synthetic application} transforms and processes streams of information. hence multiple image conversions one after another or in parallel could be implemented as a synthetic, RA. Beside the modelling of pure data flows, RAs are prevalent in the area of user interfaces \emph{(UI)}: They can be identified as \emph{interactive applications} and \emph{graphical animations} here.
 
@@ -81,7 +77,7 @@ Various ways of implementing RAs emerged over time. The Observer design pattern 
 
 Reactive programming \emph{(RP)} is a declarative programming paradigm. Where engineers use imperative programing languages to tell a program every step \emph{how} to do something, a declarative language allows to describe \emph{what} wants to be achieved. The languages runtime system then figures out a way to satisfy that given description. RP specifically allows the description of a dependency graph of values and transformations over time.
 
-An RP environment provides (i) language constructs to describe mentioned graphs, often in form of a domain specific language \emph{(DSL)} \cite{10.1145/2577080.2577083}. At program runtime, a (ii) runtime system takes care that changed values are propagated through the graph, transformations are recomputed where necessary and a consistent state is maintained.
+An RP environment provides (i) language constructs to describe mentioned graphs, often in form of a DSL\cite{10.1145/2577080.2577083}. At program runtime, a (ii) runtime system takes care that changed values are propagated through the graph, transformations are recomputed where necessary and a consistent state is maintained.
 
 \subsection{Debugging Concepts}
 
@@ -89,7 +85,7 @@ We divide debugging concepts roughly into three categories: Traditional \textbf{
 
 Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the greater model of the dependency graph. In fact, RP provides its own challenges to debuggers: So are call stacks spoiled with invocations of RP runtime system internal matter or breakpoints can only be used on the imperative parts of transformations rather than on the data flow within the graph. Various \textbf{reactive debuggers} and visualization tools for specific RP runtimes emerged over the past few years \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} \cite{rxviz} exploring this field. They have knowledge of the dependency graph and therefore allow improved interaction with RP concepts.
 
-In matters of time, traditional as well as reactive debuggers work with the present state of the programs execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient debugger} \cite{5287015} \cite{DBLP:journals/corr/OCallahanJFHNP17} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and fore through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges, i.e. demands on storage capacity or efficient user experience \emph{(UX)} design. \cite{omniscientDebuggerProblems}
+Traditional as well as a reactive debuggers work with the very current state of the programs execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient debugger} \cite{5287015} \cite{DBLP:journals/corr/OCallahanJFHNP17} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and fore through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges though: Once decided \emph{what} information should be recorded (everything, only specific parts of the program, one thread, multiple threads, \dots), demands on storage performance and capacity increase while the pool of collected data grows. As a result, user experience (\emph{UX}) concepts need to be aligned for the engineers being able to interact with the sheer amount of information efficiently.
 
 \subsection{ReactiveX and RxJS}
 
@@ -214,13 +210,14 @@ The visualizer helps to understand the behavior of a specific part of an \mintin
 
 Specialized utilities are aware of RP runtime environments and help software engineers to interpret its state better than before using sole traditional debugger tools. Most of them provide a way to represent the data flow graph either graphically (Reactive Inspector, rxfiddle) or in textual form (rxjs-spy). They visualize the data flowing through the graph over time in marble diagrams (rxfiddle, Rx Visualizer) or directly in the visual graph representation (Reactive Inspector). Some like Reactive Inspector for REScala provide an ``all in one'' solution with breakpoints, omniscient debugging capabilities and full IDE integration whereas the RxJS-based tools have a more specific feature set: They usually work outside of an IDE and/or need manual code instrumentation like rxjs-spy.
 
-\textbf{TODO Compare im Table?} 
+\textbf{TODO Compare im Table?}
 
 
 \section{Study Design}
 \label{sec:study}
 
 \begin{itemize}
+	\item Hypothesis
 	\item Use prev section to build experiments using existing tooling
 	\item Validate stories and interviews
 \end{itemize}
