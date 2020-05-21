@@ -143,8 +143,9 @@ It is crucial to the engineers to \textbf{understand data flows}  within the \mi
 	\begin{minted}{TypeScript}
 		interval(1000).pipe(      // Increasing numbers with 1s delay
 		  map(i => i * 2),        // Breakpoint on i * 2
-		  map(i => i - 1)
-		).subscribe(console.log); // -1, 1, 3, 5, 7, ...
+		  map(i => i - 1),
+		  take(2)
+		).subscribe(console.log); // -1, 1
 	\end{minted}
 	\caption{Example RxJS Stream With Breakpoint on Line 2 Within the Arrow Function}
 	\label{lst:rxjs-step-controls}
@@ -154,17 +155,22 @@ It is crucial to the engineers to \textbf{understand data flows}  within the \mi
 \section{Discussion of Previous Efforts}
 \label{sec:discussion}
 
-Our work is not the first approach on understanding and improving on the struggles software engineers have to overcome when working on RP code, either with or without RxJS. We are going to present four of this tools in this section. The list is not meant to be exhaustive. It contains tools we either got to know during our research, because they were mentioned in one of the interviews or we worked with them personally in the past.
+Our work is not the first approach on understanding and improving on the struggles software engineers have to overcome when working on RP code, either with or without RxJS. We are going to present four of this tools in this section. This list is not meant to be exhaustive. It contains tools we either got to know during our research because they were mentioned in one of the interviews or we worked with them personally in the past.
 
 \subsection{Reactive Inspector}
 
 Salvaneschi et al. did focus their research heavily on RP during the mid 2010s. Beside the creation of REScala in 2014 \cite{10.1145/2577080.2577083}, an RP DSL and runtime for the Scala programming language, they looked into the debugging habits of software engineers as well. In the paper ``Debugging for Reactive Programming'' \cite{10.1145/2884781.2884815}, Salvaneschi et al. elaborate on the necessity of RP debugging tools which can understand the specific language abstractions. With the plugin Reactive Inspector for the Eclipse IDE, they provide a debugger which understands the RP language abstractions of REScala. One of its main features is the visualization of the internal dependency graph. The new class of  breakpoints, the ``reactive breakpoints'', builds upon the visualized graph as well: They do not depend on a specific line of code or statement rather then on a specific node in the graph. The execution of the program can be interrupted e.g. once a node retains a specific output value or an event of interest takes place in the runtime. Along with the RP specific debugging features, Reactive Inspector implements omniscient debugging concepts as well: Time travel allows to record and replay runtime behavior at a later time without reexecution.
+
+Salvaneschi et al. claim\cite{10.1145/2577080.2577083} the architecture behind \emph{Reactive Inspector} to be flexible enough to be used with different RP runtime environment as well.
 
 \subsection{rxfiddle}
 
 rxfiddle proposed by Banken et al. is the first reference implementation of their RP debugger architecture for the ReactiveX API specification described in their paper ``Debugging Data Flows in Reactive Programs'' \cite{10.1145/3180155.3180156}. The design defines two independent parts: The (i) \emph{Host instrumentation} instruments a ReactiveX implementation to emit events at runtime (e.g. when an \mintinline{TypeScript}{Observable} is created or subscribed) which get collected. The (ii) \emph{Visualizer} component interprets these events and presents them along two dimensions: The StoryFlow graph \cite{YWu2013a} shows when an \mintinline{TypeScript}{Observable} is created and how it interacts with other \mintinline{TypeScript}{Observable}s. An additional marble diagram\footnote{Marble diagrams are used in the ReactiveX community to describe the behavior of an \mintinline{TypeScript}{Observable} over its life time. They are considered valuable for documentation \cite{marblediagrams} as well as for testing \cite{marbletesting}} for every \mintinline{TypeScript}{Observable} is used to display the values it emits over time.
 
 The reference implementation supports event collection for RxJS-based code in version 4 and 5. It can either be used on a local development machine on existing projects or by copying code snippets to the online available.
+
+The architectural design of \emph{rxfiddle} is similar to the one \emph{Reactive Inspector}: Banken et al. provide a system where different RP runtime environments should be able to be attached to the Visualizer easily.
+
 
 \subsection{rxjs-spy}
 
@@ -174,15 +180,27 @@ Software engineers tend to augment their code with additional log trace statemen
 	\begin{minted}{TypeScript}
 		interval(1000).pipe(
 		  map(i => i * 2),
-		  tag('multiply'),        // Create tag "multiply"
-		  map(i => i - 1)
-		).subscribe(console.log);
+		  tag('multiply'),
+		  map(i => i - 1),
+		  take(2)
+		).subscribe();
 	\end{minted}
-	\caption{Usage of \emph{rxjs-spy} \mintinline{TypeScript}{tag} Operator}
+	\caption{Usage of \emph{rxjs-spy} \mintinline{TypeScript}{tag} Operator on Line 3}
 	\label{lst:rxjs-spy-tag}
 \end{listing}
 
 Later, rxjs-spy can be advised to log events such as subscribe, emit, error, complete and unsubscribe of matching tags directly to the console without touching any \mintinline{TypeScript}{Observable} code at all. It is worth to mention that manual log traces, without additional effort, only show values flowing by. The additional events logged by rxjs-spy were noted invaluable in the interviews presented earlier as well as in our own experience.
+
+\begin{listing}[H]
+	\begin{minted}{Typescript}
+		Tag = multiply; notification = subscribe
+		Tag = multiply; notification = next; value = 0
+		Tag = multiply; notification = next; value = 2
+		Tag = multiply; notification = unsubscribe
+	\end{minted}
+	\caption{Trace log generated by \emph{rxjs-spy} \mintinline{TypeScript}{tag} from Listing~\ref{lst:rxjs-spy-tag}}
+	\label{lst:rxjs-spy-log}
+\end{listing}
 
 Additional features are available through the debuggers console interface. A tagged \mintinline{TypeScript}{Observable} can be paused so it collects incoming values. They can then be emitted one after another or resumed at once.
 
@@ -192,8 +210,11 @@ The \emph{Rx Visualizer}\cite{rxviz} is a utility available online in the browse
 
 The visualizer helps to understand the behavior of a specific part of an \mintinline{TypeScript}{Observable} stream in a sandboxed environment.
 
-\subsection{Summary}
+\subsection{Comparison}
 
+Specialized utilities are aware of RP runtime environments and help software engineers to interpret its state better than before using sole traditional debugger tools. Most of them provide a way to represent the data flow graph either graphically (Reactive Inspector, rxfiddle) or in textual form (rxjs-spy). They visualize the data flowing through the graph over time in marble diagrams (rxfiddle, Rx Visualizer) or directly in the visual graph representation (Reactive Inspector). Some like Reactive Inspector for REScala provide an ``all in one'' solution with breakpoints, omniscient debugging capabilities and full IDE integration whereas the RxJS-based tools have a more specific feature set: They usually work outside of an IDE and/or need manual code instrumentation like rxjs-spy.
+
+\textbf{TODO Compare im Table?} 
 
 
 \section{Study Design}
