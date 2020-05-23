@@ -5,7 +5,7 @@
 
 \setminted{autogobble=true, tabsize=2, linenos=true, frame=single, breaklines=true}
 
-\newcommand{\version}{v0.3 Draft}
+\newcommand{\version}{v0.4 Draft}
 
 \begin{document}
 \begin{centering}
@@ -40,22 +40,22 @@
 
 \section{Introduction}
 
-An application providing a user interface (\emph{UI}) is a reactive application (\emph{RA}): It handles continuos flow of user and system events in order to give the user a representation of the applications state as timely as possible. One way of implementing reactive behavior is the Observer design pattern \cite{gamma1995design} where an observer (e.g. the UI rendering code) is repeatedly informed about changed application state. Different ways to implement a RA were developed since the emergence of the Observer pattern as well. Reactive Programming (\emph{RP}) enabled through language extensions, runtime environemnts and domain specific languages (\emph{DSL}) is based on functional programming (\emph{FP}) principles and allows to describe dependencies and transformations within a RA declerativly.
+An application providing a user interface (\emph{UI}) can be seen as a reactive application (\emph{RA})\cite{7827078}: It handles a continuos flow of user- and system-created events in order to give the user a representation of the applications state in a timely fashion. One way of implementing reactive behavior is the Observer design pattern\cite{gamma1995design} where an observer (e.g. the UI rendering code) is repeatedly informed about changed application state. With Reactive Programming (\emph{RP}), another way to implement RAs is trending. RP is enabled by language extensions, runtime environments and domain specific languages (\emph{DSL}) and based on functional programming (\emph{FP}) principles. With RP, software engineers describe declaratively how data flows through a RA, how that data depends from each other and how it is to be transformed over time.
 
-Debugging tools are essential to software engineers in order to get deeper understanding of the runtime behavior of a software system. Engineers use them to understand why particular circumstances lead to unexpected failures during execution or to step through unknown source code getting themselves accustomed with it. IDEs as well as the developer tools of modern web browsers\footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Debugger}} provide battle-tested debugger utilities to inspect code. They let engineers step from program statement to statement, stop execution upon hitting a breakpoint and give insight on the values assigned to variables.
+Utilities to debug the runtime behavior of a program are essential to software engineers today. They help to understand the inner workings of unknown source code or allow to track down a problem which may lead to an unexpected failure in a particular situation. Debugging utilities took different forms over time: From interpreting memory dumps, manually adding print statements to trace program execution up to the point where specialized debugging programs can interrupt a running process and interact with it on a low level, software engineers have access to versatile debugging tools at present day.
 
-Todays debugging tools can not understand abstractions introduced by RP libraries. E.g. where the engineer can use the stack trace to track a problem to its root cause in a traditional imperative program, this does not work when an RP environment is used: The debugger does not have any knowledge of the underlying data flow graph which would allow a similar backtracking from graph node to node.
+Debuggers available in IDEs and the developer tools of a web browser\footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Debugger}} today are specialized to work with imperative, control-flow oriented programs. E.g. when an engineer wants to know which part of the program called a particular function, the stack trace gives a clear answer to this question. Assuming a data-flow oriented program implemented using RP, the question, which transformation was executed right before another cannot be answered using a stack trace: A breakpoint within the transformation will not point to its logical predecessor, it will lead to the internals of the RP runtime instead.
 
-We will elaborate on such challenges in the field of RxJS-based frontend web applications and search answers to the following two research questions:
+This lack specific knowledge about RP concepts in traditional debugging utilities does often end in time consuming debugging sessions as we can confirm from our own experience. Previous research has looked into this field \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} over the past years already. We will revisit their results in this paper and elaborate on the particular challenges of debugging RAs using RxJS for frontend web applications. On the way, we will answer following two research questions:
 
 \begin{itemize}
-	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS based code?}
+	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS-based code?}
 	\item \emph{RQ2: How can the experience of frontend engineers during debugging of RxJS-based code be improved?}
 \end{itemize}
 
-Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give us insight in the challenges they face in their day-to-day jobs. We will evaluate and validate three cases extracted from their statements in order to answer \emph{RQ1}.
+Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give insight in the challenges they face in their day-to-day jobs. We will evaluate and validate three cases extracted from their statements in order to answer \emph{RQ1}.
 
-Later, we propose three solution concepts for \emph{RQ2} to resolve previously identified problems which ultimately should improve the debugging experience for RxJS-based code.
+In response to this, we will present three solution concepts for \emph{RQ2} to resolve previously identified problems which we expect to improve the debugging experience for RxJS-based code.
 
 The future implementation and validation of these proposals leads to a third research question \emph{RQ3} which will be part of future work not part of this paper:
 
@@ -67,9 +67,9 @@ We will conclude this introductory section with the clarification of important t
 
 \subsection{Reactive Applications}
 
-Salvaneschi et al. \cite{7827078} define the RA as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
+Salvaneschi et al. \cite{7827078} define a RA as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
 
-Further, Salvaneschi et al. provide a set of examples of what a RA might achieve using a three-parted classification schema: A \emph{synthetic application} transforms and processes streams of information. hence multiple image conversions one after another or in parallel could be implemented as a synthetic, RA. Beside the modelling of pure data flows, RAs are prevalent in the area of user interfaces \emph{(UI)}: They can be identified as \emph{interactive applications} and \emph{graphical animations} here.
+Further, Salvaneschi et al. provide a set of examples of what a RA might achieve using a tripartite classification schema: A (i) \emph{synthetic application} transforms and processes streams of information. hence multiple image conversions one after another or in parallel could be implemented as a synthetic, RA. Beside the modelling of pure data flows, RAs are prevalent in the area of UIs: They can be identified as (ii) \emph{interactive applications} and (iii) \emph{graphical animations} here.
 
 Various ways of implementing RAs emerged over time. The Observer design pattern \cite{gamma1995design}, originated in Object Oriented Programming \emph{(OOP)}, is a basic pattern we can find in many of todays API implementations \cite{alabor:2019:reactiveappllications}. Functional Programming \emph{(FP)} shines with specific reactive language extensions like Fran (Haskell) \cite{10.1145/2501654.2501666} or more recently REScala (Scala) \cite{10.1145/2577080.2577083}. The declarativeness of FP finally lead to what we understand under ``Reactive Programming'' today.
 
