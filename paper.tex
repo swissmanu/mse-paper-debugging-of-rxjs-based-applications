@@ -67,42 +67,43 @@ We will conclude this introductory section with the clarification of important t
 
 \subsection{Reactive Applications}
 
-Salvaneschi et al. \cite{7827078} define a RA as a computer program which processes a continuos, indefinite and ever-changing flow of information. It is contrasted by a traditional application which consumes and processes one piece of input while producing a one-off output result: Think of an image format conversion program which takes an HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} image file for input, processes it and outputs an JPEG file likewise.
+Salvaneschi et al. \cite{7827078} define a RA as a computer program which processes a continuos, indefinite and ever-changing flow of data. Think of a spreadsheet application\cite{10.1145/2501654.2501666} that links the values of cells to other cells using formulas. Once a cell is changed, it is the task of the application to update all dependant cells accordingly and cascade the updates throughout the model. This data-flow based type of application is contrasted by program-flow based applications which consume and process one piece of input while producing a one-off output like an image format conversion program that transforms between HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} and JPEG image formats.
 
-Further, Salvaneschi et al. provide a set of examples of what a RA might achieve using a tripartite classification schema: A (i) \emph{synthetic application} transforms and processes streams of information. hence multiple image conversions one after another or in parallel could be implemented as a synthetic, RA. Beside the modelling of pure data flows, RAs are prevalent in the area of UIs: They can be identified as (ii) \emph{interactive applications} and (iii) \emph{graphical animations} here.
-
-Various ways of implementing RAs emerged over time. The Observer design pattern \cite{gamma1995design}, originated in Object Oriented Programming \emph{(OOP)}, is a basic pattern we can find in many of todays API implementations \cite{alabor:2019:reactiveappllications}. Functional Programming \emph{(FP)} shines with specific reactive language extensions like Fran (Haskell) \cite{10.1145/2501654.2501666} or more recently REScala (Scala) \cite{10.1145/2577080.2577083}. The declarativeness of FP finally lead to what we understand under ``Reactive Programming'' today.
+The classification schema by Salvaneschi et al. \cite{7827078} divides RAs into three types: A (i) \emph{synthetic application} transforms and processes streams of information. RAs are prevalent in the area of UIs further: They can be identified as (ii) \emph{interactive applications} and help to describe and implement (iii) \emph{graphical animations}.
 
 \subsection{Reactive Programming}
 
-Reactive programming \emph{(RP)} is a declarative programming paradigm. Where engineers use imperative programing languages to tell a program every step \emph{how} to do something, a declarative language allows to describe \emph{what} wants to be achieved. The languages runtime system then figures out a way to satisfy that given description. RP specifically allows the description of a dependency graph of values and transformations over time.
+Various ways of implementing RAs emerged over time. The Observer design pattern \cite{gamma1995design}, originated in Object Oriented Programming \emph{(OOP)}, is a pattern we can find in many of todays API implementations\cite{alabor:2019:reactiveappllications} allowing reactive behavior. Functional Programming \emph{(FP)} shines with specific reactive language extensions like Fran (Haskell) \cite{10.1145/2501654.2501666} or more recently REScala (Scala) \cite{10.1145/2577080.2577083}.
 
-An RP environment provides (i) language constructs to describe mentioned graphs, often in form of a DSL\cite{10.1145/2577080.2577083}. At program runtime, a (ii) runtime system takes care that changed values are propagated through the graph, transformations are recomputed where necessary and a consistent state is maintained.
+Reactive programming \emph{(RP)} is a declarative programming paradigm. Where engineers use imperative programing languages to tell a program every step \emph{how} to do something, a declarative language allows to describe \emph{what} wants to be achieved. The languages runtime system then figures out a way to satisfy that given description. RP environments specifically provide abstractions to describe a data-flow and dependency graph which is used to transform and direct data at runtime.
+
+An RP environment provides (i) language constructs to describe mentioned graphs, often in form of a DSL\cite{10.1145/2577080.2577083}. At program runtime, a (ii) runtime system takes care that changed values are propagated through the graph, transformations are recomputed where necessary and a consistent application state is maintained.
 
 \subsection{Debugging Concepts}
 
-We divide debugging concepts roughly into three categories: Traditional \textbf{imperative-focused debuggers} provide basic functionality to interact with programs at runtime: Once code execution is paused (i.e. using a breakpoint at a given statement), we gain access to the current call stack and the values assigned to variables of a given frame. Manual control of the programs execution allows to inspect the programs behavior step by step as well as assigning new values to variables ``on-the-fly''.
+We divide debugging concepts roughly into three categories: Traditional \textbf{imperative-focused debuggers} provide basic functionality to interact with programs at runtime: Once code execution is paused (i.e. using a breakpoint at a given statement), we gain access to the current call stack and the values assigned to variables of a given frame. Manual control of the program execution allows to inspect its behavior step by step as well as assigning new values to variables ``on-the-fly''.
 
-Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the greater model of the dependency graph. In fact, RP provides its own challenges to debuggers: So are call stacks spoiled with invocations of RP runtime system internal matter or breakpoints can only be used on the imperative parts of transformations rather than on the data flow within the graph. Various \textbf{reactive debuggers} and visualization tools for specific RP runtimes emerged over the past few years \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} \cite{rxviz} exploring this field. They have knowledge of the dependency graph and therefore allow improved interaction with RP concepts.
+Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the underlying model of the data-flow graph. In fact, RP provides its own challenges to debuggers: Call stacks expose internal invocations of the RP runtime system rather than e.g. the predecessor transformation according to the data-flow graph. Further, breakpoints can only be used on the imperative parts of transformations and lack the functionality of interrupting execution when the RP runtime hits a specific node within the graph. A \textbf{reactive debugger} has knowledge about the internal model of a RP runtime system. It leverages on it and provides specialized tools e.g. to navigate or visualize the data-flow graph \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} \cite{rxviz}. We will have a closer look to available reactive debugger solutions.
 
-Traditional as well as a reactive debuggers work with the very current state of the programs execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient debugger} \cite{5287015} \cite{DBLP:journals/corr/OCallahanJFHNP17} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and fore through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges though: Once decided \emph{what} information should be recorded (everything, only specific parts of the program, one thread, multiple threads, \dots), demands on storage performance and capacity increase while the pool of collected data grows. As a result, user experience (\emph{UX}) concepts need to be aligned for the engineers being able to interact with the sheer amount of information efficiently.
+The traditional as well as the reactive debugger works with the \emph{current} state of a programs execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient debugger} \cite{5287015} \cite{DBLP:journals/corr/OCallahanJFHNP17} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and forth through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges though: Once decided \emph{what} information should be recorded (everything, only specific parts of the program, one thread, multiple threads, \dots), demands on storage performance and capacity increase while the pool of collected data grows. As a result, user experience (\emph{UX}) concepts need to be aligned for the engineers being able to interact with the sheer amount\cite{5287015} of information efficiently.
 
 \subsection{ReactiveX and RxJS}
 
-Reactive Extensions is an open source project providing an API description for RP concepts. It describes itself as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming'' \cite{reactivex}.  The API specification introduces the concept of the  \mintinline{TypeScript}{Observable} at its core. An \mintinline{TypeScript}{Observable} has the ability to be composed with other \mintinline{TypeScript}{Observable}s and eventually describe the dependency graph known in RP. A multitude of operators allow the transformation of values and \mintinline{TypeScript}{Observable}s within the graph.
+``Reactive Extensions'' (\emph{ReactiveX}) is an open source project. Its members and contributors defined a generic description of an RP API. They further provide reference implementations of this API along with RP runtime environments for various programming languages like Java, C\# and JavaScript\footnote{\url{http://reactivex.io/languages.html}}. ReactiveX summarizes the API as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming''\cite{reactivex}. The core concept of the API specification is the \mintinline{TypeScript}{Observable}\footnote{There is no known relation between ReactiveX' concept of the \mintinline{TypeScript}{Observable} and the deprecated Java class \href{https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Observable.html}{\mintinline{TypeScript}{java.util.Observable}}.}: An \mintinline{TypeScript}{Observable} can be composed and linked (``piped'') with other \mintinline{TypeScript}{Observable}s. It has the ability to push (``emit'') values to its dependents. Multiple depending \mintinline{TypeScript}{Observable}s form and describe a data-flow graph eventually. A multitude of operators allow the transformation of values and (higher-order) \mintinline{TypeScript}{Observable}s. Values emitted from an \mintinline{TypeScript}{Observable} can be subscribed to at any point which is closely related to the Observer design patterns \mintinline{Java}{attach} method.
 
-The ReactiveX community works on a variety of reference implementations\footnote{\url{http://reactivex.io/languages.html}}: Libraries for Java, C\#, JavaScript and many more allow to work with similar API semantics on different software architecture levels.
-
-RxJS is the reference implementation for JavaScript. Its current major version 6 is completely done in TypeScript\footnote{\url{https://www.typescriptlang.org/}} and provides the core elements of the ReactiveX API specification. Large projects like Angular embed and use RxJS\cite{angualrrxjs}. The Listing \ref{lst:rp-with-rxjs} shows a short example of RP using RxJS.
+RxJS is the reference implementation of the ReactiveX API specification for JavaScript and TypeScript. It is used thoroughly by large projects like Angular\cite{angualrrxjs}. Listing \ref{lst:rp-with-rxjs} shows a simple example of RP using RxJS in TypeScript.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
-		of('hello', 'foo', 'world').pipe(
-			filter(s => s !== 'foo'),
-			map(s => s.toUpperCase())
-		).subscribe(console.log)             // HELLO, WORLD
+		import { of } from 'rxjs';
+		import { filter, map } from 'rxjs/operators';
+
+		of('hello', 'foo', 'world').pipe(  // Create Observable
+			filter(s => s !== 'foo'),        // filter Operator
+			map(s => s.toUpperCase())        // map Operator
+		).subscribe(console.log)           // Emits: HELLO, WORLD
 	\end{minted}
-	\caption{RxJS Code Example}
+	\caption{Simple RxJS Example}
 	\label{lst:rp-with-rxjs}
 \end{listing}
 
@@ -258,7 +259,7 @@ Specialized utilities are aware of RP runtime environments and help software eng
 
 \section{Appendix}
 
-\subsection{Interview Questions}
+\subsection{Interview Agenda}
 \label{sec:interviewquestions}
 
 \begin{itemize}
