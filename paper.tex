@@ -12,7 +12,7 @@
 
 	\Large{Workshop Paper}
 	\par
-	\Huge{Debugging of Modern RxJS-based Frontend Web Applications}
+	\Huge{Debugging of RxJS-based Frontend Web Applications}
 	\par
 	\vspace{2ex}
 
@@ -110,9 +110,15 @@ RxJS is the reference implementation of the ReactiveX API specification for Java
 \section{Interviews and War Stories}
 \label{sec:interviews}
 
+We have worked together with 15 professional software engineers during the process of answering RQ1. On the way of finding our interview partners and war stories reporters, we noticed it to be a challenge on its own to find people which understand themselves as users of RP and related technologies. E.g. even though Angular makes heavy use of RxJS, we will see that many engineers do not interact with its abstractions directly in order to build simple UIs. In the end we were able to gather interesting statements nonetheless which we are going to present in the upcoming section.
+
 \subsection{Informal Interviews}
 
-In order to prepare to give an answer on the first research question, we started with a series of informal interviews. We talked to professionals about their experience in working with RP in their daily jobs. We did not limit the selection of our interview partners by the tech stack of including RxJS since we were interested in as many different perspectives on the topic as possible in this early stage. Eventually, we interviewed six engineers: Four work or worked more recently with Angular\footnote{\url{https://angular.io/}} and ngrx\footnote{\url{https://ngrx.io/}} to develop frontend applications. Two of them stated to have more explicit experience with RxJS further. One subject works currently with a combination of akka\footnote{\url{https://akka.io/}} and akka-streams in Scala to create backend applications. The sixth subject was the creator of rxfiddle. The agenda available in Appendix~\ref{sec:interviewquestions} was used to maintain focus during the interview sessions.
+Informal interviews allowed us to gain first insights in how software engineers work with RP in their daily jobs. We talked to six professionals and asked them about the technologies they use, what their personal experience with RP was, what they most liked and most disliked about it.
+
+Four of our interview partners stated to currently work or more recently have worked with RxJS in conjunction with Angular and/or ngrx\footnote{\url{https://ngrx.io/}} to develop frontend web applications. The fifth partner was the creator of rxfiddle, a visualization tool for RxJS \mintinline{TypeScript}{Observable}s and with this, proficient RxJS user. Our sixth interview partner finally was a backend engineer which used akka-streams\footnote{\url{https://akka.io/}} in Scala to model data-flows for a WebSocket\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API}}-based, reactive API layer serving a web frontend application.
+
+
 
 We identified several recurring topics throughout all the interviews. All of the subjects noted that they think of RP as an invaluable tool to describe and model dependencies between multiple data sources. Most of them appreciate how RP allows them to implement data transformations in a concise and composable way. The complexity of concurrent programming can be hidden well behind a simple DSL one subject noted further.
 
@@ -256,18 +262,6 @@ Specialized utilities are aware of RP runtime environments and help software eng
 	\item Whats the vision for the thesis?
 \end{itemize}
 
-
-\section{Appendix}
-
-\subsection{Interview Agenda}
-\label{sec:interviewquestions}
-
-\begin{itemize}
-	\item When did you last apply RP?
-	\item What technology did you use RP with?
-	\item What was the best experience you had with RP?
-	\item \dots and what was the worst? \dots Can you elaborate on the concrete situation?
-\end{itemize}
 
 \bibliographystyle{splncs04}
 \bibliography{bibliography.bib}
