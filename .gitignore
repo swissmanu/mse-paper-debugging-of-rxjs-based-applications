@@ -1,3 +1,4 @@
+.DS_Store
 *_temp.tex
 *.aux
 *.bbl
@@ -9,3 +10,4 @@
 *.synctex.gz
 *.out
 _minted-*/
+!figures/*.pdf

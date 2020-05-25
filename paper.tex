@@ -2,6 +2,7 @@
 \usepackage{ccicons}
 \usepackage{hyperref}
 \usepackage{minted}
+\usepackage{graphicx}
 
 \setminted{autogobble=true, tabsize=2, linenos=true, frame=single, breaklines=true}
 
@@ -89,7 +90,7 @@ The traditional as well as the reactive debugger works with the \emph{current} s
 
 \subsection{ReactiveX and RxJS}
 
-``Reactive Extensions'' (\emph{ReactiveX}) is an open source project. Its members and contributors defined a generic description of an RP API. They further provide reference implementations of this API along with RP runtime environments for various programming languages like Java, C\# and JavaScript\footnote{\url{http://reactivex.io/languages.html}}. ReactiveX summarizes the API as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming''\cite{reactivex}. The core concept of the API specification is the \mintinline{TypeScript}{Observable}\footnote{There is no known relation between ReactiveX' concept of the \mintinline{TypeScript}{Observable} and the deprecated Java class \href{https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Observable.html}{\mintinline{TypeScript}{java.util.Observable}}.}: An \mintinline{TypeScript}{Observable} can be composed and linked (``piped'') with other \mintinline{TypeScript}{Observable}s. It has the ability to push (``emit'') values to its dependents. Multiple depending \mintinline{TypeScript}{Observable}s form and describe a data-flow graph eventually. A multitude of operators allow the transformation of values and (higher-order) \mintinline{TypeScript}{Observable}s. Values emitted from an \mintinline{TypeScript}{Observable} can be subscribed to at any point which is closely related to the Observer design patterns \mintinline{Java}{attach} method.
+``Reactive Extensions'' (\emph{ReactiveX}) is an open source project. Its members and contributors defined a generic description of an RP API. They further provide reference implementations of this API along with RP runtime environments for various programming languages like Java, C\# and JavaScript\footnote{\url{http://reactivex.io/languages.html}}. ReactiveX summarizes the API as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming''\cite{reactivex}. The core concept of the API specification is the Observable\footnote{There is no known relation between ReactiveX' concept of the Observable and the deprecated Java class \href{https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Observable.html}{\mintinline{TypeScript}{java.util.Observable}}.}: An Observable can be composed and linked (``piped'') with other Observables. It has the ability to push (``emit'') values to its dependents. Multiple depending Observables form and describe a data-flow graph eventually. A multitude of operators allow the transformation of values and (higher-order) Observables. Values emitted from an Observable can be subscribed to at any point which is closely related to the Observer design patterns \mintinline{Java}{attach} method.
 
 RxJS is the reference implementation of the ReactiveX API specification for JavaScript and TypeScript. It is used thoroughly by large projects like Angular\cite{angualrrxjs}. Listing \ref{lst:rp-with-rxjs} shows a simple example of RP using RxJS in TypeScript.
 
@@ -116,18 +117,39 @@ We have worked together with 15 professional software engineers during the proce
 
 We organized informal interviews which allowed us to gain first insights in how software engineers work with RP in their daily jobs. We talked to six engineers and asked them about the technologies they use, what their personal experience with RP was, what they most liked and most disliked about it.
 
-Four of our interview partners stated to currently work or more recently have worked with RxJS in conjunction with Angular and/or ngrx\footnote{\url{https://ngrx.io/}} to develop frontend web applications. By being the creator of a visualizer for RxJS \mintinline{TypeScript}{Observable}s, the fifth interviewee was a proficient RxJS user. Our sixth interview partner finally was a backend engineer which used akka-streams\footnote{\url{https://akka.io/}} in Scala to model data-flows for a WebSocket-based\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API}}, reactive API layer serving a web frontend application.
+Four of our interview partners stated to currently work or more recently have worked with RxJS in conjunction with Angular and/or ngrx\footnote{\url{https://ngrx.io/}} to develop frontend web applications. By being the creator of a visualizer for RxJS Observables, the fifth interviewee was a proficient RxJS user. Our sixth interview partner finally was a backend engineer which used akka-streams\footnote{\url{https://akka.io/}} in Scala to model data-flows for a WebSocket-based\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API}}, reactive API layer serving a web frontend application.
 
 All of the interviewees referred to RP with an overall positive experience. We heard statements like ``RP is a good way for composing multiple data sources'' and ``having a statically typed language combined with RP already guarantees some kind of basic correctness of my program'' repeatedly throughout all sessions. Hence a big strength of RP seems to be the ability to describe complex data-flow constructs using a specialized DSL. The learning curve can be steep for a novice engineer though: ``Being already challenged with new concepts of Angular and ngrx, I noticed RxJS concepts and operators to be hard to grasp in addition on top'' an interview partner giving lectures in frontend web application development stated further.
 
-It was interesting to hear that, especially in the area of developing web applications using Angular, our partners seemed not to have to work with pure RxJS code often. E.g. when using ngrx for state management, ``the framework takes care that you do not have to interact with Observables on your own, but leverages greatly on their potential behind the scenes''. As soon as our interviewees had to extend built-in functionalities with their own features, e.g. a new effect\footnote{\url{https://ngrx.io/guide/effects}}, all of them valued the possibility to interact with underlying \mintinline{TypeScript}{Observable}s highly.
+It was interesting to hear that, especially in the area of developing web applications using Angular, our partners seemed not to have to work with pure RxJS code often. E.g. when using ngrx for state management, ``the framework takes care that you do not have to interact with Observables on your own, but leverages greatly on their potential behind the scenes''. As soon as our interviewees had to extend built-in functionalities with their own features, e.g. a new effect\footnote{\url{https://ngrx.io/guide/effects}}, all of them valued the possibility to interact with underlying Observables highly.
 
-When asked explicitly about what they dislike the most about RP, all interview partners with no exception emphasized the debugging process of an RP application as a big nuisance. The fact that our interviewees remembered the search for a bug as something negative did not surprise us, hence a bug is usually something negative afflicted. What did alarm us though was the fact that statements like ``In 99\% of all cases, I add console.log statements manually and run the program over and over again, trying to understand what is happening'' were prevalent and gave insight in \emph{why} our interview partners dislike RP debugging in particular. Multiple interviewees mentioned the Redux DevTools\footnote{\url{https://chrome.google.com/webstore/detail/redux-devtools}} as helpful when debugging Angular/ngrx applications nonetheless. Further, one single partner mentioned marble diagrams as very valuable in order to understand how an RxJS \mintinline{TypeScript}{Observable} works, no matter if during development or when debugging code. Marble diagrams are a way to visualize and describe the value-emitting behavior of an \mintinline{TypeScript}{Observable} over time. They are accepted throughout the ReactiveX community for documentation\cite{marblediagrams} and testing reasons\cite{marbletesting}.
+When asked explicitly about what they dislike the most about RP, all interview partners with no exception emphasized the debugging process of an RP application as a big nuisance. The fact that our interviewees remembered the search for a bug as something negative did not surprise us, hence a bug is usually something negative afflicted. What did alarm us though was the fact that statements like ``In 99\% of all cases, I add console.log statements manually and run the program over and over again, trying to understand what is happening'' were prevalent and gave insight in \emph{why} our interview partners dislike RP debugging in particular. Multiple interviewees mentioned the Redux DevTools\footnote{\url{https://chrome.google.com/webstore/detail/redux-devtools}} as helpful when debugging Angular/ngrx applications nonetheless. Further, one single partner mentioned marble diagrams as very valuable in order to understand how an RxJS Observable works, no matter if during development or when debugging code. Marble diagrams are a way to visualize and describe the value-emitting behavior of an Observable over time. They are accepted throughout the ReactiveX community for documentation\cite{marblediagrams} and testing reasons\cite{marbletesting}.
 
+\begin{figure}[H]
+	\centering
+	\input{figures/marble-diagram.pdf_tex}
+	\caption{A Marble Diagram visualizing the Observable in Listing~\ref{lst:rxjs-step-controls}}
+	\label{fig:marble-diagram}
+\end{figure}
 
 \subsection{War Stories}
 
-Based on the results of the interviews, we compiled a request for more specific factual reports. We asked professional software engineers about their most recent debugging experience in regards of RxJS, either good or bad. We were able to gather responses from one RxJS core team member, two Google Developer Experts and two engineers building web and mobile applications for a fintech company eventually.
+After we built a first intuition for how software engineers work with RP by evaluating the informal interviews, we were interested in more RxJS-specific, hands-on experiences. We asked the engineering community via Twitter\footnote{\url{https://twitter.com/swissmanu/status/1242429409208029185}} about their personal, most recent RxJS debugging war story and sent out various emails with the same request. After reaching out, we were able to collect responses from one RxJS core team member, two Angular Google Developer Experts and two engineers building web and mobile applications using React and RxJS which includes the author of this paper.
+
+
+
+``Mixing productive and test code was something I really did not like.''
+
+
+``It took quite some time to get it right and one of the most invaluable tools proved to be Stackblitz which gave us ability to quickly create  smaller working examples and iterate on them.''
+
+
+``Figures were changing multiple times (where I expected them to change once), other numbers were not updated at all.''
+
+``starting with console.logs and later also using tags from rxjs-spy.''
+
+
+
 
 We could verify previously gathered interview data with the results from the new reports: The subjects tend to manually add log statements to their code in order to understand its behavior, especially when things get more complex. Three subjects even claimed using specialized logging functionalities provided by rxjs-spy\cite{rxjsspy}. As the subjects stated, the knowledge about additional events made visible helped in situations where they needed to find problems within a graph composing multiple asynchronous data sources on multiple levels. Without it, they would have been blind to what actually happened within the system.
 
@@ -137,17 +159,17 @@ In addition to more sophisticated logging, three subjects reported that they bui
 
 The interpretation of the combined interview and war stories data gives us an idea about two main challenges software engineers have to overcome during debugging activities of RxJS-based code:
 
-It is crucial to the engineers to \textbf{understand data flows}  within the \mintinline{TypeScript}{Observable} graph. Questions like ``Which source emitted a value at what time?'' or ``What is the result of a specific transformation?'' are common in this context. Once a program fails, software engineers need to \textbf{rely on traditional debugger tools}. Though providing help to some extent, the tools lack of specific knowledge about the RP runtime environment adds some oddities to the debugging process: The (i) functionalities allowing step-wise navigation through the code does not respect the RP context. Assume we have set a breakpoint at \mintinline{TypeScript}{i * 2} on line~2 of Listing~\ref{lst:rxjs-step-controls}. Once the debugger hits the breakpoint and we instruct it to ``Step Over'', the debugger will lead us to the internal implementation of the \mintinline{TypeScript}{map} operator instead to line~3. (ii) Stack traces include information about the invocation of internal functions which, most of the time, do not provide any valuable information to the engineers further.
+It is crucial to the engineers to \textbf{understand data flows}  within the Observable graph. Questions like ``Which source emitted a value at what time?'' or ``What is the result of a specific transformation?'' are common in this context. Once a program fails, software engineers need to \textbf{rely on traditional debugger tools}. Though providing help to some extent, the tools lack of specific knowledge about the RP runtime environment adds some oddities to the debugging process: The (i) functionalities allowing step-wise navigation through the code does not respect the RP context. Assume we have set a breakpoint at \mintinline{TypeScript}{i * 2} on line~2 of Listing~\ref{lst:rxjs-step-controls}. Once the debugger hits the breakpoint and we instruct it to ``Step Over'', the debugger will lead us to the internal implementation of the \mintinline{TypeScript}{map} operator instead to line~3. (ii) Stack traces include information about the invocation of internal functions which, most of the time, do not provide any valuable information to the engineers further.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
 		interval(1000).pipe(      // Increasing numbers with 1s delay
 		  map(i => i * 2),        // Breakpoint on i * 2
-		  map(i => i - 1),
-		  take(2)
-		).subscribe(console.log); // -1, 1
+		  map(i => i + 1),
+		  take(4)
+		).subscribe(console.log); // 1, 3, 5, 7 & complete
 	\end{minted}
-	\caption{Example RxJS Stream With Breakpoint on Line 2 Within the Arrow Function}
+	\caption{RxJS Observable With Breakpoint Within a \mintinline{TypeScript}{map} Operator}
 	\label{lst:rxjs-step-controls}
 \end{listing}
 
@@ -165,7 +187,7 @@ Salvaneschi et al. claim\cite{10.1145/2577080.2577083} the architecture behind \
 
 \subsection{rxfiddle}
 
-rxfiddle proposed by Banken et al. is the first reference implementation of their RP debugger architecture for the ReactiveX API specification described in their paper ``Debugging Data Flows in Reactive Programs'' \cite{10.1145/3180155.3180156}. The design defines two independent parts: The (i) \emph{Host instrumentation} instruments a ReactiveX implementation to emit events at runtime (e.g. when an \mintinline{TypeScript}{Observable} is created or subscribed) which get collected. The (ii) \emph{Visualizer} component interprets these events and presents them along two dimensions: The StoryFlow graph \cite{YWu2013a} shows when an \mintinline{TypeScript}{Observable} is created and how it interacts with other \mintinline{TypeScript}{Observable}s. An additional marble diagram for every \mintinline{TypeScript}{Observable} is used to display the values it emits over time.
+rxfiddle proposed by Banken et al. is the first reference implementation of their RP debugger architecture for the ReactiveX API specification described in their paper ``Debugging Data Flows in Reactive Programs'' \cite{10.1145/3180155.3180156}. The design defines two independent parts: The (i) \emph{Host instrumentation} instruments a ReactiveX implementation to emit events at runtime (e.g. when an Observable is created or subscribed) which get collected. The (ii) \emph{Visualizer} component interprets these events and presents them along two dimensions: The StoryFlow graph \cite{YWu2013a} shows when an Observable is created and how it interacts with other Observables. An additional marble diagram for every Observable is used to display the values it emits over time.
 
 The reference implementation supports event collection for RxJS-based code in version 4 and 5. It can either be used on a local development machine on existing projects or by copying code snippets to the online available.
 
@@ -174,7 +196,7 @@ The architectural design of \emph{rxfiddle} is similar to the one \emph{Reactive
 
 \subsection{rxjs-spy}
 
-Software engineers tend to augment their code with additional log trace statements in the situation where they have to track down a problem as we saw earlier. rxjs-spy\cite{rxjsspy} intends to improve on this by introducing the \mintinline{TypeScript}{tag} operator. Instead of adding log traces at debug-time, ``tagged'' \mintinline{TypeScript}{Observable}s are created right at the moment the \mintinline{TypeScript}{Observable} itself is defined. A tag as shown in Listing~\ref{lst:rxjs-spy-tag} does not influence runtime behavior at first.
+Software engineers tend to augment their code with additional log trace statements in the situation where they have to track down a problem as we saw earlier. rxjs-spy\cite{rxjsspy} intends to improve on this by introducing the \mintinline{TypeScript}{tag} operator. Instead of adding log traces at debug-time, ``tagged'' Observables are created right at the moment the Observable itself is defined. A tag as shown in Listing~\ref{lst:rxjs-spy-tag} does not influence runtime behavior at first.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
@@ -189,7 +211,7 @@ Software engineers tend to augment their code with additional log trace statemen
 	\label{lst:rxjs-spy-tag}
 \end{listing}
 
-Later, rxjs-spy can be advised to log events such as subscribe, emit, error, complete and unsubscribe of matching tags directly to the console without touching any \mintinline{TypeScript}{Observable} code at all. It is worth to mention that manual log traces, without additional effort, only show values flowing by. The additional events logged by rxjs-spy were noted invaluable in the interviews presented earlier as well as in our own experience.
+Later, rxjs-spy can be advised to log events such as subscribe, emit, error, complete and unsubscribe of matching tags directly to the console without touching any Observable code at all. It is worth to mention that manual log traces, without additional effort, only show values flowing by. The additional events logged by rxjs-spy were noted invaluable in the interviews presented earlier as well as in our own experience.
 
 \begin{listing}[H]
 	\begin{minted}{Typescript}
@@ -202,13 +224,13 @@ Later, rxjs-spy can be advised to log events such as subscribe, emit, error, com
 	\label{lst:rxjs-spy-log}
 \end{listing}
 
-Additional features are available through the debuggers console interface. A tagged \mintinline{TypeScript}{Observable} can be paused so it collects incoming values. They can then be emitted one after another or resumed at once.
+Additional features are available through the debuggers console interface. A tagged Observable can be paused so it collects incoming values. They can then be emitted one after another or resumed at once.
 
 \subsection{Rx Visualizer}
 
 The \emph{Rx Visualizer}\cite{rxviz} is a utility available online in the browser. It is an ``animated playground for Rx Observables''\cite{rxviz} and allows to visualize snippets of RxJS code using marble diagrams. Diagrams are generated over a given, fixed time and can be saved as SVG\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/SVG}}.
 
-The visualizer helps to understand the behavior of a specific part of an \mintinline{TypeScript}{Observable} stream in a sandboxed environment.
+The visualizer helps to understand the behavior of a specific part of an Observable stream in a sandboxed environment.
 
 \subsection{Comparison}
 

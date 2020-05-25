@@ -1,4 +1,4 @@
-# Workshop Paper "Debugging of Modern RxJS-based Frontend Web Applications"
+# Workshop Paper "Debugging of RxJS-based Frontend Web Applications"
 
 > Abstract tbd.
 
