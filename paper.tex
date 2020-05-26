@@ -134,19 +134,17 @@ When asked explicitly about what they dislike the most about RP, all interview p
 
 \subsection{War Stories}
 
-After we built a first intuition for how software engineers work with RP by evaluating the informal interviews, we were interested in more RxJS-specific, hands-on experiences. We asked the engineering community via Twitter\footnote{\url{https://twitter.com/swissmanu/status/1242429409208029185}} about their personal, most recent RxJS debugging war story and sent out various emails with the same request. After reaching out, we were able to collect responses from one RxJS core team member, two Angular Google Developer Experts and two engineers building web and mobile applications using React and RxJS which includes the author of this paper.
+After we built a first intuition for how software engineers work with RP by evaluating the informal interviews, we were interested in more RxJS-specific, hands-on experiences. We asked the engineering community via Twitter\footnote{\url{https://twitter.com/swissmanu/status/1242429409208029185}} about their personal, most recent RxJS debugging war story and sent out various emails with the same request. After reaching out, we were able to collect five responses: One by a RxJS core team member, two from Angular Google Developer Experts and another two reports by two software engineers building web and mobile applications using React and RxJS which includes the author of this paper.
 
+The reports provided us diverse perspectives on various areas of software development using RxJS. One of the reporters focused on how they built code which had improved on testability over the recent versions of RxJS: ``\dots in the beginning, it was very hard to write async tests and I did not like it. I really disliked that once you started to test async code you were forced to pass a TestScheduler''. Allowing to pass the scheduler explicitly as parameter forced them to introduce code which was only necessary for testing reasons they stated further. With its current major version, RxJS 6 improved heavily on the  \mintinline{TypeScript}{TestScheduler}. The runtime environment itself can now be augmented with the scheduler which results in cleaner code.
 
+Even though the share of non-productive, testing-related code necessary to build a mature RxJS-based application seems to have decreased today, multiple of our reporters mentioned the common practice of manually modifying production code during debugging sessions, hence confirming earlier statements from our informal interview partners. One engineer described a scenario where they suspected a problem in a complex Observable composition: Having multiple asynchronous, remote data sources, they used Observables to model the dependencies between them and implemented computations on their results as operators. On top, each data source could re-emit updated versions of previously requested information any time. Though tested thoroughly, after a week in production the first of many bugs was reported: ``Figures were changing multiple times (where I expected them to change once), other numbers were not updated at all'' they told us. The browsers debugger tools and its breakpoints did not help much since the operators were executed several multiple times and some parts of the stream were impossible to grasp, even with conditional breakpoints. ``I started to inspect the flow \dots with console.logs and later also using tags from rxjs-spy'', hence manually augmenting the code with trace logs. After the time consuming log analysis, they finally were able resolve the bug. The log statements added were removed in the aftermath, though the rxjs-spy related code was left in the Observable stream in case they might be needed again in the future. (We will elaborate on the functionality of rxjs-spy in the next section more in-depth.)
 
-``Mixing productive and test code was something I really did not like.''
 
 
 ``It took quite some time to get it right and one of the most invaluable tools proved to be Stackblitz which gave us ability to quickly create  smaller working examples and iterate on them.''
 
 
-``Figures were changing multiple times (where I expected them to change once), other numbers were not updated at all.''
-
-``starting with console.logs and later also using tags from rxjs-spy.''
 
 
 
