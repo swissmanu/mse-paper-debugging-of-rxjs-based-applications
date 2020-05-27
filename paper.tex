@@ -47,18 +47,21 @@ Utilities to debug the runtime behavior of a program are essential to software e
 
 Debuggers available in IDEs and the developer tools of a web browser\footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Debugger}} today are specialized to work with imperative, control-flow oriented programs. E.g. when an engineer wants to know which part of the program called a particular function, the stack trace gives a clear answer to this question. Assuming a data-flow oriented program implemented using RP, the question, which transformation was executed right before another cannot be answered using a stack trace: A breakpoint within the transformation will not point to its logical predecessor, it will lead to the internals of the RP runtime instead.
 
-This lack specific knowledge about RP concepts in traditional debugging utilities does often end in time consuming debugging sessions as we can confirm from our own experience. Previous research has looked into this field \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} over the past years already. We will revisit their results in this paper and elaborate on the particular challenges of debugging RAs using RxJS for frontend web applications. On the way, we will answer following two research questions:
+This lack specific knowledge about RP concepts in traditional debugging utilities does often end in time consuming debugging sessions as we can confirm from our own experience. Previous research has looked into this field \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} over the past years already. We will revisit their results in this paper and elaborate on the particular challenges of debugging RAs using RxJS for frontend web applications.
+
+Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give insight in the challenges they face in their day-to-day jobs. We will validate their statement in a controlled experiment and answer our first research question:
 
 \begin{itemize}
 	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS-based code?}
+\end{itemize}
+
+In response to this, we will present three potential solutions to resolve previously identified problems and give an answer on the second research question:
+
+\begin{itemize}
 	\item \emph{RQ2: How can the experience of frontend engineers during debugging of RxJS-based code be improved?}
 \end{itemize}
 
-Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give insight in the challenges they face in their day-to-day jobs. We will evaluate and validate three cases extracted from their statements in order to answer \emph{RQ1}.
-
-In response to this, we will present three solution concepts for \emph{RQ2} to resolve previously identified problems which we expect to improve the debugging experience for RxJS-based code.
-
-The future implementation and validation of these proposals leads to a third research question \emph{RQ3} which will be part of future work not part of this paper:
+The future implementation and validation of these proposals leads to our third research question which will be part of future work not part of this paper:
 
 \begin{itemize}
 	\item \emph{RQ3: What is the impact of a proposed solution on the debugging experience of a frontend engineer?}
@@ -92,7 +95,7 @@ The traditional as well as the reactive debugger works with the \emph{current} s
 
 ``Reactive Extensions'' (\emph{ReactiveX}) is an open source project. Its members and contributors defined a generic description of an RP API. They further provide reference implementations of this API along with RP runtime environments for various programming languages like Java, C\# and JavaScript\footnote{\url{http://reactivex.io/languages.html}}. ReactiveX summarizes the API as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming''\cite{reactivex}. The core concept of the API specification is the Observable\footnote{There is no known relation between ReactiveX' concept of the Observable and the deprecated Java class \href{https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Observable.html}{\mintinline{TypeScript}{java.util.Observable}}.}: An Observable can be composed and linked (``piped'') with other Observables. It has the ability to push (``emit'') values to its dependents. Multiple depending Observables form and describe a data-flow graph eventually. A multitude of operators allow the transformation of values and (higher-order) Observables. Values emitted from an Observable can be subscribed to at any point which is closely related to the Observer design patterns \mintinline{Java}{attach} method.
 
-RxJS is the reference implementation of the ReactiveX API specification for JavaScript and TypeScript. It is used thoroughly by large projects like Angular\cite{angualrrxjs}. Listing \ref{lst:rp-with-rxjs} shows a simple example of RP using RxJS in TypeScript.
+RxJS is the reference implementation of the ReactiveX API specification for JavaScript and TypeScript. It is used thoroughly by large projects like Angular\cite{angualrrxjs}. Listing \ref{lst:rp-with-rxjs} shows an example of RP using RxJS in TypeScript.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
@@ -104,18 +107,18 @@ RxJS is the reference implementation of the ReactiveX API specification for Java
 			map(s => s.toUpperCase())        // map Operator
 		).subscribe(console.log)           // Emits: HELLO, WORLD
 	\end{minted}
-	\caption{Simple RxJS Example}
+	\caption{Basic RxJS Example}
 	\label{lst:rp-with-rxjs}
 \end{listing}
 
 \section{Interviews and War Stories}
 \label{sec:interviews}
 
-We have worked together with 15 professional software engineers during the process of answering RQ1. On the way of finding our interview partners and war stories reporters, we noticed it to be a challenge on its own to find people which understand themselves as users of RP and related technologies. E.g. even though Angular makes heavy use of RxJS, we will see that many engineers do not interact with its abstractions directly in order to build simple UIs. In the end we were able to gather interesting statements nonetheless which we are going to present in the upcoming section.
+We have worked together with 15 professional software engineers during the process of answering RQ1. On the way of finding our interview partners and war stories reporters, we noticed it to be a challenge on its own to find people which understand themselves as users of RP and related technologies. E.g. even though Angular makes heavy use of RxJS, we will see that many engineers do not interact with its abstractions directly in order to build simple UIs. In the end we were able to gather interesting statements nonetheless which we are going to present in this section.
 
 \subsection{Informal Interviews}
 
-We organized informal interviews which allowed us to gain first insights in how software engineers work with RP in their daily jobs. We talked to six engineers and asked them about the technologies they use, what their personal experience with RP was, what they most liked and most disliked about it.
+We organized informal interviews which allowed us to gain first insight in how software engineers work with RP in their daily jobs. We talked to six engineers and asked them about the technologies they use, what their personal experience with RP was, what they most liked and most disliked about it.
 
 Four of our interview partners stated to currently work or more recently have worked with RxJS in conjunction with Angular and/or ngrx\footnote{\url{https://ngrx.io/}} to develop frontend web applications. By being the creator of a visualizer for RxJS Observables, the fifth interviewee was a proficient RxJS user. Our sixth interview partner finally was a backend engineer which used akka-streams\footnote{\url{https://akka.io/}} in Scala to model data-flows for a WebSocket-based\footnote{\url{https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API}}, reactive API layer serving a web frontend application.
 
@@ -138,13 +141,20 @@ After we built a first intuition for how software engineers work with RP by eval
 
 The reports provided us diverse perspectives on various areas of software development using RxJS. One of the reporters focused on how they built code which had improved on testability over the recent versions of RxJS: ``[\dots] in the beginning, it was very hard to write async tests and I did not like it. I really disliked that once you started to test async code you were forced to pass a TestScheduler''. Allowing to pass the scheduler explicitly as parameter forced them to introduce code which was only necessary for testing reasons they stated further. With its current major version, RxJS 6 improved heavily on the  \mintinline{TypeScript}{TestScheduler}. The runtime environment itself can now be augmented with the scheduler which results in cleaner code.
 
-Even though the share of non-productive, testing-related code necessary to build a mature RxJS-based application seems to have decreased today, multiple of our reporters mentioned the common practice of manually modifying production code during debugging sessions, hence confirming earlier statements from our informal interview partners. One engineer described a specific scenario where they suspected a problem within a complex Observable composition: Having multiple asynchronous, remote data sources, they used Observables to model the dependencies between them and implemented computations on their results as operators. On top, each data source could re-emit updated versions of previously requested information any time. Though tested thoroughly, after a week in production the first of many bugs was reported: ``Figures were changing multiple times (where I expected them to change once), other numbers were not updated at all'' they told us. The browsers debugger tools and its breakpoints did not help much since the operators were executed several multiple times and some parts of the stream were impossible to grasp, even with conditional breakpoints. ``I started to inspect the flow [\dots] with console.logs and later also using tags from rxjs-spy'', hence manually augmenting the code with trace logs. After the time consuming log analysis, they finally were able resolve the bug. The log statements added were removed in the aftermath, though the rxjs-spy related code was left in the Observable stream in case they might be needed again in the future. (We will elaborate on the functionality of rxjs-spy in Section~\ref{sec:discussion} more in-depth.)
+Even though the share of non-productive, testing-related code necessary to build mature RxJS-based applications was mentioned to have decreased today, multiple of our reporters mentioned the common practice of manually modifying production code during debugging sessions, hence confirming earlier statements from our informal interview partners. One engineer described a specific scenario where they suspected a problem within a complex Observable composition: Having multiple asynchronous, remote data sources, they used Observables to model the dependencies between them and implemented computations on their results as operators. On top, each data source could re-emit updated versions of previously requested information any time. Though tested thoroughly, after a week in production the first of many bugs was reported: ``Figures were changing multiple times (where I expected them to change once), other numbers were not updated at all'' they told us. The browsers debugger tools and its breakpoints did not help much since the operators were executed several multiple times and some parts of the stream were impossible to grasp, even with conditional breakpoints. ``I started to inspect the flow [\dots] with console.logs and later also using tags from rxjs-spy'', hence manually augmenting the code with trace logs. After the time consuming log analysis, they finally were able resolve the bug. The log statements added were removed in the aftermath, though the rxjs-spy related code was left in the Observable stream in case they might be needed again in the future. (We will elaborate on the functionality of rxjs-spy in Section~\ref{sec:discussion} more in-depth.)
 
 In a related war story, another engineer disclosed similar practices using  external tools: ``It took quite some time to get it right and one of the most invaluable tools proved to be Stackblitz which gave us ability to quickly create smaller working examples and iterate on them.'' Stackblitz\footnote{\url{https://stackblitz.com/}} is a full JavaScript development environment available online. They used this sandboxed setting to run, debug and iterate on selected pieces of a larger Observable stream. Even though the final result had to be integrated back into the actual application, the extra effort was worth the result the engineer concluded in their report.
 
+A final story described yet another variation of the application of an external tool: Rather than using a dedicated sandbox to develop pieces of a more complex system, this engineer used Rx Visualizer, an online visualization utilities to generate previously presented marble diagrams from real code. Like in the report before, it was necessary to extracted code from the actual applications code base. But once done, the diagrams helped a lot in order to understand when values were emitted, when subscriptions changed and when Observables completed: ``Marble diagrams were a huge help to dig into detailed runtime and life cycle behaviors of the Observables.''.
 
 
-\subsection{Summary}
+\subsection{Wrap Up}
+
+The overall sentiment in both the informal interviews as well as the reported war stories in regards of RP with RxJS was positive. The software engineers value how they can describe data flows using a DSL, even though the learning curve was perceived as steep. We heard some interesting reports how RxJS is applied in a daily development environment: Marble diagrams help to understand  an Observables behavior and are useful to implement tests. Large frameworks like Angular hide some of the complexity of RxJS but allow engineers to make use of its full power once the provided functionality needs to be extended.
+
+Most participants considered a statically typed language like TypeScript a fundamental necessity which allowed them to implement data-flow graphs with a minimal, formal correctness. We noticed throughout all reports that once the engineers were required to interact with the Observable graphs at runtime, they felt kind of ``lost'' and lacking ``the right tool'' to work within the context of RP.
+
+% TODO
 
 The interpretation of the combined interview and war stories data gives us an idea about two main challenges software engineers have to overcome during debugging activities of RxJS-based code:
 
