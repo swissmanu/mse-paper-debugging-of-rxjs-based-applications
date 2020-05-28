@@ -68,7 +68,7 @@ The future implementation and validation of these proposals leads to our third r
 	\item \emph{RQ3: What is the impact of a proposed solution on the debugging experience of a frontend engineer?}
 \end{itemize}
 
-We will conclude this introductory section with the clarification of important terms. Section~\ref{sec:interviews} presents the interview results along with the collected war stories and formalizes two recurrent challenges. With Section~\ref{sec:discussion}, we will have a look at current and previous research regarding debugging of reactive applications as well as specific tooling. We are going to validate presented challenges against currently available tools within Section~\ref{sec:study}, show threats to validity of our work in Section~\ref{sec:threats} and finally end with an outlook on future iterations.
+We will conclude this introductory section with the clarification of important terms. Section~\ref{sec:interviews} presents the interview results along with the collected war stories and formalizes two recurrent challenges. With Section~\ref{sec:discussion}, we will have a look at current and previous research regarding debugging of RAs as well as specific tooling. We are going to validate presented challenges against currently available tools within Section~\ref{sec:study}, show threats to validity of our work in Section~\ref{sec:threats} and finally end with an outlook on future iterations.
 
 \subsection{Reactive Applications}
 
@@ -80,7 +80,7 @@ The classification schema by Salvaneschi et al. \cite{7827078} divides RAs into 
 
 Various ways of implementing RAs emerged over time. The Observer design pattern \cite{gamma1995design}, originated in Object Oriented Programming \emph{(OOP)}, is a pattern we can find in many of todays API implementations\cite{alabor:2019:reactiveappllications} allowing reactive behavior. Functional Programming \emph{(FP)} shines with specific reactive language extensions like Fran (Haskell) \cite{10.1145/2501654.2501666} or more recently REScala (Scala) \cite{10.1145/2577080.2577083}.
 
-Reactive programming \emph{(RP)} is a declarative programming paradigm. Where engineers use imperative programing languages to tell a program every step \emph{how} to do something, a declarative language allows to describe \emph{what} wants to be achieved. The languages runtime system then figures out a way to satisfy that given description. RP environments specifically provide abstractions to describe a data-flow and dependency graph which is used to transform and direct data at runtime.
+RP is a declarative programming paradigm. Where engineers use imperative programing languages to tell a program every step \emph{how} to do something, a declarative language allows to describe \emph{what} wants to be achieved. The languages runtime system then figures out a way to satisfy that given description. RP environments specifically provide abstractions to describe a data-flow and dependency graph which is used to transform and direct data at runtime.
 
 An RP environment provides (i) language constructs to describe mentioned graphs, often in form of a DSL\cite{10.1145/2577080.2577083}. At program runtime, a (ii) runtime system takes care that changed values are propagated through the graph, transformations are recomputed where necessary and a consistent application state is maintained.
 
@@ -262,14 +262,15 @@ Specialized utilities are aware of RP runtime environments and help software eng
 	\label{tab:compare-tools}
 	\end{table}
 
-\section{Study Design}
+\section{Validation of Interviews and War Stories}
 \label{sec:study}
 
+\subsection{Study Design}
+
 \begin{itemize}
-	\item Hypothesis
-	\item Use prev section to build experiments using existing tooling
-	\item Validate stories and interviews
+	\item \emph{Hypothesis: If frontend engineers are given an RxJS-based problem, then they will modify the code in order to understand its behavior.}
 \end{itemize}
+
 
 \section{Future Work}
 \label{sec:future}
