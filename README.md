@@ -10,4 +10,4 @@
 
 ## References
 
-- Controlled Experiment "Validate Debugging Techniques": https://github.com/swissmanu/mse-pa1-experiment
+- Observational Study "Debugging Techniques": https://github.com/swissmanu/mse-pa1-experiment
