@@ -50,7 +50,7 @@ Debuggers available in IDEs and the developer tools of a web browser\footnote{\u
 
 This lack specific knowledge about RP concepts in traditional debugging utilities does often end in time consuming debugging sessions as we can confirm from our own experience. Previous research has looked into this field \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} over the past years already. We will revisit their results in this paper and elaborate on the particular challenges of debugging RAs using RxJS for frontend web applications.
 
-Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give insight in the challenges they face in their day-to-day jobs. We will validate their statement in an observational study and answer our first research question:
+Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give insight in the challenges they face in their day-to-day jobs. We will validate their statements in an observational study and answer our first research question:
 
 \begin{itemize}
 	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS-based code?}
@@ -254,9 +254,9 @@ Specialized utilities are aware of RP runtime environments and help software eng
 	\toprule
 					   & \textbf{UI} & \textbf{Integration}                                               & \textbf{Flow Control}                                              & \textbf{RP Runtime} \\ \midrule
 	Reactive Inspector & Visual      & Eclipse IDE                                                        & Full                                                               & REScala             \\ \midrule
-	rxfiddle           & Visual      & Web App                                                            & \begin{tabular}[c]{@{}l@{}}Visualization\\ Only\end{tabular}       & RxJS                \\ \midrule
-	rxjs-spy           & Textual     & \begin{tabular}[c]{@{}l@{}}Browser Console\\and Code\end{tabular} & \begin{tabular}[c]{@{}l@{}}Limited (No\\ Breakpoints)\end{tabular} & RxJS                \\ \midrule
-	Rx Visualizer      & Visual      & Web App                                                            & \begin{tabular}[c]{@{}l@{}}Visualization\\ Only\end{tabular}       & RxJS                \\ \bottomrule
+	rxfiddle           & Visual      & Web App                                                            & None       & RxJS                \\ \midrule
+	rxjs-spy           & Textual     & \begin{tabular}[c]{@{}l@{}}Browser Console\\and Code\end{tabular} & Limited & RxJS                \\ \midrule
+	Rx Visualizer      & Visual      & Web App                                                            & None       & RxJS                \\ \bottomrule
 	\end{tabular}
 	\caption{Feature Matrix for Discussed RP Debugging Tools}
 	\label{tab:compare-tools}
@@ -296,7 +296,11 @@ The responses on the survey showed that 75\% of the subject population had two o
 
 \subsection{Interpretation}
 
+We were able to observe how all subjects modified the provided source code manually and augmented it with trace logs at some point. All of them used the produced information in order to track down problems in the application. The the extraction to and reintegration from an external tool was not observed, though would have been yet another form of code modification.
 
+For any subject, we could not identify any contradiction between the observed behavior and the answers given within the after-action survey.
+
+All reviewed subjects exhibited the debugging behavior described in our initial hypothesis which we can accept based on the collected evidence.
 
 \section{Future Work}
 \label{sec:future}
