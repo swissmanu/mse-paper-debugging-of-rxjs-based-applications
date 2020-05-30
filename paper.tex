@@ -56,7 +56,7 @@ Transcripts of informal interviews and ``war stories'' collected from multiple p
 	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS-based code?}
 \end{itemize}
 
-In response to this, we will present three potential solutions to resolve previously identified problems and give an answer on the second research question:
+In response to this, we will present concepts how to resolve previously identified problems and give an answer on the second research question:
 
 \begin{itemize}
 	\item \emph{RQ2: How can the experience of frontend engineers during debugging of RxJS-based code be improved?}
@@ -86,11 +86,11 @@ An RP environment provides (i) language constructs to describe mentioned graphs,
 
 \subsection{Debugging Concepts}
 
-We divide debugging concepts roughly into three categories: Traditional \textbf{imperative-focused debuggers} provide basic functionality to interact with programs at runtime: Once code execution is paused (i.e. using a breakpoint at a given statement), we gain access to the current call stack and the values assigned to variables of a given frame. Manual control of the program execution allows to inspect its behavior step by step as well as assigning new values to variables ``on-the-fly''.
+We divide debugging concepts roughly into three categories: Traditional (i) \emph{imperative-focused debuggers} provide basic functionality to interact with programs at runtime: Once code execution is paused (i.e. using a breakpoint at a given statement), we gain access to the current call stack and the values assigned to variables of a given frame. Manual control of the program execution allows to inspect its behavior step by step as well as assigning new values to variables ``on-the-fly''.
 
-Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the underlying model of the dataflow graph. In fact, RP provides its own challenges to debuggers: Call stacks expose internal invocations of the RP runtime system rather than e.g. the predecessor transformation according to the dataflow graph. Further, breakpoints can only be used on the imperative parts of transformations and lack the functionality of interrupting execution when the RP runtime hits a specific node within the graph. A \textbf{reactive debugger} has knowledge about the internal model of an RP runtime system. It leverages on it and provides specialized tools e.g. to navigate or visualize the dataflow graph \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} \cite{rxviz}. We will have a closer look to available reactive debugger solutions.
+Where individual transformations of an RP based program can be inspected using traditional debuggers, they fall short in understanding the underlying model of the dataflow graph. In fact, RP provides its own challenges to debuggers: Call stacks expose internal invocations of the RP runtime system rather than e.g. the predecessor transformation according to the dataflow graph. Further, breakpoints can only be used on the imperative parts of transformations and lack the functionality of interrupting execution when the RP runtime hits a specific node within the graph. A (ii) \emph{reactive debugger} has knowledge about the internal model of an RP runtime system. It leverages on it and provides specialized tools e.g. to navigate or visualize the dataflow graph \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} \cite{rxviz}. We will have a closer look to available reactive debugger solutions.
 
-The traditional as well as the reactive debugger works with the \emph{current} state of a program's execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An \textbf{omniscient debugger} \cite{5287015} \cite{DBLP:journals/corr/OCallahanJFHNP17} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and forth through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges though: Once decided \emph{what} information should be recorded (everything, only specific parts of the program, one thread, multiple threads, \dots), demands on storage performance and capacity increase while the pool of collected data grows. As a result, user experience (\emph{UX}) concepts need to be aligned for the engineers being able to interact with the sheer amount\cite{5287015} of information efficiently.
+The traditional as well as the reactive debugger works with the \emph{current} state of a program's execution only. They lack knowledge about what happened before or what is going to happen in the future. This shortcoming is tedious, especially when debugging a problem depending from multiple complex circumstances in a system. An (iii) \emph{omniscient debugger} \cite{5287015} \cite{DBLP:journals/corr/OCallahanJFHNP17} does not interact with the executed program directly. Instead, it records runtime telemetry and provides an interface for later inspection. Engineers can ``time travel'' back and forth through the program execution trace without the hassle of reconstructing a given failure situation over and over again. This concept comes with its own set of challenges though: Once decided \emph{what} information should be recorded (everything, only specific parts of the program, one thread, multiple threads, \dots), demands on storage performance and capacity increase while the pool of collected data grows. As a result, user experience (\emph{UX}) concepts need to be aligned for the engineers being able to interact with the sheer amount\cite{5287015} of information efficiently.
 
 \subsection{ReactiveX and RxJS}
 
@@ -132,7 +132,7 @@ When asked explicitly about what they dislike the most about RP, all interview p
 \begin{figure}[H]
 	\centering
 	\input{figures/marble-diagram.pdf_tex}
-	\caption{A Marble Diagram visualizing the Observable in Listing~\ref{lst:rxjs-step-controls}}
+	\caption{A Marble Diagram visualizing the Observable in Listing~\ref{lst:rxjs-debugging}. Each marble represents an emitted value. The vertical line at marble \mintinline{TypeScript}{6} indicates the Observable completed.}
 	\label{fig:marble-diagram}
 \end{figure}
 
@@ -249,7 +249,7 @@ The visualizer helps to understand the behavior of a specific part of an Observa
 
 Specialized utilities are aware of RP runtime environments and help software engineers to interpret its state better than before using sole traditional debugger tools. Most of them provide a way to represent the dataflow graph either graphically (Reactive Inspector, rxfiddle) or in textual form (rxjs-spy). They visualize the data flowing through the graph over time in marble diagrams (rxfiddle, Rx Visualizer) or directly in a visual graph representation (Reactive Inspector). Some like Reactive Inspector for REScala provide an ``all in one'' solution with breakpoints, omniscient debugging capabilities and full IDE integration whereas the RxJS-related tools provide small, differentiated feature sets. Most of them require the engineer to extract code from its origin (rxfiddle, Rx Visualizer) or require manual code preparation or modification (rxjs-spy).
 
-\begin{table}[]
+\begin{table}[H]
 	\begin{tabular}{@{}lllll@{}}
 	\toprule
 					   & \textbf{UI} & \textbf{Integration}                                               & \textbf{Flow Control}                                              & \textbf{RP Runtime} \\ \midrule
@@ -302,12 +302,34 @@ For any subject, we could not identify any contradiction between the observed be
 
 All reviewed subjects exhibited the debugging behavior described in our initial hypothesis which we can accept based on the collected evidence.
 
-Talking to professionals during the informal reviews, evaluating the war stories as well as the hands-on experiences and results from the observational study allowed us to identify three main challenges software engineers have to overcome when working with RxJS within an application: (i) They want to understand how and what data flows through the graph described by the RP DSL. This helps to identify simpler problems most of the time, though knowing about the life cycle events of Observables was noted as crucial especially when working with more complex, higher-order compositions of Observables. (ii) Where traditional debugging tools provide support suited for an imperative programming style, they fall short when interacting with RP-based code which would require a deeper understanding of the RP runtimes internal graph-based model. This makes it hard for engineers to retrace dataflows and computations. And finally, (iii) even though there are partial solutions available to the two previous described challenges, they usually require the software engineers either to manually modify source code or extracting parts of it to an external utility. These additional efforts cost time and bring their own risks since the production code needs to be touched without adding actual value.
+Talking to professionals during the informal reviews, evaluating the war stories as well as the hands-on experiences and results from the observational study allowed us to identify three main challenges software engineers have to overcome when working with RxJS within an application, hence answering RQ1: (i) They want to \emph{understand how and what data flows} through the graph described by the RP DSL. This helps to identify simpler problems most of the time, though knowing about the life cycle events of Observables was noted as crucial especially when working with more complex, higher-order compositions of Observables. (ii) Where traditional debugging tools provide support suited for an imperative programming style, they fall short when interacting with RP-based code which would require a \emph{deeper understanding of the RP runtimes internal graph-based model}. This makes it hard for engineers to retrace dataflows and computations. And finally, (iii) even though there are partial solutions available to the two previous described challenges, they usually require the software engineers either to \emph{manually modify source code or extracting parts of it} to an external utility. These additional efforts cost time and bring their own risks since the production code needs to be touched without adding actual value.
 
-
-\section{Outlook}
+\section{Future Work}
 \label{sec:future}
 
+Having the main challenges for engineers identified when debugging RxJS-code, we can propose areas to improve on now and resolve RQ2 by doing so.
+
+\subsection{Improve User Experience}
+
+Our overall goal is to support engineers during the process of understanding the inner workings of RxJS data-flow graph. Existing tools and libraries provide some help, though often struggle by means of the UX: Trace logs with relevant information like life cycle events do improve the debugging process as we saw. Digging through hundreds of log entries containing information of multiple Observables gets tedious quickly though. Filter and search functionalities help, but do not resolve all UX challenges here.
+
+Visualizing the data-flow graph work better to show dependencies within the model compared to textual trace logs. Previous research showed that the sheer amount of nodes in a complex graph is hard to visualize effectively \cite{10.1145/3180155.3180156} on one side, on the other not as easy to implement efficiently since the mass of collected data grows quickly. Storing a representation of the graph rarely enough since engineers are interested in the values emitted over time per node as well.
+
+We intend to find a solution that combines the power of textual trace logs with the ease-of-use of a graphical visualization for RxJS data-flow graphs.
+
+\subsection{Automatic Code Augmentation}
+
+RP code needs to be augmented with additional functionality so telemetry data can be collected. This happens using code weaving\cite{10.1145/2884781.2884815} or similar techniques\cite{10.1145/3180155.3180156} but especially in the area of RxJS often manually. We want to make the manual modification of production source code obsolete. rxfiddle proofed such mechanisms to work with RxJS 4 and 5, hence we intend to bring this feature to version 6, and possibly the upcoming major version 7 as well.
+
+\subsection{Integration}
+
+75\% of our observational study's participants used the debugging tools integrated to their browser and/or IDE. Even though some of them stated to know additional external utilities in the after-action survey, none of them went that far and used them during the one-hour session.
+
+We understand the observed behavior as evidence for a hurdle preventing engineers from using specialized RP debugging utilities. In order to reach more software engineers with RP domain-specific debugging tools, we want to provide a potential solution as tightly integrated with the developer tools of the browser and or an IDE.
+
+\subsection{Other Areas of Improvement}
+
+There are many more areas which could be worth a further look in the future. E.g. the combination of controlling the programs execution based on breakpoints within the data-flow graph or concepts of omniscient debugging are interesting fields as well. We will focus on the previous three topics for our own future work but keep other ideas in a backlog in case time allows additional iterations on them.
 
 \section{Threats to Validity}
 \label{sec:threats}
