@@ -14,7 +14,7 @@
 
 	\Large{Workshop Paper}
 	\par
-	\Huge{Debugging of RxJS-based Frontend Web Applications}
+	\Huge{Debugging of RxJS-based Applications}
 	\par
 	\vspace{2ex}
 
@@ -48,24 +48,24 @@ Utilities to debug the runtime behavior of a program are essential to software e
 
 Debuggers available in IDEs and the developer tools of a web browser\footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Debugger}} today are specialized to work with imperative, control-flow oriented programs. E.g., when an engineer wants to know which part of the program called a particular function, the call stack gives a clear answer to this question. Assuming a dataflow oriented program implemented using RP, the question, which transformation was executed right before another cannot be answered using a call stack: A breakpoint within the transformation will not point to its logical predecessor; it will lead to the internals of the RP runtime instead.
 
-This lack of specific knowledge about RP concepts in traditional debugging utilities does often end in time-consuming debugging sessions, as we can confirm from our own experience. Previous research has looked into this field \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} over the past years already. We will revisit their results in this paper and elaborate on the particular challenges of debugging RAs using RxJS for frontend web applications.
+This lack of specific knowledge about RP concepts in traditional debugging utilities does often end in time-consuming debugging sessions, as we can confirm from our own experience. Previous research has looked into this field \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} over the past years already. We will revisit their results in this paper and elaborate on the particular challenges of debugging RAs implemented using RxJS.
 
 Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give insight into the challenges they face in their day-to-day jobs. We will validate their statements in an observational study and answer our first research question:
 
 \begin{itemize}
-	\item \emph{RQ1: What challenges do frontend engineers face when debugging RxJS-based code?}
+	\item \emph{RQ1: What challenges do software engineers face when debugging RxJS-based code?}
 \end{itemize}
 
 In response to this, we will present concepts on how to resolve previously identified problems and answer the second research question:
 
 \begin{itemize}
-	\item \emph{RQ2: How can the experience of frontend engineers during debugging of RxJS-based code be improved?}
+	\item \emph{RQ2: How can the experience of software engineers during debugging of RxJS-based code be improved?}
 \end{itemize}
 
 The future implementation and validation of these proposals lead to our third research question which will be part of future work, not part of this paper:
 
 \begin{itemize}
-	\item \emph{RQ3: What is the impact of a proposed solution on the debugging experience of a frontend engineer?}
+	\item \emph{RQ3: What is the impact of a proposed solution on the debugging experience of a software engineer?}
 \end{itemize}
 
 We will conclude this introductory section with the clarification of important terms. Section~\ref{sec:interviews} presents the interview results along with the collected war stories and formalizes two recurrent challenges. With Section~\ref{sec:discussion}, we will have a look at current and previous research regarding the debugging of RAs as well as specific tooling. We are going to validate presented challenges against currently available tools within Section~\ref{sec:study}, show threats to the validity of our work in Section~\ref{sec:threats} and finally end with an outlook on future iterations.
@@ -345,7 +345,7 @@ Furthermore, this was the first time we designed an observational study of this 
 \section{Conclusion}
 \label{sec:conclusion}
 
-We have talked to multiple people in order to understand how software engineers, and in particular frontend engineers, apply RP using RxJS for building applications. We have looked into how they debug their applications and could identify several struggles they have to overcome in this process. We could prove that the engineers inevitably tend to modify their source code once they do not understand how the RP runtime propagates values through its internal data-flow graph by observing professionals in an observational study.
+We have talked to multiple people in order to understand how software engineers apply RP using RxJS for building applications. We have looked into how they debug their applications and could identify several struggles they have to overcome in this process. We could prove that the engineers inevitably tend to modify their source code once they do not understand how the RP runtime propagates values through its internal data-flow graph by observing professionals in an observational study.
 
 On the way, we elaborated on previous, academic as well as non-academical efforts in the field of reactive debugging. We presented a selection of tools which leverage on their knowledge about the internal workings of RP runtime environments.
 
