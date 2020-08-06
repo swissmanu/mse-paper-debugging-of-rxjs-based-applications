@@ -68,7 +68,7 @@ The future implementation and validation of these proposals lead to our third re
 	\item \emph{RQ3: What is the impact of proposed solutions on the debugging experience of software engineers?}
 \end{itemize}
 
-We will conclude this introductory section with the clarification of important terms. Section~\ref{sec:interviews} presents the interview results along with the collected war story reports. Before we validate them in an observational study in Section~\ref{sec:study}, we will have a look at current and previous research regarding the debugging of RAs in Section~\ref{sec:discussion}. We will finally answer RQ2 in Section~\ref{sec:future} ``Future Work''.
+We will conclude this introductory section with the clarification of important terms. Section~\ref{sec:interviews} presents the interview results along with the collected war story reports. After we validate them in an observational study in Section~\ref{sec:study}, we will have a look at current and previous research regarding the debugging of RAs in Section~\ref{sec:discussion}. We will finally answer RQ2 in Section~\ref{sec:future} ``Future Work''.
 
 \subsection{Reactive Applications}
 
@@ -188,6 +188,48 @@ Finally, we understood that if a problem is hard to replicate within the actual 
 After the evaluation of all reports and interviews, we speculate that software engineers truly lack debugging tools which ``understand'' RP concepts provided through RxJS. Even though traditional debuggers might help to some extent, they do not provide all the information an engineer is interested in. The last resort in this situation is often the manual augmentation, modification, and extraction of source code as we saw repeatedly. After a look at previous efforts in the area of reactive debugging, we are going to validate our assumption in Section~\ref{sec:study}.
 
 
+\section{Validation of Interviews and War Stories}
+\label{sec:study}
+
+We explored how engineers use RP and what techniques they might apply for debugging problems earlier. We observed that most participants tend to modify their source code manually with trace logs and alike in order to find underlying problems. It is further our own experience that this practice is often not productive since the evaluation of trace information, once available, can be cumbersome and time-consuming. Also, removing log statements after the debugging process might leave new bugs in production code if not done carefully. We identified this technique as one of the primary debugging practices when software engineers work with RxJS-based code.
+
+That is why we saw the demand to validate earlier statements about manual code modification for debugging reasons with an observational study. Our study sought to validate the following hypothesis:
+
+\begin{itemize}
+	\item \emph{Hypothesis: If software engineers must solve an RxJS-based problem, then they will modify the code in order to understand its behavior.}
+\end{itemize}
+
+\subsection{Study Design}
+
+The subjects for our study were required to have experience in developing applications with RxJS. We did not distinguish between frontend or backend engineers, so in the end, we were able to find four subjects willing to participate in our experiment. We were interested to see how the subjects apply debugging techniques they would use in an everyday situation at their jobs. Hence we decided to conduct the experiment in a somewhat uncontrolled environment where the subjects used their own devices with their development environments of personal preference. Our objective for the experiment was communicated as broad as possible to prevent bias: ``We are interested in how \emph{you} debug a problem'' did not mention the hypothesis by intention.
+
+We planned to have a one-hour session for the actual experiment with each subject, followed-up by an unattended quantitative after-action survey. We executed the experiment in two consecutive blocks of 25 minutes each. We provided a ZIP file containing the source code for two frontend web applications implemented using TypeScript and RxJS along with a test suite at the start of a session. Each of these applications was rigged with two to three bugs, which we asked the subjects to identify and fix using whatever debugging techniques they prefer and commonly use. A block was considered as complete once either the test suite signaled all bugs as resolved or the 25 minutes were exceeded. We asked our subjects to act like in a pair programming situation where they ``think out loud'' their thought process. Though we refrained from answering any question related to the ``where'' a bug has to be expected.
+
+A week before the experiment, we sent out the participant briefing document to all of our subjects. We outlined the course of action and provided them with an example ZIP file. This file contained the same setup as the file provided at the experiment and allowed the subjects to get accustomed to things like starting the web applications or running the test suites.
+
+We decided to monitor our subjects' progress remotely using voice chat and screen sharing due to the COVID-19 situation at the time of our study. Furthermore, this allowed us to record the sessions with relatively low technical effort for later evaluation.
+
+The after-action survey was provided within 24 hours after a subject's participation in the main part of the study. We asked the subjects about (i) the number of years they have experience with RxJS, (ii) if they currently use RxJS on or off their jobs, (iii) in which field (like frontend, backend or others) they use RxJS and finally (iv) which tools and techniques they use to debug RxJS-based code. The respective answers allowed us to put the observed actions into perspective and detect potential irregularities in case a subject acted differently as they would have in a ``real'' situation.
+
+\subsection{Results}
+
+After the subjects got a feel for what the application on front of them should do, all of them used the provided test suite to check what features do not work as expected and tried to recreate the failing behavior in the UI manually. Two of them used the traditional debugging tools provided by their browser or IDE to step through parts of the code trying to understand what triggered the failing tests.
+
+For both problems given, we could observe all subjects to make use of manually added trace log statements either within an existing arrow function or using the \mintinline{TypeScript}{tap} operator. Neither did any of them use additional external tools where they put parts of the code for further inspection nor did they install additional debugging libraries like rxjs-spy.
+After the 25 minutes of the second block exceeded, one subject noted that they would have usually started now to decompose the problem into smaller pieces and observe their behavior more isolated.
+
+The survey responses showed that 75\% of the subject population had two or more years of experience with RxJS. Where all of them use RxJS to develop frontend applications, one subject declared having RxJS used for backend development as well. When asked what tools they usually use for debugging, only one subject told not to use the traditional debugger of their browser or IDE. Two of them leverage additional tracing functionality of rxjs-spy, and all of them use manual log statements.
+
+\subsection{Interpretation}
+
+We were able to observe how all subjects modified the provided source code manually and augmented it with trace logs. All of them used the produced information in order to track down problems in the application. We could not observe the extraction to and reintegration from an external tool, which would have been yet another form of code modification.
+
+For any subject, we could not identify any contradiction between the observed behavior and the answers given within the after-action survey.
+
+All reviewed subjects exhibited the debugging behavior described in the initial hypothesis, which we can accept based on the collected evidence.
+
+Interviewing professionals, evaluating the war stories, the hands-on experiences, and the results from the observational study allowed us to identify three main challenges, software engineers have to overcome when working with RxJS within an application: (i) They want to \emph{understand how and what data flows} through the graph described by the RP DSL, which helps to identify more straightforward problems most of the time. Though, knowing about the life cycle events of Observables was noted as crucial especially when working with more complex, higher-order compositions of Observables. (ii) Where traditional debugging tools provide support suited for an imperative programming style, they fall short when interacting with RP-based code which would require a \emph{deeper understanding of the RP runtimes internal graph-based model}. This circumstance makes it hard for engineers to retrace dataflows and computations. And finally, (iii) even though there are partial solutions available for the two previously described challenges, they usually require the software engineers either to \emph{manually modify source code or extracting parts of it} to an external utility. These additional efforts cost time and bring their own risks since the production code needs to be touched without adding actual value.
+
 \section{Discussion of Previous Efforts}
 \label{sec:discussion}
 
@@ -267,48 +309,6 @@ Specialized utilities are aware of RP runtime environments and help software eng
 	\caption{Feature Matrix for Discussed RP Debugging Tools}
 	\label{tab:compare-tools}
 \end{table}
-
-\section{Validation of Interviews and War Stories}
-\label{sec:study}
-
-We explored how engineers use RP and what techniques they might apply for debugging problems earlier. We observed that most participants tend to modify their source code manually with trace logs and alike in order to find underlying problems. It is further our own experience that this practice is often not productive since the evaluation of trace information, once available, can be cumbersome and time-consuming. Also, removing log statements after the debugging process might leave new bugs in production code if not done carefully. We identified this technique as one of the primary debugging practices when software engineers work with RxJS-based code.
-
-That is why we saw the demand to validate earlier statements about manual code modification for debugging reasons with an observational study. Our study sought to validate the following hypothesis:
-
-\begin{itemize}
-	\item \emph{Hypothesis: If software engineers must solve an RxJS-based problem, then they will modify the code in order to understand its behavior.}
-\end{itemize}
-
-\subsection{Study Design}
-
-The subjects for our study were required to have experience in developing applications with RxJS. We did not distinguish between frontend or backend engineers, so in the end, we were able to find four subjects willing to participate in our experiment. We were interested to see how the subjects apply debugging techniques they would use in an everyday situation at their jobs. Hence we decided to conduct the experiment in a somewhat uncontrolled environment where the subjects used their own devices with their development environments of personal preference. Our objective for the experiment was communicated as broad as possible to prevent bias: ``We are interested in how \emph{you} debug a problem'' did not mention the hypothesis by intention.
-
-We planned to have a one-hour session for the actual experiment with each subject, followed-up by an unattended quantitative after-action survey. We executed the experiment in two consecutive blocks of 25 minutes each. We provided a ZIP file containing the source code for two frontend web applications implemented using TypeScript and RxJS along with a test suite at the start of a session. Each of these applications was rigged with two to three bugs, which we asked the subjects to identify and fix using whatever debugging techniques they prefer and commonly use. A block was considered as complete once either the test suite signaled all bugs as resolved or the 25 minutes were exceeded. We asked our subjects to act like in a pair programming situation where they ``think out loud'' their thought process. Though we refrained from answering any question related to the ``where'' a bug has to be expected.
-
-A week before the experiment, we sent out the participant briefing document to all of our subjects. We outlined the course of action and provided them with an example ZIP file. This file contained the same setup as the file provided at the experiment and allowed the subjects to get accustomed to things like starting the web applications or running the test suites.
-
-We decided to monitor our subjects' progress remotely using voice chat and screen sharing due to the COVID-19 situation at the time of our study. Furthermore, this allowed us to record the sessions with relatively low technical effort for later evaluation.
-
-The after-action survey was provided within 24 hours after a subject's participation in the main part of the study. We asked the subjects about (i) the number of years they have experience with RxJS, (ii) if they currently use RxJS on or off their jobs, (iii) in which field (like frontend, backend or others) they use RxJS and finally (iv) which tools and techniques they use to debug RxJS-based code. The respective answers allowed us to put the observed actions into perspective and detect potential irregularities in case a subject acted differently as they would have in a ``real'' situation.
-
-\subsection{Results}
-
-After the subjects got a feel for what the application on front of them should do, all of them used the provided test suite to check what features do not work as expected and tried to recreate the failing behavior in the UI manually. Two of them used the traditional debugging tools provided by their browser or IDE to step through parts of the code trying to understand what triggered the failing tests.
-
-For both problems given, we could observe all subjects to make use of manually added trace log statements either within an existing arrow function or using the \mintinline{TypeScript}{tap} operator. Neither did any of them use additional external tools where they put parts of the code for further inspection nor did they install additional debugging libraries like rxjs-spy.
-After the 25 minutes of the second block exceeded, one subject noted that they would have usually started now to decompose the problem into smaller pieces and observe their behavior more isolated.
-
-The survey responses showed that 75\% of the subject population had two or more years of experience with RxJS. Where all of them use RxJS to develop frontend applications, one subject declared having RxJS used for backend development as well. When asked what tools they usually use for debugging, only one subject told not to use the traditional debugger of their browser or IDE. Two of them leverage additional tracing functionality of rxjs-spy, and all of them use manual log statements.
-
-\subsection{Interpretation}
-
-We were able to observe how all subjects modified the provided source code manually and augmented it with trace logs. All of them used the produced information in order to track down problems in the application. We could not observe the extraction to and reintegration from an external tool, which would have been yet another form of code modification.
-
-For any subject, we could not identify any contradiction between the observed behavior and the answers given within the after-action survey.
-
-All reviewed subjects exhibited the debugging behavior described in the initial hypothesis, which we can accept based on the collected evidence.
-
-Interviewing professionals, evaluating the war stories, the hands-on experiences, and the results from the observational study allowed us to identify three main challenges, software engineers have to overcome when working with RxJS within an application: (i) They want to \emph{understand how and what data flows} through the graph described by the RP DSL, which helps to identify more straightforward problems most of the time. Though, knowing about the life cycle events of Observables was noted as crucial especially when working with more complex, higher-order compositions of Observables. (ii) Where traditional debugging tools provide support suited for an imperative programming style, they fall short when interacting with RP-based code which would require a \emph{deeper understanding of the RP runtimes internal graph-based model}. This circumstance makes it hard for engineers to retrace dataflows and computations. And finally, (iii) even though there are partial solutions available for the two previously described challenges, they usually require the software engineers either to \emph{manually modify source code or extracting parts of it} to an external utility. These additional efforts cost time and bring their own risks since the production code needs to be touched without adding actual value.
 
 \section{Future Work}
 \label{sec:future}
