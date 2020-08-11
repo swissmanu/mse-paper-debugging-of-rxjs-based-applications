@@ -5,9 +5,12 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 
+\usepackage{./tikzit}
+
 \setminted{autogobble=true, tabsize=2, linenos=true, frame=single, breaklines=true}
 
-\newcommand{\version}{v0.9 Final Draft}
+\newcommand{\version}{v0.10}
+
 
 \begin{document}
 \begin{centering}
@@ -42,21 +45,39 @@
 
 \section{Introduction}
 
-An application providing a user interface (\emph{UI}) can be seen as a reactive application (\emph{RA})\cite{7827078}: It handles a constant flow of user- and system-created events in order to give the user a representation of the applications state in a timely fashion. One way of implementing reactive behavior is the Observer design pattern\cite{gamma1995design}, where an observer (e.g., the UI rendering code) is repeatedly informed about the changed application state. With Reactive Programming (\emph{RP}), another way to implement RAs is trending. Language extensions, runtime environments and domain-specific languages (\emph{DSL}) enable RP based on functional programming (\emph{FP}) principles. With RP, software engineers describe how data flows through a RA, how it depends on each other and how it needs to be transformed over time in a declarative way.
+Applications handling constant flow of data are known as Reactive Applications (\emph{RA})\cite{10.1145/2501654.2501666}. Based on this definition, a (graphical) user interface (\emph{UI} or \emph{GUI}) is a RA\cite{7827078}, as it continuously processes two dataflows as shown in Figure~\ref{fig:ui-data-flows}: External user input (e.g. mouse, touch or keyboard interaction) is interpreted and forwarded to the system. Once the system processed an interaction and updated its internal state accordingly, it notifies the UI about these changes which then are relayed to the user.
 
-Utilities to debug the runtime behavior of a program are essential to software engineers today. They help to understand the inner workings of unknown source code or allow to track down a problem which may lead to an unexpected failure in a particular situation. Debugging utilities took different forms over time: From interpreting memory dumps, manually adding print statements to trace program execution up to the point where specialized debugging programs can interrupt a running process and interact with it on a low level; software engineers have access to versatile debugging tools at the present day.
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[node distance = 5.5cm, auto]
+		\tikzstyle{block} = [rectangle, draw,
+		text width=5em, text centered, rounded corners, minimum height=2.5em]
 
-Debuggers available in IDEs and the developer tools of a web browser\footnote{\url{https://developer.mozilla.org/en-US/docs/Tools/Debugger}} are specialized to work with imperative, control-flow oriented programs. E.g., when an engineer wants to know which part of the program called a particular function, the call stack gives a clear answer to this question. Assuming a dataflow oriented program implemented using RP, the question, which transformation was executed right before another cannot be answered using a call stack: A breakpoint within the transformation will not point to its logical predecessor; it will lead to the internals of the RP runtime instead.
+		\node [block] (user) {User};
+		\node [block, right of=user] (ui) {UI};
+		\node [block, right of=ui] (system) {System};
 
-This lack of specific knowledge about RP concepts in traditional debugging utilities does often end in time-consuming debugging sessions, as we can confirm from our own experience. Various researchers have looked into this topic \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} over the past years already. We will revisit their results in this paper and elaborate on the particular challenges of debugging RAs implemented using RxJS.
+		\draw [<->] (user) to node {Interaction} (ui);
+		\draw [->] (ui.north) to[bend left=20] node {Interaction Data Flow} (system.north);
+		\draw [->] (system.south) to[bend left=20] node {Update Data Flow} (ui.south);
+	\end{tikzpicture}
+	\caption{Basic Data Flows in a UI Application.}
+	\label{fig:ui-data-flows}
+\end{figure}
 
-Transcripts of informal interviews and ``war stories'' collected from multiple practitioners will give insight into the challenges they face in their day-to-day jobs. We will validate their statements in an observational study and answer our first research question:
+The Observer design pattern\cite{gamma1995design} facilitates the implementation of RAs. Variations of the pattern are omnipresent today and can be found in places like the Document Object Model (\emph{DOM})\cite{alabor:2019:reactiveappllications}. With Reactive Programming (\emph{RP}), a programming paradigm rooted in functional programming (\emph{FP}), software engineers have yet another tool to choose from to implement a RA. With RP, a domain-specific language (\emph{DSL}) describes \emph{how} data flows through an application, how it depends on each other and how it needs to be transformed over time declaratively. A runtime environment then takes care to fulfill and execute the declared data flows\cite{10.1145/2501654.2501666}.
+
+According to the IEEE Standard Glossary of Software Engineering, \emph{debug} is an activity ``to detect, locate, and correct faults in a computer program.''\cite{ieeeglossary} From interpreting memory dumps, manually adding print statements to trace program execution up to the point where specialized debugging programs can interrupt a running process and interact with it on a low level, debugging utilities took different forms over time.
+
+Modern IDEs and web browsers ship with their own set of debugging tools. These traditional debuggers are specialized in working with imperative, controlflow oriented program code. E.g., when an engineer wants to know which part of the program called a particular function, the call stack gives a clear answer to this question. Assuming a dataflow oriented program implemented using RP, the question, what transformation function processed a piece of information right before another cannot be answered using a call stack anymore: The stack leads to the internals of the RP runtime environment rather than to the transformations logical predecessor.
+
+These exemplary questions demonstrate the limits of a traditional controlflow focused debugger which is not able to interpret RP abstractions, and as a result, cannot give the correct answer to a dataflow specific inquiry. Regardless of previous research efforts \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} in the field of RP debugging, we will show in this paper that engineers struggle nonetheless in applying effective techniques and utilities. For doing so, we interviewed several software engineers and collected ``war stories'' about the challenges they face in their day-to-day jobs in applying RP. Based on this collected evidence, we will validate these statements in an observational study using RxJS and search for an answer to our first research question:
 
 \begin{itemize}
 	\item \emph{RQ1: What challenges do software engineers face when debugging RxJS-based code?}
 \end{itemize}
 
-In response to this, we will present concepts on how to resolve previously identified problems and answer the second research question:
+In response to this, we are going to present concepts on how to resolve previously identified problems and answer the second research question:
 
 \begin{itemize}
 	\item \emph{RQ2: How can the experience of software engineers during debugging of RxJS-based code be improved?}
@@ -84,7 +105,18 @@ RP is a declarative programming paradigm. Where engineers use imperative program
 
 An RP language extension provides (i) language abstraction to describe the mentioned graph models, often in the form of a DSL\cite{10.1145/2577080.2577083}. At program runtime, a (ii) runtime environment takes care that changed values get propagated through the graph, transformations recomputed where necessary and a consistent application state is maintained.
 
-\subsection{Debugging Concepts}
+\subsection{Debugging Model and Concepts}
+
+Where the standard glossary defines \emph{debug} as an activity ``to detect, locate, and correct faults in a computer program''\cite{ieeeglossary} in general, Layman et al. \cite{Layman_Diep_Nagappan_Singer_Deline_Venolia_2013} formalized the inner workings of the debugging process with the Debugging Process Model further:
+
+\begin{figure}[H]
+	\centering
+	\tikzfig{debugging-process-model}
+	\caption{Debugging Process Model after Layman et al. \cite{Layman_Diep_Nagappan_Singer_Deline_Venolia_2013}}
+	\label{fig:debugging-process-model}
+\end{figure}
+
+TODO LEAD OVER
 
 We divide debugging concepts roughly into three categories: Traditional (i) \emph{imperative-focused debuggers} provide necessary functionality to interact with programs at runtime: Once a breakpoint pauses the program execution, we gain access to the current call stack and the values assigned to variables of a given frame. Manual control of the program execution allows inspecting its behavior step by step as well as assigning new values to variables ``on-the-fly.''
 
@@ -117,7 +149,7 @@ The RxJS community uses \emph{marble diagrams} as shown in Figure~\ref{fig:marbl
 
 \begin{figure}[H]
 	\centering
-	\input{figures/marble-diagram.pdf_tex}
+	\tikzfig{marble-diagram}
 	\caption{A Marble Diagram visualizing the Observable in Listing~\ref{lst:rp-with-rxjs}. From left to right, each marble represents an emitted value. The vertical line at the last marble indicates that the Observable completed.}
 	\label{fig:marble-diagram}
 \end{figure}
@@ -129,7 +161,7 @@ The RxJS community uses \emph{marble diagrams} as shown in Figure~\ref{fig:marbl
 
 On the way of finding our interview partners and war stories reporters, we noticed it to be a challenge on its own to find people who understand themselves as users of RP and related technologies. E.g., even though Angular makes heavy use of RxJS, we will see that many engineers do not directly interact with its abstractions when building ``basic'' UIs. In the end, we were able to gather compelling statements which we are going to present in this section.
 
-\subsection{Informal Interviews}
+\subsection{Interviews}
 
 We organized informal interviews which allowed us to gain a first insight in how software engineers work with RP in their daily jobs. We talked to five engineers (following identified by the codes \emph{I1} to \emph{I5}) and asked them about the technologies they use, what their personal experience with RP was, what they most liked and most disliked about it.
 
@@ -143,7 +175,7 @@ When asked explicitly about what they dislike the most about RP, all interview p
 
 \subsection{War Stories}
 
-After we built a first intuition for how software engineers work with RP by evaluating the informal interviews, we were interested in more RxJS-specific, hands-on experiences. We asked the engineering community via Twitter\footnote{\url{https://twitter.com/swissmanu/status/1242429409208029185}} about their personal, most recent RxJS debugging war story and sent out various emails with the same request. After reaching out, we were able to collect five responses: One by an RxJS core team member (R1), two from Angular Google Developer Experts (R2/3) and another two reports by two software engineers (R4/5) building web and mobile applications using React and RxJS, which includes the author of this paper.
+After we built a first intuition for how software engineers work with RP by evaluating the interviews, we were interested in more RxJS-specific, hands-on experiences. We asked the engineering community via Twitter\footnote{\url{https://twitter.com/swissmanu/status/1242429409208029185}} about their personal, most recent RxJS debugging war story and sent out various emails with the same request. After reaching out, we were able to collect five responses: One by an RxJS core team member (R1), two from Angular Google Developer Experts (R2/3) and another two reports by two software engineers (R4/5) building web and mobile applications using React and RxJS, which includes the author of this paper.
 
 The reports provided us with diverse perspectives on various areas of software development using RxJS. R3 focused on how they built code with improved testability because of recent changes in RxJS: ``[\dots] in the beginning, it was very hard to write asynchronous tests [\dots]. I really disliked [\dots] you was forced to pass a TestScheduler [explicitly]''. Allowing to pass the scheduler explicitly as parameter forced them to introduce code, which was only necessary for testing reasons they stated further. With its current major version, RxJS 6 improved heavily on the  \mintinline{TypeScript}{TestScheduler}. The runtime environment itself can be augmented with the scheduler now, which results in cleaner code.
 
@@ -155,7 +187,7 @@ A final story describes yet another way of utilizing an external tool: Rather th
 
 \subsection{Wrap Up}
 
-The sentiment in both the informal interviews and the reported war stories in regards to RP with RxJS was positive. The software engineers value how they can describe dataflows using a DSL, even though the learning curve was perceived as steep. We heard some interesting reports on how RxJS is applied in a daily development environment: Marble diagrams help to understand  an Observables behavior and are useful to implement tests. Large frameworks like Angular hide some of the complexity of RxJS but allow engineers to make use of its full power once the pre-provided functionality needs to be extended.
+The sentiment in both the interviews and the reported war stories in regards to RP with RxJS was positive. The software engineers value how they can describe dataflows using a DSL, even though the learning curve was perceived as steep. We heard some interesting reports on how RxJS is applied in a daily development environment: Marble diagrams help to understand  an Observables behavior and are useful to implement tests. Large frameworks like Angular hide some of the complexity of RxJS but allow engineers to make use of its full power once the pre-provided functionality needs to be extended.
 
 Most participants considered a statically typed language like TypeScript, a fundamental necessity allowing them to implement dataflow graphs with minimal, formal correctness. We noticed throughout all reports that once the engineers were required to interact with the Observable graphs at runtime, they felt kind of ``lost'' and ``lacking the right tool'' to work within the context of RP. However, traditional debugging tools allowed them to inspect various parts of a stream, yet they were unable to get more information about, e.g., life cycles of the Observable composition. Almost all of them referred to the practice of modifying their code manually and adding log statements where they assumed a problem. Listing~\ref{lst:rxjs-debugging} exemplifies challenges when debugging a stream of Observables with traditional debugging tools.
 
@@ -223,7 +255,7 @@ After the subjects S1 to S4 got a feel for what the application on front of them
 For both problems given, we could observe all subjects to make use of manually added trace log statements either within an existing arrow function or using the \mintinline{TypeScript}{tap} operator. Neither did any of them use additional external tools where they put parts of the code for further inspection nor did they install additional debugging libraries like rxjs-spy.
 After the 25 minutes of the second block exceeded, S2 noted that they would have usually started now to decompose the problem into smaller pieces and observe their behavior more isolated.
 
-The survey responses showed that 75\% (S2 to S4) of the subject population had two or more years of experience with RxJS. Where all of them use RxJS to develop frontend applications, S4 declared having RxJS used for backend development as well. When asked what tools they usually use for debugging, only S1 stated not to use the traditional debugger of their browser or IDE. S1 and S3 leverage additional tracing functionality of rxjs-spy, and all of them use manual log statements.
+The survey responses showed that 75\% (S2 to S4) of the subject population had two or more years of experience with RxJS. Where all of them use RxJS to develop frontend applications, S4 declared having used  RxJS for backend development as well. When asked what tools they usually use for debugging, only S1 stated not to use the traditional debugger of their IDE at all. S1 and S3 leverage additional tracing functionality of rxjs-spy, and all four of our subjects use manual log statements.
 
 \subsection{Interpretation}
 

@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=none] (1) at (3.25, 0) {};
+		\node [style=marble] (2) at (-4, 0) {0};
+		\node [style=marble] (3) at (-2, 0) {2};
+		\node [style=marble] (4) at (0, 0) {4};
+		\node [style=marble] (5) at (2, 0) {6};
+		\node [style=none] (6) at (2, 0.575) {};
+		\node [style=none] (7) at (2, -0.575) {};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw [style=thick line] (6.center) to (7.center);
+		\draw [style=thick arrow] (2) to (1.center);
+	\end{pgfonlayer}
+\end{tikzpicture}
