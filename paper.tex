@@ -9,7 +9,7 @@
 
 \setminted{autogobble=true, tabsize=2, linenos=true, frame=single, breaklines=true}
 
-\newcommand{\version}{v0.10}
+\newcommand{\version}{v0.11}
 
 
 \begin{document}
@@ -45,7 +45,7 @@
 
 \section{Introduction}
 
-Applications handling constant flow of data are known as Reactive Applications (\emph{RA})\cite{10.1145/2501654.2501666}. Based on this definition, a (graphical) user interface (\emph{UI} or \emph{GUI}) is a RA\cite{7827078}, as it continuously processes two dataflows as shown in Figure~\ref{fig:ui-data-flows}: External user input (e.g. mouse, touch or keyboard interaction) is interpreted and forwarded to the system. Once the system processed an interaction and updated its internal state accordingly, it notifies the UI about these changes which then are relayed to the user.
+The (graphical) user interface (\emph{UI} or \emph{GUI}) of an application handles two constant flows of data: External user input (e.g. mouse, touch or keyboard interaction) is interpreted and forwarded to the system. Once the system processed an interaction and updated its internal state accordingly, it notifies the UI about these changes which are relayed to the user.
 
 \begin{figure}[H]
 	\centering
@@ -61,15 +61,17 @@ Applications handling constant flow of data are known as Reactive Applications (
 		\draw [->] (ui.north) to[bend left=20] node {Interaction Data Flow} (system.north);
 		\draw [->] (system.south) to[bend left=20] node {Update Data Flow} (ui.south);
 	\end{tikzpicture}
-	\caption{Basic Data Flows in a UI Application.}
+	\caption{Basic Dataflows in a UI Application.}
 	\label{fig:ui-data-flows}
 \end{figure}
 
-The Observer design pattern\cite{gamma1995design} facilitates the implementation of RAs. Variations of the pattern are omnipresent today and can be found in places like the Document Object Model (\emph{DOM})\cite{alabor:2019:reactiveappllications}. With Reactive Programming (\emph{RP}), a programming paradigm rooted in functional programming (\emph{FP}), software engineers have yet another tool to choose from to implement a RA. A domain-specific language (\emph{DSL}) describes \emph{how} data flows through an application, how it depends on each other and how it needs to be transformed over time declaratively. A RP runtime environment then takes care to fulfill and execute the declared data flows\cite{10.1145/2501654.2501666}.
+To implement the dataflows as shown in Figure~\ref{fig:ui-data-flows} to drive a UI, the Observer design pattern\cite{gamma1995design} is often used and variations of the pattern are omnipresent today. E.g., a modified version of the pattern can be found in the event handling interface of the Document Object Model (\emph{DOM})\cite{alabor:2019:reactiveappllications} implemented by internet browsers.
+
+The Observer design pattern has its roots in the Object Oriented Programming paradigm (\emph{OOP}), hence relies on imperative code constructs to form a dataflow. Reactive Programming (\emph{RP}) is another approach to realize such flows: It inherits the declarative way of implementing functionality from Functional Programming (\emph{FP}), i.e. dataflows are rather described than implemented step by step\cite{10.1145/2501654.2501666}. RP functionality is usually available in the form of a library providing necessary abstractions, either for imperative or declarative programming languages.
 
 According to the IEEE Standard Glossary of Software Engineering, \emph{debug} is an activity ``to detect, locate, and correct faults in a computer program.''\cite{ieeeglossary} From interpreting memory dumps, manually adding log statements to trace program execution up to the point where specialized debugging programs can interrupt a running process and interact with it on a low level, debugging utilities took different forms over time.
 
-Modern IDEs and web browsers ship with their own set of debugging tools. These traditional debuggers are specialized in working with imperative, controlflow oriented program code. E.g., when an engineer wants to know which part of the program called a particular function, the call stack gives a clear answer to this question. Assuming a dataflow oriented program implemented using RP, the question, what transformation function processed a piece of information right before another cannot be answered using a call stack anymore: The stack leads to the internals of the RP runtime environment rather than to the transformations logical predecessor.
+Modern IDEs and internet browsers ship with their own set of debugging tools. These traditional debuggers are specialized in working with imperative, controlflow oriented program code. E.g., when an engineer wants to know which part of the program called a particular function, the call stack gives a clear answer to this question. Assuming a dataflow oriented program implemented using RP, the question, what transformation function processed a piece of information right before another cannot be answered using a call stack anymore: The stack leads to the internals of the RP runtime environment rather than to the transformations logical predecessor.
 
 These exemplary questions demonstrate the limits of a traditional controlflow oriented debugger which is not able to interpret RP abstractions, and as a result, cannot give the correct answer to a dataflow specific inquiry. Regardless of previous research efforts \cite{10.1145/2577080.2577083} \cite{10.1145/2884781.2884815} \cite{10.1145/3180155.3180156} in the field of RP debugging, we will show in this paper that engineers struggle nonetheless in applying effective techniques and utilities. For doing so, we interviewed several software engineers and collected ``war stories'' about the challenges they face in their day-to-day jobs when applying RP. Based on this collected evidence, we will validate their statements in an observational study using RxJS and search for an answer to our first research question:
 
@@ -89,21 +91,13 @@ The implementation and validation of these proposals lead to our third and last 
 	\item \emph{RQ3: What is the impact of proposed solutions on the debugging experience of software engineers?}
 \end{itemize}
 
-We will conclude this introductory section with the clarification of important terms. Section~\ref{sec:interviews} continues with insights on the conducted interviews and the collected war story reports. We present our observational study intended to validate former insights in Section~\ref{sec:study} and have a look at previous research efforts regarding the debugging of RAs in Section~\ref{sec:discussion}. Finally, we will answer RQ2 in Section~\ref{sec:future} ``Future Work''.
-
-\subsection{Reactive Applications}
-
-Salvaneschi et al. \cite{7827078} define a RA as a computer program which processes continuos, indefinite and ever-changing flows of data. Think of a spreadsheet application\cite{10.1145/2501654.2501666} that links the values of cells to other cells using formulas. Once a cell is changed, it is the task of the application to update all dependant cells accordingly and cascade the updates throughout the model. This dataflow based type of application is contrasted by program-flow based applications which consume and process one piece of input while producing a one-off output like an image format conversion program that transforms between HEIF\footnote{\url{https://nokiatech.github.io/heif/technical.html}} and JPEG image formats.
-
-The classification schema by Salvaneschi et al. \cite{7827078} divides RAs into three types: A (i) \emph{synthetic application} transforms and processes streams of information. RAs are prevalent in the area of UIs known as (ii) \emph{Interactive applications} and (iii) \emph{graphical animations}.
+We will conclude this introductory section with the clarification of important terms. Section~\ref{sec:interviews} continues with insights on the conducted interviews and the collected war story reports. We present our observational study intended to validate former insights in Section~\ref{sec:study} and have a look at previous research efforts regarding the debugging of RP code in Section~\ref{sec:discussion}. Finally, we will answer RQ2 in Section~\ref{sec:future} ``Future Work''.
 
 \subsection{Reactive Programming}
 
-Various ways of implementing RAs emerged over time. The Observer design pattern \cite{gamma1995design}, originated in Object-Oriented Programming \emph{(OOP)}, is a pattern we can find in many of today's API implementations\cite{alabor:2019:reactiveappllications} allowing reactive behavior. FP shines with reactive language extensions like Fran (Haskell) \cite{10.1145/2501654.2501666} or more recently REScala (Scala) \cite{10.1145/2577080.2577083}.
+RP is a declarative programming paradigm originated in FP. Where engineers use imperative programming languages to specify every step \emph{how} a program has to do something, declarative languages allow to describe \emph{what} the program should achieve ultimately. A runtime system then figures out a way to satisfy that description and executes it. RP functionality is usually provided in form of a language extension for a specific programming language (e.g. REScala for Scala\cite{10.1145/2577080.2577083}) or as a library (e.g. RxJS for JavaScript\cite{rxjs})
 
-RP is a declarative programming paradigm. Where engineers use imperative programming languages to tell a program every step \emph{how} to do something, a declarative language allows the description of \emph{what} wants to be achieved. The language runtime system then figures out a way to satisfy that given description. RP runtime environments specifically provide abstractions to describe dataflow and dependency graphs used to transform and direct data at runtime.
-
-An RP language extension provides (i) language abstraction to describe the mentioned graph models, often in the form of a DSL\cite{10.1145/2577080.2577083}. At program runtime, a (ii) runtime environment takes care that changed values get propagated through the graph, transformations recomputed where necessary and a consistent application state is maintained.
+Either way, both usually provide a (i) domain specific language (\emph{DSL}) to describe dataflow graphs, how they depend on each other and how data flowing through should be transformed. At program execution, a (ii) runtime environment evaluates these descriptions and creates a representation of the specified graphs. It then takes care that values are processed and propagated correctly through them as well as that a consistent system state\cite{10.1145/2501654.2501666} is always maintained.
 
 \subsection{Debugging Process Model}
 
@@ -132,7 +126,7 @@ Traditional, as well as reactive debuggers work with the \emph{current} state of
 
 ``Reactive Extensions'' (\emph{ReactiveX}) is an open-source project. Its members and contributors created a generic description of a RP API. They further provide reference implementations of this API along with RP language extensions for various programming languages like Java, C\#, or JavaScript\footnote{\url{http://reactivex.io/languages.html}}. ReactiveX summarizes the API as ``\dots a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming''\cite{reactivex}. The core concept of the API specification is the Observable\footnote{There is no known relation between ReactiveX' concept of the Observable and the deprecated Java class \href{https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Observable.html}{\mintinline{TypeScript}{java.util.Observable}}.}: An Observable can be composed and linked (``piped'') with other Observables. It can push (``emit'') values to its dependents. Multiple depending Observables form and describe a dataflow graph eventually. A multitude of operators allows the transformation of values and (higher-order\footnote{An Observable emitted by another Observable is considered a Higher-Order Observable. This naming is related to the concept of higher-order functions in mathematics and computer science.}) Observables. Values emitted from an Observable can be subscribed, which is closely related to the Observer design patterns \mintinline{Java}{attach} method.
 
-RxJS is the reference implementation of the ReactiveX API specification for JavaScript. Its current major version 6 is implemented using TypeScript and is used thoroughly by large projects like Angular\cite{angualrrxjs}. Listing \ref{lst:rp-with-rxjs} shows an example of RP using RxJS in TypeScript.
+RxJS\cite{rxjs} is the reference implementation of the ReactiveX API specification for JavaScript. Its current major version 6 is implemented using TypeScript and is used thoroughly by large projects like Angular\cite{angualrrxjs}. Listing \ref{lst:rp-with-rxjs} shows an example of RP using RxJS in TypeScript.
 
 \begin{listing}[H]
 	\begin{minted}{TypeScript}
@@ -157,7 +151,6 @@ The RxJS community uses \emph{marble diagrams} as shown in Figure~\ref{fig:marbl
 	\caption{A Marble Diagram visualizing the Observable in Listing~\ref{lst:rp-with-rxjs}. From left to right, each marble represents an emitted value. The vertical line at the last marble indicates that the Observable completed after emitting \mintinline{TypeScript}{6}.}
 	\label{fig:marble-diagram}
 \end{figure}
-
 
 
 \section{Interviews and War Stories}
