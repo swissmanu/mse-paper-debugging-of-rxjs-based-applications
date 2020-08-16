@@ -182,7 +182,7 @@ In a related war story, R2 discloses similar invasive practices using an externa
 
 A final story describes yet another way of utilizing an external tool: Rather than using a dedicated sandbox to develop pieces of a more complex system, R5 used Rx Visualizer, an online visualization utilities to generate marble diagrams from real code. Like in the report before, it was necessary to extract parts from the codebase of the actual application. But once done, the visualizations helped a lot in order to understand when values were emitted, when subscriptions changed and when Observables completed: ``Marble diagrams were a huge help in order to understand detailed runtime and life cycle behaviors of the Observable.''
 
-\subsection{Wrap Up}
+\subsection{Interpretation and Take Away}
 
 The sentiment in both the interviews and the reported war stories in regards to RP with RxJS was positive. The software engineers value how they can describe dataflows using a DSL, even though the learning curve was perceived as steep. We heard some interesting reports on how RxJS is applied in a daily development environment: Marble diagrams help to understand  an Observables behavior and are useful to implement tests. Large frameworks like Angular hide some of the complexity of RxJS but allow engineers to make use of its full power once the pre-provided functionality needs to be extended.
 
@@ -225,12 +225,12 @@ After the evaluation of all reports and interviews, we speculate that software e
 \section{Validation of Interviews and War Stories}
 \label{sec:study}
 
-We explored how engineers use RP and what techniques they apply during debugging. We observed that most participants tend to modify their source code manually with trace logs and alike in order to find underlying problems. It is further our own experience that this practice is often not productive since the evaluation of trace information, once available, can be cumbersome and time-consuming. Also, removing log statements after the debugging process might leave new bugs in production code if not done carefully. We identified this technique as one of the primary debugging practices when software engineers work with RxJS-based code.
+Almost all participants from our interviews and war story reports showed a tendency to manually modify source code with trace logs during the hypothesis instrumentation phase when debugging RxJS code. It is further our own experience that this practice is often not productive since the evaluation and interpretation of trace information tends to be cumbersome and very time-consuming. Also, removing log statements after a successful debugging process might leave new bugs in production code if not done carefully. We identified this technique as one of the primary debugging practices when software engineers work with RxJS-based code.
 
-That is why we saw demand in validating these statements about manual code modification for debugging reasons with an observational study. Our study sought to validate the following hypothesis:
+That is why we saw demand in validating this statement about manual code modification for debugging reasons with an observational study. Our study sought to validate the following hypothesis:
 
 \begin{itemize}
-	\item \emph{Hypothesis: If software engineers must solve an RxJS-based problem, then they will modify the code in order to understand its behavior.}
+	\item \emph{Hypothesis: If software engineers must solve an RxJS-based problem, then they will instrument the code manually in order to understand its behavior.}
 \end{itemize}
 
 \subsection{Study Design}
@@ -243,16 +243,56 @@ A week before the experiment, we sent out the participant briefing document to a
 
 We decided to monitor our subjects' progress remotely using voice chat and screen sharing due to the COVID-19 situation at the time of our study. Furthermore, this allowed us to record the sessions with relatively low technical effort for later evaluation.
 
-The after-action survey was provided within 24 hours after a subject's participation in the main part of the study. We asked the subjects about (i) the number of years they have experience with RxJS, (ii) if they currently use RxJS on or off their jobs, (iii) in which field (like frontend, backend or others) they use RxJS and finally (iv) which tools and techniques they use to debug RxJS-based code. The respective answers allowed us to put the observed actions into perspective and detect potential irregularities in case a subject acted differently as they would have in a ``real'' situation.
+The after-action survey\footnote{\url{https://github.com/swissmanu/mse-pa1-experiment/blob/f70102885be86fb2323b9516005e1d6dfeb9795b/after-action-survey-questions.md}} was provided within 24 hours after a subject's participation in the main part of the study. We asked the subjects about (Q1) if they currently use RxJS on or off their jobs, the (Q2) number of years they have experience with RxJS, in (Q3) which field (like frontend, backend or others) they use RxJS and finally (Q4) which tools and techniques they use to debug RxJS-based code. The respective answers allowed us to put the observed actions into perspective and detect potential irregularities in case a subject acted differently as they would have in a ``real'' situation.
 
 \subsection{Study Execution and Results}
 
-After the subjects got accustomed with the application provided and understood its purpose, all of them used the test suite to check what features do not work as expected and tried to recreate the failing behavior in the UI manually. S2 and S4 used the traditional debugging tools provided by their browser or IDE to step through parts of the code trying to understand what triggered the failing tests.
+After the subjects got themselves accustomed with the application provided and understood its purpose, all of them used the test suite to \emph{gather context} about what features do not work as expected initially. Further, all of them tried to recreate the failing behavior in the UI manually. We could not observe any of the subjects using external tools to inspect specific code parts in isolation in later iterations of the debugging process. Though, S2 noted that they would have usually started to decompose the problem into smaller pieces and observe their behavior in specific after the 25 minutes of the second block expired.
 
-For both problems given, we could observe all subjects to make use of manually added trace log statements either within an existing arrow function or using the \mintinline{TypeScript}{tap} operator. Neither did any of them use additional external tools where they put parts of the code for further inspection nor did they install additional debugging libraries like rxjs-spy.
-After the 25 minutes of the second block exceeded, S2 noted that they would have usually started now to decompose the problem into smaller pieces and observe their behavior more isolated.
+While all subjects added manual trace log statements to existing arrow functions or by adding \mintinline{TypeScript}{tap} operators in the \emph{instrument hypothesis} phase, none of them used additional libraries like rxjs-spy for doing so. S2 and S4 used the traditional debugging tools provided by their browser or IDE to add breakpoints. Both of them commented on the inability of stack traces to interpret RP abstractions as unsatisfying. We could further observe a ``trail-and-error'' approach in later iterations of the debugging process. The subjects started to introduce modifications to the system which they immediately \emph{tested} against their latest hypothesis. Table~\ref{tab:subject-techniques} provides an overview on the complete collected data regarding used technniques and tools.
 
-The survey responses showed that 75\% (S2 to S4) of the subject population had two or more years of experience with RxJS. Where all of them use RxJS to develop frontend applications, S4 declared having used  RxJS for backend development as well. When asked what tools they usually use for debugging, only S1 stated not to use the traditional debugger of their IDE at all. S1 and S3 leverage additional tracing functionality of rxjs-spy, and all four of our subjects use manual log statements.
+\begin{table}[H]
+	\begin{tabular}{ p{0.2\linewidth}  p{0.225\linewidth}  p{0.225\linewidth} p{0.225\linewidth} }
+		\toprule
+		\textbf{Subject} & \textbf{Trace Logs} & \textbf{Debugger} & \textbf{Add. Tools} \\ \midrule
+		\textbf{S1}      & \small{X}           &                   &                     \\ \midrule
+		\textbf{S2}      & \small{X}           & \small{X}         &                     \\ \midrule
+		\textbf{S3}      & \small{X}           &                   &                     \\ \midrule
+		\textbf{S4}      & \small{X}           & \small{X}         & \small{Next step}   \\ \bottomrule
+	\end{tabular}
+	\caption{Observed practices and tool usage per subject.}
+	\label{tab:subject-techniques}
+\end{table}
+
+Only S4 was able to solve the first problem given as shown in Table~\ref{tab:subject-results}. None of the subjects was able to successfully identify and fix the bugs hidden in the second problem within time.
+
+\begin{table}[H]
+	\begin{tabular}{ p{0.2\linewidth}  p{0.355\linewidth}  p{0.355\linewidth} }
+		\toprule
+		\textbf{Subject} & \textbf{Problem 1} & \textbf{Problem 2} \\ \midrule
+		\textbf{S1}      & \small{Time expired}       & \small{Time expired}     \\ \midrule
+		\textbf{S2}      & \small{Time expired}       & \small{Time expired}     \\ \midrule
+		\textbf{S3}      & \small{Time expired}       & \small{Time expired}     \\ \midrule
+		\textbf{S4}      & \small{Solved}             & \small{Time expired}     \\ \bottomrule
+		\end{tabular}
+	\caption{Results per subject for each presented problem.}
+	\label{tab:subject-results}
+\end{table}
+
+The survey responses available in Table~\ref{tab:subject-survey} showed that 75\% (S2, S3 and S4) of the subject population had two or more years of experience with RxJS. Where all of them use RxJS to develop frontend applications, S4 declared having used  RxJS for backend development as well. When asked what tools they usually use for debugging, only S1 stated not to use the traditional debugger of their IDE at all. S1 and S3 leverage additional tracing functionality of rxjs-spy, and all four of our subjects use manual log statements.
+
+\begin{table}[H]
+	\begin{tabular}{ p{0.13\linewidth}  p{0.08\linewidth}  p{0.12\linewidth} p{0.23\linewidth} p{0.28\linewidth}}
+		\toprule
+		\textbf{Subject} & \textbf{Q1} & \textbf{Q2}         & \textbf{Q3}               & \textbf{Q4}                             \\ \midrule
+		\textbf{S1}      & \small{Yes} & \small{1 year}      & \small{Frontend}          & \small{Trace Logs, rxjs-spy}            \\ \midrule
+		\textbf{S2}      & \small{No}  & \small{$>$ 3 years} & \small{Frontend}          & \small{Debugger, Trace Logs}            \\ \midrule
+		\textbf{S3}      & \small{Yes} & \small{2 years}     & \small{Frontend}          & \small{Debugger, Trace Logs, rxjs-spy}  \\ \midrule
+		\textbf{S4}      & \small{No}  & \small{2 years}     & \small{Frontend, Backend} & \small{Debugger, Trace Logs}            \\ \bottomrule
+	\end{tabular}
+	\caption{After-action survey responses per subject.}
+	\label{tab:subject-survey}
+\end{table}
 
 \subsection{Interpretation}
 
