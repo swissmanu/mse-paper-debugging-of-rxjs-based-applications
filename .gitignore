@@ -1,5 +1,6 @@
 .DS_Store
 *_temp.tex
+*_temp.pyg
 *.aux
 *.bbl
 *.blg
@@ -11,3 +12,4 @@
 *.out
 _minted-*/
 !figures/*.pdf
+comment.cut
