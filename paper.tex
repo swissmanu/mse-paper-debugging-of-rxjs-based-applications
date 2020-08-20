@@ -50,20 +50,9 @@ The (graphical) user interface (\emph{UI} or \emph{GUI}) of an application handl
 
 \begin{figure}
 	\centering
-	\begin{tikzpicture}[node distance = 5.5cm, auto]
-		\tikzstyle{block} = [rectangle, draw,
-		text width=5em, text centered, rounded corners, minimum height=2.5em]
-
-		\node [block] (user) {User};
-		\node [block, right of=user] (ui) {UI};
-		\node [block, right of=ui] (system) {System};
-
-		\draw [<->] (user) to node {Interaction} (ui);
-		\draw [->] (ui.north) to[bend left=20] node {Interaction Data Flow} (system.north);
-		\draw [->] (system.south) to[bend left=20] node {Update Data Flow} (ui.south);
-	\end{tikzpicture}
-	\Description{Basic Dataflows in a UI Application.}
-	\caption{Basic Dataflows in a UI Application.}
+	\tikzfig{ui-data-flow}
+	\Description{Schematic visualization of a basic UI application. The user interacts with the UI. The UI component interprets and forwards interactions to the system. The system sends update notifactions to the UI eventually.}
+	\caption{Basic dataflows in a UI Application.}
 	\label{fig:ui-data-flows}
 \end{figure}
 
@@ -133,15 +122,15 @@ Traditional, as well as reactive debuggers work with the \emph{current} state of
 
 RxJS\cite{rxjs} is the reference implementation of the ReactiveX API specification for JavaScript. Its current major version 6 is implemented using TypeScript and is used by large projects like Angular\cite{angualrrxjs}. Listing \ref{lst:rp-with-rxjs} shows an example of RP using RxJS in TypeScript.
 
-\begin{listing}[H]
+\begin{listing}
 	\begin{minted}{TypeScript}
 		import { of } from 'rxjs';
 		import { filter, map } from 'rxjs/operators';
 
-		of(0, 1, 2, 3, 4).pipe(	// Create Observable with Integers
-			filter(i => i < 4),		// Omit Integers >= 4
-			map(i => i * 2)				// Multiply Integer with 2
-		).subscribe(console.log) // Emits 0, 2, 4, 6
+		of(0, 1, 2, 3, 4).pipe(  // Create Observable
+			filter(i => i < 4),	  // Omit integers >= 4
+			map(i => i * 2)        // Multiply int. by 2
+		).subscribe(console.log) // Logs: 0, 2, 4, 6
 	\end{minted}
 	\Description{Basic RxJS example creating an Observable emitting four integers. Each integer is processed by two operators and finally written to the console.}
 	\caption{Basic RxJS example creating an Observable emitting four integers. Each integer is processed by two operators and finally written to the console.}
@@ -151,7 +140,7 @@ RxJS\cite{rxjs} is the reference implementation of the ReactiveX API specificati
 
 The RxJS community uses \emph{marble diagrams} as shown in Figure~\ref{fig:marble-diagram} to document \cite{marblediagrams} the runtime behavior of an Observable visually. Unit test libraries\cite{marbletesting} use this abstraction to encode the behavior of mocked Observables or to describe assertions.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\tikzfig{marble-diagram}
 	\Description{A Marble Diagram visualizing the Observable in Listing~\ref{lst:rp-with-rxjs}. From left to right, each marble represents an emitted value of 0, 2, 4, and 6. The vertical line at the last marble indicates that the Observable completed after emitting value \mintinline{TypeScript}{6}.}
@@ -195,21 +184,21 @@ The sentiment in both the interviews and the reported war stories in regards to 
 
 Most participants considered a statically typed language like TypeScript, a fundamental necessity allowing them to implement dataflow graphs with minimal, formal correctness, as we heard in the interviews. When the engineers needed to interact with dataflow graphs at runtime, e.g. to debug the behavior of a specific part of a stream, we noticed throughout most reports that they were not 100\% satisfied with the feature set they were provided with through traditional debugging tools. The lack of knowledge about RP abstractions like transformation operators or life cycles was reported as irritating. Almost all of the reporters referred to the practice of modifying their source code manually and adding log statements where they assumed a problem to overcome the feature gaps in traditional debuggers. Listing~\ref{lst:rxjs-debugging} exemplifies two challenges when debugging a stream of Observables with imperative-focused debugging tools.
 
-\begin{listing}[H]
+\begin{listing}
 	\begin{minted}{TypeScript}
-		interval(1000).pipe(    // Increasing numbers with 1s delay
-		  map(i => i * 2),      // Breakpoint possible within i * 2
-		  take(4),              // No breakpoint possible
-		  tap(console.log)      // Manually added log statement
+		interval(1000).pipe(
+		  map(i => i * 2),
+		  take(4),
+		  tap(console.log)
 		).subscribe(showValue); // Emits: 0, 2, 4, 6
 	\end{minted}
-	\caption{Debugging of an RxJS Observable using breakpoints and log statements.}
+	\caption{An Observable emitting a sequence of increasing integers every second. Traditional breakpoints are possible inside the arrow function on Line~2. Though a breakpoint can be added on Line~3, it will never be hit during the actual execution of the \mintinline{TypeScript}{take} operator. Line~4 shows a manually introduced trace log statement using the \mintinline{TypeScript}{tap} side effect operator.}
 	\label{lst:rxjs-debugging}
 \end{listing}
 
 Where a breakpoint can easily be added to Line~2 within the arrow function, this is impossible for \mintinline{TypeScript}{take} on Line~3. One would need to place the breakpoint within the operators' internal implementation instead which can be cumbersome in case the operator is used in a different stream as well. Once the breakpoint on Line~2 interrupts the execution of the program, we will notice another shortcoming related to this circumstance: Rather than representing the logical flow implemented using the DSL, the call stack as shown in Listing~\ref{lst:rxjs-call-stack} points deep into RxJS' internal implementation. That is why a traditional debuggers step controls cannot operate on the dataflow graph; It just can not interpret this level of abstraction.
 
-\begin{listing}[H]
+\begin{listing}
 	\begin{minted}{TypeScript}
 		<anonymous> RxJS
 			rxjs 6.5.2/internal/operators/map.js:49
@@ -218,7 +207,7 @@ Where a breakpoint can easily be added to Line~2 within the arrow function, this
 			rxjs 6.5.2/internal/scheduler/AsyncAction.js:71
 			// ...
 	\end{minted}
-	\caption{Call Stack for Arrow Function on Line~2 in Listing~\ref{lst:rxjs-debugging}}
+	\caption{A call stack showing the internal RxJS execution stack for a breakpoint in the arrow function on Line~2 in Listing~\ref{lst:rxjs-debugging}.}
 	\label{lst:rxjs-call-stack}
 \end{listing}
 
@@ -259,7 +248,8 @@ After the subjects got themselves accustomed with the application provided and u
 While all subjects added manual trace log statements to existing arrow functions or by adding \mintinline{TypeScript}{tap} operators in the instrument hypothesis phase, none of them used additional libraries like rxjs-spy for doing so. S2 and S4 used the traditional debugging tools provided by their browser or IDE to add breakpoints. Both of them commented on the inability of stack traces to interpret RP abstractions as unsatisfying. We could further observe a ``trail-and-error'' approach in later iterations of the debugging process. The subjects started to introduce modifications to the system which they immediately tested against their latest hypothesis. Table~\ref{tab:subject-techniques} provides an overview on the complete collected data regarding used techniques and tools.
 
 \begin{table}
-	\begin{tabular}{ p{0.2\linewidth}  p{0.225\linewidth}  p{0.225\linewidth} p{0.225\linewidth} }
+	\caption{Observed practices and tool usage per subject.}
+	\begin{tabular}{ p{0.16\linewidth}  p{0.225\linewidth}  p{0.225\linewidth} p{0.225\linewidth} }
 		\toprule
 		\textbf{Subject} & \textbf{Trace Logs} & \textbf{Debugger} & \textbf{Add. Tools} \\ \midrule
 		\textbf{S1}      & \small{X}           &                   &                     \\ \midrule
@@ -267,14 +257,14 @@ While all subjects added manual trace log statements to existing arrow functions
 		\textbf{S3}      & \small{X}           &                   &                     \\ \midrule
 		\textbf{S4}      & \small{X}           & \small{X}         & \small{Next step}   \\ \bottomrule
 	\end{tabular}
-	\caption{Observed practices and tool usage per subject.}
 	\label{tab:subject-techniques}
 \end{table}
 
 Only S4 was able to solve the first problem given as shown in Table~\ref{tab:subject-results}. None of the subjects was able to successfully identify and fix the bugs hidden in the second problem within time.
 
 \begin{table}
-	\begin{tabular}{ p{0.2\linewidth}  p{0.355\linewidth}  p{0.355\linewidth} }
+	\caption{Results per subject for each presented problem.}
+	\begin{tabular}{ p{0.16\linewidth}  p{0.355\linewidth}  p{0.355\linewidth} }
 		\toprule
 		\textbf{Subject} & \textbf{Problem 1} & \textbf{Problem 2} \\ \midrule
 		\textbf{S1}      & \small{Time expired}       & \small{Time expired}     \\ \midrule
@@ -282,14 +272,15 @@ Only S4 was able to solve the first problem given as shown in Table~\ref{tab:sub
 		\textbf{S3}      & \small{Time expired}       & \small{Time expired}     \\ \midrule
 		\textbf{S4}      & \small{Solved}             & \small{Time expired}     \\ \bottomrule
 	\end{tabular}
-	\caption{Results per subject for each presented problem.}
 	\label{tab:subject-results}
 \end{table}
 
 The survey responses available in Table~\ref{tab:subject-survey} showed that 75\% (S2, S3 and S4) of the subject population had two or more years of experience with RxJS. Where all of them use RxJS to develop frontend applications, S4 declared having used  RxJS for backend development as well. When asked what tools they usually use for debugging, S2, S3 and S4 stated to use the traditional debugger of their IDE. S1 and S3 leverage additional tracing functionality of rxjs-spy, and all four of our subjects use manual log statements.
 
 \begin{table}
-	\begin{tabular}{ p{0.13\linewidth}  p{0.08\linewidth}  p{0.12\linewidth} p{0.23\linewidth} p{0.28\linewidth}}
+	\caption{After-action survey responses per subject.}
+	\begin{minipage}{\columnwidth}
+	\begin{tabular}{ p{0.12\linewidth}  p{0.06\linewidth}  p{0.14\linewidth} p{0.20\linewidth} p{0.26\linewidth}}
 		\toprule
 		\textbf{Subject} & \textbf{Q1} & \textbf{Q2}         & \textbf{Q3}               & \textbf{Q4}                             \\ \midrule
 		\textbf{S1}      & \small{Yes} & \small{1 year}      & \small{Frontend}          & \small{Trace Logs, rxjs-spy}            \\ \midrule
@@ -297,7 +288,7 @@ The survey responses available in Table~\ref{tab:subject-survey} showed that 75\
 		\textbf{S3}      & \small{Yes} & \small{2 years}     & \small{Frontend}          & \small{Debugger, Trace Logs, rxjs-spy}  \\ \midrule
 		\textbf{S4}      & \small{No}  & \small{2 years}     & \small{Frontend, Backend} & \small{Debugger, Trace Logs}            \\ \bottomrule
 	\end{tabular}
-	\caption{After-action survey responses per subject.}
+	\end{minipage}
 	\label{tab:subject-survey}
 \end{table}
 
@@ -327,18 +318,19 @@ Before we elaborate on a solution in order to overcome the challenges identified
 		import { create } from 'rxjs-spy';
 		import { tag } from 'rxjs-spy/operators';
 
-		const spy = create();  // Create monitor
-		spy.log(/multiply/);   // Log tags matching RegEx /multiply/
+		const spy = create(); // Create monitor
+		spy.log(/multiply/);  // Log tags matching
+		                      // RegEx /multiply/
 
 		interval(1000).pipe(
 		  map(i => i * 2),
-		  tag('multiply'),     // Tag Observable with "multiply"
+		  tag('multiply'),    // Tag with "multiply"
 		  map(i => i - 1),
-		  tag('subtract')      // Tag Observable with "subtract"
+		  tag('subtract')     // Tag with "subtract"
 		  take(2)
 		).subscribe();
 	\end{minted}
-	\caption{Application of rxjs-spy using its \mintinline{TypeScript}{tag} operator on Line~9 and 11}
+	\caption{Application of rxjs-spy using its \mintinline{TypeScript}{tag} operator on Line~10 and 12.}
 	\label{lst:rxjs-spy-tag}
 \end{listing}
 
@@ -351,7 +343,7 @@ The dataflow configuration in Listing~\ref{lst:rxjs-spy-tag} will produce a trac
 		Tag = multiply; notification = next; value = 2
 		Tag = multiply; notification = unsubscribe
 	\end{minted}
-	\caption{rxjs-spy execution trace log generated from Listing~\ref{lst:rxjs-spy-tag}}
+	\caption{rxjs-spy execution trace log generated by default monitor in Listing~\ref{lst:rxjs-spy-tag} on Line~4.}
 	\label{lst:rxjs-spy-log}
 \end{listing}
 
@@ -382,6 +374,7 @@ Along with the RP specific debugging features, Reactive Inspector experiments wi
 Specialized utilities are aware of RP runtime environments and help software engineers to interpret its state better than before using sole traditional debugger tools. Most of them provide a way to represent the dataflow graph either graphically (Reactive Inspector, rxfiddle) or in textual form (rxjs-spy). They visualize the data flowing through the graph over time in marble diagrams (rxfiddle, Rx Visualizer) or directly in a visual graph representation (Reactive Inspector). Whereas Reactive Inspector for REScala provides an ``all-in-one'' solution with reactive breakpoints, omniscient debugging capabilities, and full IDE integration, the RxJS-related tools provide smaller, differentiated feature sets in contrast. Most of them require the engineer to extract code from its origin (rxfiddle, Rx Visualizer) or call for manual code preparation or modification (rxjs-spy).
 
 \begin{table}[H]
+	\caption{Feature Matrix for Discussed RP Debugging Tools}
 	\begin{tabular}{@{}lllll@{}}
 	\toprule
 					   & \textbf{UI} & \textbf{Integration}                                               & \textbf{Flow Control}                                              & \textbf{RP Runtime} \\ \midrule
@@ -390,7 +383,6 @@ Specialized utilities are aware of RP runtime environments and help software eng
 	rxjs-spy           & Textual     & \begin{tabular}[c]{@{}l@{}}Browser Console\\and Code\end{tabular} & Limited & RxJS                \\ \midrule
 	Rx Visualizer      & Visual      & Web App                                                            & None       & RxJS                \\ \bottomrule
 	\end{tabular}
-	\caption{Feature Matrix for Discussed RP Debugging Tools}
 	\label{tab:compare-tools}
 \end{table}
 

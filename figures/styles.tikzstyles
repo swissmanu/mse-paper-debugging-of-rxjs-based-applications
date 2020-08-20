@@ -11,3 +11,4 @@
 \tikzstyle{arrow}=[->]
 \tikzstyle{thick arrow}=[->, line width=0.10em]
 \tikzstyle{thick line}=[-, line width=0.10em]
+\tikzstyle{double arrow}=[<->]

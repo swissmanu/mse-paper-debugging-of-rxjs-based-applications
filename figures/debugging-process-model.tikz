@@ -3,11 +3,11 @@
 		\node [style=block] (0) at (-0.05, 3) {Gather Context};
 		\node [style=block] (1) at (-0.05, 0.5) {Instrument Hypothesis};
 		\node [style=block] (2) at (-0.05, -2.25) {Test Hypothesis};
-		\node [style=none] (3) at (3.5, -2.25) {};
-		\node [style=none] (4) at (3.5, 3) {};
+		\node [style=none] (3) at (2.75, -2.25) {};
+		\node [style=none] (4) at (2.75, 3) {};
 		\node [label={[label distance=0.1cm]left:Hypothesis to test}] (5) at (-0.05, 1.75) {};
 		\node [label={[label distance=0.1cm]left:Modified system}] (6) at (-0.05, -1) {};
-		\node [label={[label distance=0.1cm]right:Information}] (7) at (3.5, 0.25) {};
+		\node [label={[label distance=0.1cm]right:Information}] (7) at (2.75, 0.25) {};
 	\end{pgfonlayer}
 	\begin{pgfonlayer}{edgelayer}
 		\draw [style=arrow] (0) to (1);
