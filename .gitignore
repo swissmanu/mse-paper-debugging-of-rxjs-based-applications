@@ -8,7 +8,7 @@
 *.fls
 *.log
 *.pdf
-*.synctex.gz
+*.synctex*
 *.out
 _minted-*/
 !figures/*.pdf
