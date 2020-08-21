@@ -3,6 +3,7 @@
 %  - review: Show line numbers for reviewers
 %  - nonacm: Hide ACM conference stuff
 
+\usepackage{tcolorbox}
 \usepackage{hyperref}
 \usepackage{minted}
 \usepackage{booktabs}
@@ -72,7 +73,7 @@ These exemplary questions demonstrate the limits of a traditional controlflow or
 	\item \emph{RQ1: What challenges do software engineers face when debugging RxJS-based code?}
 \end{itemize}
 
-In response to this, we are going to present concepts on how to resolve previously identified challenges and answer the second research question:
+In response to this, we are going to present a concept on how to resolve previously identified challenges and answer the second research question:
 
 \begin{itemize}
 	\item \emph{RQ2: How can the experience of software engineers during debugging of RxJS-based code be improved?}
@@ -288,9 +289,11 @@ That is why we saw demand in validating this statement about manual code modific
 
 The subjects for our study were required to have experience in developing applications with RxJS. We did not distinguish between frontend or backend engineers, so in the end, we were able to recruit four subjects willing to participate in our experiment. We were interested to see how the subjects apply debugging techniques they would use in an everyday situation at their jobs. Hence we decided to conduct the experiment in a somewhat uncontrolled environment where the subjects used their own devices with their development environments of personal preference. Our objective for the experiment was communicated as broad as possible to prevent bias: ``We are interested in how \emph{you} debug a problem'' did not mention our hypothesis by intention.
 
-We planned to have a one-hour session for the actual experiment with each subject, followed-up by an unattended quantitative after-action survey. We executed the experiment in two consecutive blocks of 25 minutes each. We provided a ZIP file\footnote{\url{https://github.com/swissmanu/mse-pa1-experiment/archive/v1.0.2.zip}} containing the source code for two frontend web applications implemented using TypeScript and RxJS along with a test suite at the start of a session. Each of these applications was rigged with two to three bugs, which we asked the subjects to identify and fix using whatever debugging techniques they prefer and commonly use. A block was considered as complete once either the test suite signaled all bugs as resolved or the 25 minutes were exceeded. We asked our subjects to act like in a pair programming situation where they ``think out loud'' their thought process. Though we refrained from answering any question related to the ``where'' a bug has to be expected.
+We planned to have a one-hour session for the actual experiment with each subject, followed-up by an unattended quantitative after-action survey. We executed the experiment in two consecutive blocks of 25 minutes each. We provided a ZIP file\footnote{\url{https://github.com/swissmanu/mse-pa1-experiment/archive/v1.0.2.zip}} containing the source code for two frontend web applications implemented using TypeScript and RxJS along with a Jest test suite at the start of a session. Each of these applications was rigged with two to three bugs, which we asked the subjects to identify and fix using whatever debugging techniques they prefer and commonly use. Where the first application required less complex intervention to resolve the contained bugs, the second application demanded for heavy modifications in the dataflow as it made heavy use of higher-order observables. The provided test suite allowed the subjects to understand the functional requirements of each application as well as to quickly verify their changes to be successful (or not).
 
-A week before the experiment, we sent out the participant briefing document to all of our subjects. We outlined the course of action and provided them with an example ZIP file. This file contained the same setup as the file provided at the experiment and allowed the subjects to get accustomed to things like starting the web applications or running the test suites.
+A block was considered as complete once either the test suite signaled all bugs as resolved or the 25 minutes were exceeded. We asked our subjects to act like in a pair programming situation where they ``think out loud'' their thought process. Though we refrained from answering any question related to the ``where'' a bug has to be expected.
+
+We sent out the participant briefing document to all of our subjects a week before the experiment. We outlined the course of action and provided them with an example ZIP file. This file contained the same setup as the file provided at the experiment and allowed the subjects to get accustomed to things like starting the web applications or running the test suites.
 
 We decided to monitor our subjects' progress remotely using voice chat and screen sharing due to the COVID-19 situation at the time of our study. Furthermore, this allowed us to record the sessions with relatively low technical effort for later evaluation.
 
@@ -359,67 +362,37 @@ We heard further how engineers isolate specific Observables from bigger dataflow
 
 More than 50\% of our peers throughout the interviews, war story reports and the experiments after-action survey stated to know about specific RxJS RP debugging tools. It was apparent that all subjects during the observational study refrained from using any of them though. It is our speculation that the subjects knowing about specific tools held themselves back from using them because they perceived the effort of setting them up (e.g., installing and configuring rxjs-spy) as too time-consuming. Not having the ``right'' tool available without significant additional effort is also what we interpret from the statement by S4: Though they would have started to extract parts of the dataflow and inspect it with other tools, they would have done so only after the 25 minutes of the block expired; Hence a more accessible way allowing such analyses would have influenced the subjects behavior.
 
-The best RP debugging tools are useless if either the hurdle to use them is too high or engineers do not understand in which particular part of the debugging process they can benefit from them. Hence, we are able to postulate an answer to our first research question: Biggest challenge software engineers face when debugging RxJS-based programs is to know \emph{when} they should apply \emph{what} tool to resolve their current problem in the \emph{best} way possible.
+The best RP debugging tools are useless if either the hurdle to use them is too high or engineers do not understand in which particular part of the debugging process they can benefit from them. Hence, we are able to postulate an answer to our first research question: The biggest challenge software engineers face when debugging RxJS-based programs is to know \emph{when} they should apply \emph{what} tool to resolve their current problem in the \emph{most efficient} way.
 
 \section{Future Work}
 \label{sec:future}
 
-We further claim that, backed by the observation where two subjects knew about rxjs-spy but refrained from using it nonetheless, it is not enough to \emph{know} about the existence of a specific tool for a particular debugging situation. Such a tool should rather offer itself at the ``right'' moment so the engineer can benefit from its features. An example for such a behavior is the seamless integration of asynchronous call stacks in Google Chromes JavaScript debugger\cite{chromeasync}: Even though code was executed ``outside'' of the current call stack, the debugger shows these asynchronous stack frames as they were actually part of it.
+We see the biggest shortcoming of current RxJS-oriented debugging solutions like rxjs-spy, RxFiddle, or RxViz in the fact, that they are not integrated in established development environments (e.g., IDEs or internet browser developer tools). This leads to the practice of manually augmenting code itself rather then working with it in a less obtrusive, fully integrated way as we were able to proof in our observational study. Using specialized utilities is an extra effort an engineer has to invest every time they want to debug a dataflow: Either tagging an observable for rxjs-spy or extracting parts of it to an external environment, all of these practices require engineers to ``go the extra mile'' in order to inspect the runtime behavior of an RxJS-based application. The additional effort might be neglectable when treating a rather complex dataflow composition, but it holds back engineers from applying the tools to simple observables like in the first block of the experiment we conducted.
+
+The observation that 50\% of our study subjects tried to debug an RP application with traditional, imperative-centric debugger utilities, as well as related statements from the interviews and war stories, strengthened our assumption regarding tool integration. Engineers expect the debugging tools they know and rely on to give correct insight on every program, no matter the paradigm (imperative or declarative) with which it got implemented.
+
+This leads us to the answer on our second research question: We want to improve the experience of debugging RxJS-based applications by providing RP specific debugging utilities where software engineers expect them the most: Fully integrated with the traditional debugger they know from their IDE or browser developer tools.
+
+\begin{tcolorbox}[colback=white,boxrule=1pt,sharp corners=all,left=1.8mm,boxsep=1mm]
+	\textbf{Example for Good Integration:} The debugger, part of the developer tools, in Google Chrome combines call stack frames of asynchronously executed functions\cite{chromeasync} seamlessly with those of synchronously executed code. This provides software engineers with a better understanding about which part of the program triggered the statement they currently inspect.
+\end{tcolorbox}
+
+
+
+TODO
+
+A future paper will elaborate on the selection of a RP debugging tool (e.g., a full reactive debugger or a visualizer using marble diagrams), how and where (i.e. which IDE or browser) it should be integrated in a future paper.
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-\textbf{TODO REWRITE HERE}
-
-Having the main challenges for engineers identified when debugging RxJS-code, we can propose areas to improve on now and resolve RQ2 by doing so.
-
-\subsection{Improve User Experience}
-
-Our overall goal is to support engineers during the process of understanding the inner workings of the RxJS dataflow graph. Existing tools and libraries provide some help, though often struggle by means of the UX: Trace logs with relevant information like life cycle events do improve the debugging process as we saw. Digging through hundreds of log entries containing information of multiple Observables gets tedious quickly, however. Filter and search functionalities help but cannot resolve all UX challenges.
-
-A graphical representation of the dataflow graph is better suited to show dependencies within the model then textual trace logs. Previous research showed that the sheer amount of nodes in an elaborate graph is hard to visualize effectively\cite{10.1145/3180155.3180156} on one side, on the other also not easily implement efficiently as well.
-
-We intend to find a solution that combines the power of textual trace logs with the ease-of-use of graphical visualizations for RxJS dataflow graphs. We want this solution to handle small as well as large graphs.
-
-\subsection{Automatic Code Augmentation}
-
-RP code needs to be augmented with additional functionality so telemetry data can be collected. Previous solutions do this using code weaving\cite{10.1145/2884781.2884815} or similar techniques\cite{10.1145/3180155.3180156}. For engineers themselves though, this is often a manual process. We want to make the manual modification of production source code obsolete. rxfiddle proofed such mechanisms to work with RxJS 4 and 5, hence we intend to bring this feature to version 6, and possibly the upcoming major version 7 as well.
-
-\subsection{Integration}
-
-75\% of our observational study participants used the debugging tools integrated into their browser or IDE. Even though some of them stated to know additional external utilities in the after-action survey, none of them went that far and used them during the one-hour session.
-
-We understand the observed behavior as evidence for a hurdle preventing engineers from using specialized RP debugging utilities. In order to reach more software engineers with RP domain-specific debugging tools, we want to provide a potential solution as tightly integrated with the developer tools of the browser or an IDE as possible.
-
-\subsection{Other Areas of Improvement}
-
-There are many more areas which could be worth a further look in the future. E.g., the combination of controlling the program execution based on breakpoints within the dataflow graph or concepts of omniscient debugging are exciting fields as well. We will focus on the presented three topics for our future work, but keep additional ideas in a backlog for the case time allows additional iterations.
-
-
-\textbf{TODO Refer to Reactive Inspector}
-
-\subsubsection{Reactive Inspector}
-
-In the paper ``Debugging for Reactive Programming''\cite{10.1145/2884781.2884815}, Salvaneschi et al. elaborate on the necessity of RP debugging tools which can interpret its specific dataflow abstractions. Based on their research, developed a reactive debugger named \emph{Reactive Inspector}. This plugin for the Eclipse IDE provides reactive debugging functionality for programs using the REScala RP runtime.
-
-The plugins core feature is the visualization of the dataflow graph. This representation of the dataflow provides a UI to add a new kind of breakpoint, the ``reactive breakpoint,'' to individual nodes in the graph. With them, the execution of the program can be interrupted e.g., when a node retains a specific value or a particular lifecycle event takes place.
-
-Along with the RP specific debugging features, Reactive Inspector contains  omniscient debugging concepts as well: The time travel functionality allows to record dataflows. These recordings can be replayed and inspected at a later time without an actual re-execution of the recorded program.
 
 
 
 \section{Threats to Validity}
 \label{sec:threats}
+
+This study is subject to the following threats and limitations:
 
 \subsection{External Validity}
 
@@ -449,7 +422,7 @@ With \emph{UX}, \emph{Automatic Code Augmentation} and \emph{Integration} we fin
 
 
 \begin{acks}
-	We want to thank the engineers who were part of this study for their time and insight throughout the different parts of our research. Further, we would like to thank Prof. Dr. Markus Stolze for his mentorship and many tireless review sessions.
+	We want to thank the engineers who participated in our study for their time. Further, we would like to thank Prof. Dr. Markus Stolze for his mentorship and many tireless review sessions.
 \end{acks}
 
 \bibliographystyle{ACM-Reference-Format}

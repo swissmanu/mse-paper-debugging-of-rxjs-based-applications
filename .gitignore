@@ -13,3 +13,4 @@
 _minted-*/
 !figures/*.pdf
 comment.cut
+*.pyg

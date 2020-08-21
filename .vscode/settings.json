@@ -65,5 +65,20 @@
     }
   ],
   "dimmer.enabled": true,
-  "latex-workshop.bibtex-format.surround": "Quotation marks"
+  "latex-workshop.bibtex-format.surround": "Quotation marks",
+  "grammarly.overrides": [
+    {
+      "files": [
+        "**/paper.tex"
+      ],
+      "config": {
+        "audience": "knowledgeable",
+        "dialect": "american",
+        "domain": "academic",
+        "emotions": [],
+        "goals": [],
+        "emotion": "mild"
+      }
+    }
+  ]
 }
