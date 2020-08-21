@@ -152,6 +152,7 @@ Traditional, as well as reactive debuggers work with the \emph{current} state of
 
 
 \subsection{RxJS Debugging Utilities}
+\label{sec:rxjs-debugging-utilities}
 
 \subsubsection{rxjs-spy}
 
@@ -297,7 +298,7 @@ The after-action survey\footnote{\url{https://github.com/swissmanu/mse-pa1-exper
 
 \subsection{Study Execution and Results}
 
-After the subjects got themselves accustomed with the application provided and understood its purpose, all of them used the test suite to gather context about what features do not work as expected initially. Further, all of them tried to recreate the failing behavior in the UI manually. We could not observe any of the subjects using external tools, e.g. RxViz, to inspect specific code parts in isolation in later iterations of the debugging process. Though, S2 noted that they would have usually started to decompose the problem into smaller pieces and observe their behavior in specific after the 25 minutes of the second block expired.
+After the subjects got themselves accustomed with the application provided and understood its purpose, all of them used the test suite to gather context about what features do not work as expected initially. Further, all of them tried to recreate the failing behavior in the UI manually. We could not observe any of the subjects using external tools, e.g. RxViz, to inspect specific code parts in isolation in later iterations of the debugging process. Though, S4 noted that they would have usually started to decompose the problem into smaller pieces and observe their behavior in specific after the 25 minutes of the second block expired.
 
 While all subjects added manual trace log statements to existing arrow functions or by adding \mintinline{TypeScript}{tap} operators in the instrument hypothesis phase, none of them used additional libraries like rxjs-spy for doing so. S2 and S4 used the traditional debugging tools provided by their browser or IDE to add breakpoints. Both of them commented on the inability of stack traces to interpret RP abstractions as unsatisfying. We could further observe a ``trail-and-error'' approach in later iterations of the debugging process. The subjects started to introduce modifications to the system which they immediately tested against their latest hypothesis. Table~\ref{tab:subject-techniques} provides an overview on the complete collected data regarding used techniques and tools.
 
@@ -352,14 +353,31 @@ We were able to observe how all subjects predominantly used manual source code a
 
 Even though two subjects stated in the after-action survey to regularly use rxjs-spy for debugging RxJS programs, neither S1 nor S3 made use of this library during the experiment part of the study.
 
-Interviewing professionals, consolidating RxJS hands-on experiences from the war stories, and evaluating the results from our observational study showed us that software engineers use a variety of practices, tools and utilities to debug RP programs. Beside the habit of adding trace logs manually, we saw them evidently trying to answer their debugging hypotheses using traditional, imperative-focused debugger utilities. The later way of debugging was repeatedly commented as unsatisfying as these utilities cannot handle RP constructs and with this, cannot help to detect problems located within these at all. The former way, the introduction of manual log statements, was often described as ``the last resort'' when no other debugging technique helped before. This is because the analysis of log entries gets tedious as the number of those increases.
+Interviewing professionals, consolidating RxJS hands-on experiences from the war stories, and evaluating the results from our observational study showed us that software engineers use a variety of practices, tools and utilities to debug RP programs. Beside the habit of adding trace logs manually, we saw them evidently trying to answer their debugging hypotheses using traditional, imperative-focused debugger utilities. The later way of debugging was repeatedly commented as unsatisfying as these utilities cannot handle RP constructs and with this, cannot help to detect problems located within these at all. The former way, the introduction of manual log statements, was both described as the prevalent way of debugging RxJS or as ``the last resort'' when no other debugging technique helped before.
 
-We heard further how engineers isolate specific Observables from bigger dataflows and how they inspect those in sandboxed environments and visualizers. This helps them understanding lifecycle and value emitting behaviors better and iterate faster in order to resolve problems.
+We heard further how engineers isolate specific Observables from bigger dataflows and how they inspect those in sandboxed environments and visualizers. This helps them understanding the Observable lifecycle and value emitting behaviors better and iterate faster in order to resolve problems.
 
-We are able to postulate an answer to our first research question based on this collected information: \textbf{TODO Haben wir wirklich evidenz? Wenig diskutiert?} The biggest challenge for software engineers debugging RxJS-based programs is knowing \emph{when} to apply \emph{what} tool in order to get the \emph{best possible} answer on their currently tested hypothesis. We further claim that, backed by the observation where two subjects knew about rxjs-spy but refrained from using it nonetheless, it is not enough to \emph{know} about the existence of a specific tool for a particular debugging situation. Such a tool should rather offer itself at the ``right'' moment so the engineer can benefit from its features. An example for such a behavior is the seamless integration of asynchronous call stacks in Google Chromes JavaScript debugger\cite{chromeasync}: Even though code was executed ``outside'' of the current call stack, the debugger shows these asynchronous stack frames as they were actually part of it.
+More than 50\% of our peers throughout the interviews, war story reports and the experiments after-action survey stated to know about specific RxJS RP debugging tools. It was apparent that all subjects during the observational study refrained from using any of them though. It is our speculation that the subjects knowing about specific tools held themselves back from using them because they perceived the effort of setting them up (e.g., installing and configuring rxjs-spy) as too time-consuming. Not having the ``right'' tool available without significant additional effort is also what we interpret from the statement by S4: Though they would have started to extract parts of the dataflow and inspect it with other tools, they would have done so only after the 25 minutes of the block expired; Hence a more accessible way allowing such analyses would have influenced the subjects behavior.
+
+The best RP debugging tools are useless if either the hurdle to use them is too high or engineers do not understand in which particular part of the debugging process they can benefit from them. Hence, we are able to postulate an answer to our first research question: Biggest challenge software engineers face when debugging RxJS-based programs is to know \emph{when} they should apply \emph{what} tool to resolve their current problem in the \emph{best} way possible.
 
 \section{Future Work}
 \label{sec:future}
+
+We further claim that, backed by the observation where two subjects knew about rxjs-spy but refrained from using it nonetheless, it is not enough to \emph{know} about the existence of a specific tool for a particular debugging situation. Such a tool should rather offer itself at the ``right'' moment so the engineer can benefit from its features. An example for such a behavior is the seamless integration of asynchronous call stacks in Google Chromes JavaScript debugger\cite{chromeasync}: Even though code was executed ``outside'' of the current call stack, the debugger shows these asynchronous stack frames as they were actually part of it.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \textbf{TODO REWRITE HERE}
 
