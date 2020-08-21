@@ -400,19 +400,23 @@ Along with the RP specific debugging features, Reactive Inspector contains  omni
 
 
 
-
 \section{Threats to Validity}
 \label{sec:threats}
 
-\textbf{TODO REWRITE HERE}
+\subsection{External Validity}
 
-We worked with 14 professional software engineers while writing this paper. Five interview partners and five war story reports helped us build the foundation for a later observational study with four participants.
+The data we collected from interviews, war story reports, and the observational study is based on a sample population with 14 individuals. Hence, the results we conveyed in this paper are not representative and are not transferable to the entire software engineering population.
 
-While we claim that nine interviewees and reporters have been an appropriate number of peers for collecting the initial data, we are aware that our four subjects for the observational study lead to a result lacking significance.
+\subsection{Internal Validity}
 
-More time given, we suggest conducting the study with a bigger population again to obtain a result with higher significance and providing more insight into how engineers debug RxJS-based code. Doing so would possibly require a statistical evaluation of these results.
+The observational study was executed in an uncontrolled environment. All subjects used their personal computers, running their own software development environments. We have no comparative data to measure how this design influenced the observed outcome, assuming that this setup diminishes the reproducibility of the experiment.
 
-Furthermore, this was the first time we designed an observational study of this kind. Though we carefully peer-reviewed the study design with our advisor, we cannot claim the design and its execution to be flawless. E.g., we would use a commonly known business domain for both problems presented to the subjects. This would allow them to understand the functionality of the application in front of them quicker and focus more on resolving the task given.
+We noticed that the subjects needed time to understand the intention of the applications they were provided with before they were able to start with the actual debugging process. Since the amount of required time was different from subject to subject, we suspect it influenced the result of the experiment.
+
+\subsection{Construct Validity}
+
+The time limit of 25 minutes per experiment block bears the potential to put the subjects under time pressure. This risk might explain why we could not observe any more time-consuming debugging techniques (e.g., installing additional utilities like rxjs-spy) during the study.
+
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -427,7 +431,7 @@ With \emph{UX}, \emph{Automatic Code Augmentation} and \emph{Integration} we fin
 
 
 \begin{acks}
-
+	We want to thank the engineers who were part of this study for their time and insight throughout the different parts of our research. Further, we would like to thank Prof. Dr. Markus Stolze for his mentorship and many tireless review sessions.
 \end{acks}
 
 \bibliographystyle{ACM-Reference-Format}
