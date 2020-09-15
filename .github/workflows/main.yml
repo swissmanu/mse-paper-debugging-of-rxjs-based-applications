@@ -1,21 +1,21 @@
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    - 'v*'
 
-name: Upload Release Asset
+name: Build and Upload Release Assets
 
 jobs:
   build:
-    name: Upload Release Asset
+    name: Build and Upload Release Assets
     runs-on: ubuntu-latest
     steps:
-      - name: Get the version
+      - name: Extract Version from Tag
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Build LaTeX
         uses: xu-cheng/latex-action@v2
         with:
@@ -26,6 +26,7 @@ jobs:
             minted fvextra xstring framed
           extra_system_packages: py-pygments
           latexmk_shell_escape: true
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -42,7 +43,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./paper.pdf
           asset_name: manuel-alabor-debugging-of-rxjs-based-application-${{ steps.get_version.outputs.VERSION }}.pdf
           asset_content_type: application/pdf
