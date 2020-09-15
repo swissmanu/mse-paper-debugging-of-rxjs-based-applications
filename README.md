@@ -4,7 +4,7 @@
 
 ## Download Paper
 
-![Build PDF](https://github.com/swissmanu/mse-pa1/workflows/Build%20PDF/badge.svg)
+![Build and Upload Release Assets](https://github.com/swissmanu/mse-pa1-paper-debugging-of-rxjs-based-applications/workflows/Build%20and%20Upload%20Release%20Assets/badge.svg)
 
 See https://github.com/swissmanu/mse-pa1-paper-debugging-of-rxjs-based-applications/releases for the latest version.
 
