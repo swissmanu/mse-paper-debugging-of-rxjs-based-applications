@@ -157,7 +157,7 @@ Traditional, as well as reactive debuggers work with the \emph{current} state of
 
 \subsubsection{rxjs-spy}
 
-\emph{rxjs-spy}\cite{rxjsspy} is a logging library specialized on RxJS observables. Once an observable is tagged with an arbitrary string identifier, a monitor can generate trace logs whenever a value is emitted as well as when individual lifecycle events occur (i.e. subscribe, unsubscribe, complete and error). Ideally, tagged observables are created during development when the data-flows are composed for the first time. Like \mintinline{TypeScript}{tap}\footnote{RxJS' \mintinline{TypeScript}{tap} operator is used to execute a side effect whenever an observable emits a value. It cannot modify or influence the emitted value nor the observable in any way.}, the \mintinline{TypeScript}{tag} operator in Listing~\ref{lst:rxjs-spy-tag} is completely transparent to the actual data-flow.
+\emph{rxjs-spy}\cite{rxjsspy} is a logging library specialized on RxJS observables. Once an observable is tagged with an arbitrary string identifier, a monitor can generate trace logs whenever a value is emitted as well as when individual life cycle events occur (i.e. subscribe, unsubscribe, complete and error). Ideally, tagged observables are created during development when the data-flows are composed for the first time. Like \mintinline{TypeScript}{tap}\footnote{RxJS' \mintinline{TypeScript}{tap} operator is used to execute a side effect whenever an observable emits a value. It cannot modify or influence the emitted value nor the observable in any way.}, the \mintinline{TypeScript}{tag} operator in Listing~\ref{lst:rxjs-spy-tag} is completely transparent to the actual data-flow.
 
 \begin{listing}
 	\begin{minted}{TypeScript}
@@ -196,13 +196,19 @@ Additional features are available through the library's console interface. E.g.,
 
 \subsubsection{rxfiddle}
 
-\emph{rxfiddle}, as proposed by Banken et al.\cite{10.1145/3180155.3180156} is the first reference implementation of their RP debugger architecture for the ReactiveX API specification. They describe a software design consisting of two independent components: The (i) \emph{host instrumentation} augments a ReactiveX API implementation to emit events at runtime (e.g., emitting a value or lifecycle events) and forwards them to the second component. The (ii) \emph{visualizer} interprets the events and displays them along two dimensions: The StoryFlow graph\cite{YWu2013a} shows when an observable is created and how it interacts with other observables, whereas a marble diagram visualizes the values emitted over time for every observable.
+\emph{rxfiddle}, as proposed by Banken et al.\cite{10.1145/3180155.3180156} is the first reference implementation of their RP debugger architecture for the ReactiveX API specification. They describe a software design consisting of two independent components: The (i) \emph{host instrumentation} augments a ReactiveX API implementation to emit events at runtime (e.g., emitting a value or life cycle events) and forwards them to the second component. The (ii) \emph{visualizer} interprets the events and displays them along two dimensions: The StoryFlow graph\cite{YWu2013a} shows when an observable is created and how it interacts with other observables, whereas a marble diagram visualizes the values emitted over time for every observable.
 
 The reference implementation supports event processing for the (outdated) RxJS major versions 4 and 5 only and is available as an online application\footnote{\url{https://rxfiddle.net/}}. A proof-of-concept implementation working on a local computer is available through the projects Git repository\footnote{\url{https://github.com/hermanbanken/RxFiddle}}.
 
 \subsubsection{RxViz}
 
 \emph{RxViz} is a visualizer utility available online\footnote{\url{https://rxviz.com/}}. It is an ``animated playground for Rx observables''\cite{rxviz} and allows the visualization of RxJS observables using marble diagrams. Engineers implement or copy-paste data-flows in an editor window using JavaScript. A diagram is generated based on this code over a configurable time interval. The diagrams are rendered immediately and are available as downloadable SVG files.
+
+\subsubsection{rxjs-playground}
+
+Building on the basic concept of marble diagrams, \emph{rxjs-playground}\footnote{\url{https://hediet.github.io/rxjs-playground}} is a sophisticated sandbox to simulate and visualize RxJS observables interactively in the browser. Users define editable and computed observables, represented as vertical marble diagrams: Values emitted by an editable observable can be created and modified either by interacting with its marble diagram directly or using a simple JSON syntax. The behavior of a computed observable is controlled by implementing functionality with TypeScript in the provided editor.
+
+rxjs-playground renders all observables\' values and life cycles in real-time allowing quick iteration on a specific piece of code.
 
 
 \section{Interviews and War Stories}
@@ -267,7 +273,7 @@ Where a breakpoint can easily be added to Line~2 within the arrow function, this
 	\label{lst:rxjs-call-stack}
 \end{listing}
 
-We learned that simple trace augmentation, like on Line~4 in Listing~\ref{lst:rxjs-debugging}, logs emitted values only. Such trace logs might be helpful when debugging simple graph compositions. Though, they lack lifecycle information of the underlying observables completely. The importance of such information was emphasized by R5 describing their usage of rxjs-spy: To know, when an observable gets subscribed and unsubscribed, when it completes or fails, helped them to solve complex problems multiple times. When dealing with higher-order observables, they value this information even as indispensable.
+We learned that simple trace augmentation, like on Line~4 in Listing~\ref{lst:rxjs-debugging}, logs emitted values only. Such trace logs might be helpful when debugging simple graph compositions. Though, they lack life cycle information of the underlying observables completely. The importance of such information was emphasized by R5 describing their usage of rxjs-spy: To know, when an observable gets subscribed and unsubscribed, when it completes or fails, helped them to solve complex problems multiple times. When dealing with higher-order observables, they value this information even as indispensable.
 
 Finally, we understood that if a problem is hard to replicate within the actual application, the engineers use external sandbox development environments to isolate specific parts of an observable composition. These allow them to iterate on it faster than it would be possible otherwise.
 
@@ -358,7 +364,7 @@ Even though two subjects stated in the after-action survey to regularly use rxjs
 
 Interviewing professionals, consolidating RxJS hands-on experiences from the war stories, and evaluating the results from our observational study showed us that software engineers use a variety of practices, tools and utilities to debug RP programs. Beside the habit of adding trace logs manually, we saw them evidently trying to answer their debugging hypotheses using traditional, imperative-focused debugger utilities. The later way of debugging was repeatedly commented as unsatisfying as these utilities cannot handle RP constructs, and with this, cannot help to detect problems located within these at all. The former way, the introduction of manual log statements, was both described as the prevalent way of debugging RxJS or as ``the last resort'' when no other debugging technique helped before.
 
-We heard further how engineers isolate specific observables from bigger data-flows and how they inspect those in sandboxed environments and visualizers. This helps them understanding the observable lifecycle and value emitting behaviors better and iterate faster in order to resolve problems.
+We heard further how engineers isolate specific observables from bigger data-flows and how they inspect those in sandboxed environments and visualizers. This helps them understanding the observable life cycle and value emitting behaviors better and iterate faster in order to resolve problems.
 
 More than 50\% of our peers throughout the interviews, war story reports and the experiments after-action survey stated to know about specific RxJS RP debugging tools. It was apparent that all subjects during the observational study refrained from using any of them, though. It is our speculation that the subjects knowing about specific tools held themselves back from using them because they perceived the effort of setting them up (e.g., installing and configuring rxjs-spy) as too time-consuming. Not having the ``right'' tool available without significant additional effort is also what we interpret from the statement by S4: Though they would have started to extract parts of the data-flow and inspect it with other tools, they would have done so only after the 25 minutes of the block expired; Hence a more accessible way allowing such analyses would have influenced the behavior of the subject.
 
