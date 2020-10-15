@@ -1,4 +1,4 @@
-\documentclass[sigplan,screen,review]{acmart}
+\documentclass[sigplan,screen]{acmart}
 % Class options:
 %  - review: Show line numbers for reviewers
 %  - nonacm: Hide ACM conference stuff
@@ -11,8 +11,21 @@
 
 \setminted{autogobble=true, tabsize=2, linenos=true, frame=single, breaklines=true}
 
+%%% The following is specific to REBLS '20 and the paper
+%%% 'Debugging RxJS-Based Applications'
+%%% by Manuel Alabor.
+%%%
+\setcopyright{acmlicensed}
+\acmPrice{15.00}
+\acmDOI{10.1145/3427763.3428313}
+\acmYear{2020}
+\copyrightyear{2020}
+\acmSubmissionID{splashws20reblsmain-p3-p}
+\acmISBN{978-1-4503-8188-8/20/11}
+\acmConference[REBLS '20]{Proceedings of the 7th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems}{November 16, 2020}{Virtual, USA}
+\acmBooktitle{Proceedings of the 7th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems (REBLS '20), November 16, 2020, Virtual, USA}
+
 % Top Matter: https://mirror.kumi.systems/ctan/macros/latex/contrib/acmart/acmart.pdf
-\acmConference[SPLASH '20]{SPLASH 2020: 7th Workshop on Reactive and Event-based Languages \& Systems}{November 15--20, 2020}{Chicago}
 \title{Debugging of RxJS-based Applications}
 \author{Manuel Alabor}
 \affiliation{
