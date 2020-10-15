@@ -1,4 +1,4 @@
-\documentclass[sigplan,screen]{acmart}
+\documentclass[sigplan,screen]{./acmart}
 % Class options:
 %  - review: Show line numbers for reviewers
 %  - nonacm: Hide ACM conference stuff
@@ -15,18 +15,17 @@
 %%% 'Debugging RxJS-Based Applications'
 %%% by Manuel Alabor.
 %%%
-\setcopyright{acmlicensed}
-\acmPrice{15.00}
-\acmDOI{10.1145/3427763.3428313}
-\acmYear{2020}
 \copyrightyear{2020}
-\acmSubmissionID{splashws20reblsmain-p3-p}
-\acmISBN{978-1-4503-8188-8/20/11}
+\acmYear{2020}
+\setcopyright{acmlicensed}
 \acmConference[REBLS '20]{Proceedings of the 7th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems}{November 16, 2020}{Virtual, USA}
 \acmBooktitle{Proceedings of the 7th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems (REBLS '20), November 16, 2020, Virtual, USA}
+\acmPrice{15.00}
+\acmDOI{10.1145/3427763.3428313}
+\acmISBN{978-1-4503-8188-8/20/11}
 
 % Top Matter: https://mirror.kumi.systems/ctan/macros/latex/contrib/acmart/acmart.pdf
-\title{Debugging of RxJS-based Applications}
+\title{Debugging of RxJS-Based Applications}
 \author{Manuel Alabor}
 \affiliation{
 	\institution{Eastern Switzerland University of Applied Sciences}
@@ -35,7 +34,7 @@
 }
 \email{manuel.alabor@ost.ch}
 
-\author{Prof. Dr. Markus Stolze}
+\author{Markus Stolze}
 \affiliation{
 	\institution{Eastern Switzerland University of Applied Sciences}
 	\city{Rapperswil}
@@ -286,7 +285,6 @@ Where a breakpoint can easily be added to Line~2 within the arrow function, this
 			rxjs 6.5.2/internal/operators/map.js:49
 			rxjs 6.5.2/internal/Subscriber.js:66
 			rxjs 6.5.2/internal/observable/interval.js:23
-			rxjs 6.5.2/internal/scheduler/AsyncAction.js:71
 			// ...
 	\end{minted}
 	\caption{A call stack showing the internal RxJS execution stack for a breakpoint in the arrow function on Line~2 in Listing~\ref{lst:rxjs-debugging}.}
