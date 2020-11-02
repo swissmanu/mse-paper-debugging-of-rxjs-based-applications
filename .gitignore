@@ -14,3 +14,8 @@ _minted-*/
 !figures/*.pdf
 comment.cut
 *.pyg
+*.toc
+*.snm
+*.nav
+*.run.xml
+*.bcf

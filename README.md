@@ -11,3 +11,8 @@ See https://github.com/swissmanu/mse-pa1-paper-debugging-of-rxjs-based-applicati
 ## Further Resources
 
 - Observational Study "Debugging Techniques": https://github.com/swissmanu/mse-pa1-experiment
+
+## References
+
+- [Bibliography](./bibliography.bib)
+- [Latex Beamer Pure Minimalistic Theme](https://github.com/kai-tub/latex-beamer-pure-minimalistic)

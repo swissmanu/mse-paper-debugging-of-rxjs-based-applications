@@ -1,0 +1,325 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usetheme[showmaxslides, darkmode, nofooter]{pureminimalistic}
+
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen}
+% \pgfpagesuselayout{2 on 1}[a4paper,border shrink=10mm]
+
+\usepackage[backend=biber, doi=false, maxbibnames=2, maxcitenames=2,style=numeric, sorting=none, url=false, eprint=false]{biblatex}
+\addbibresource{demo_bib.bib}
+
+% this makes it possible to add backup slides, without counting them
+\usepackage{appendixnumberbeamer}
+\renewcommand{\appendixname}{\texorpdfstring{\translate{appendix}}{appendix}}
+\renewcommand{\logoheader}{}
+
+% if loaded after begin{document} a warning will appear: "pdfauthor already used"
+\title[Debugging RxJS-based Applications]{Getting Rid of the \texttt{console.log}:\\Debugging RxJS-based Applications}
+\author{Manuel Alabor}
+\institute{Eastern Switzerland University of Applied Sciences}
+\date{\today}
+
+
+\begin{document}
+  \begin{frame}{Default Options}
+    Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
+    sed diam nonumy eirmod tempor invidunt ut labore et dolore
+    magna aliquyam erat, sed diam voluptua.
+    At vero eos et accusam et justo duo dolores et ea rebum.
+    Stet clita kasd gubergren, no sea takimata sanctus est
+    Lorem ipsum dolor sit amet.
+  \end{frame}
+\end{document}
+
+% \documentclass[aspectratio=169]{beamer}
+% % should also look nice for the classic aspectratio
+% % of course, than the text has to be refitted
+% % \documentclass{beamer}
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+% \usepackage{tikz}
+% \usetheme[darkmode, showmaxslides]{pureminimalistic}
+% % \renewcommand{\pageword}{}
+% % \renewcommand{\logoheader}{\vspace{1.5em}}
+% \usepackage[backend=biber, doi=false, maxbibnames=2, maxcitenames=2,%
+%             style=numeric, sorting=none, url=false, eprint=false]{biblatex}
+% \addbibresource{bibliography.bib}
+% % this makes it possible to add backup slides, without counting them
+% \usepackage{appendixnumberbeamer}
+% \renewcommand{\appendixname}{\texorpdfstring{\translate{appendix}}{appendix}}
+
+
+% \title[short title]{This is the normal length of a research paper:
+% always longer than you would expect}
+% \author{Kai Norman Clasen}
+% \institute{Insitute name}
+% \date{\today}
+
+% % \documentclass{beamer}
+% % \documentclass[handout]{beamer}
+% % \usepackage{pgfpages}
+% % \setbeameroption{show notes on second screen}
+% % \pgfpagesuselayout{2 on 1}[a4paper,border shrink=10mm]
+
+% % \usepackage{ccicons}
+% % \usepackage{fontawesome}
+% % \usepackage{hyperref}
+
+% % \usetheme{focus}
+% % \usetheme{pureminimalistic}
+% % \titlegraphic{\includegraphics[width=\textwidth/3]{./figures/brittney-weng-LycoZLp4jh0-unsplash}}
+% % \title{Getting rid of the \texttt{console.log}}
+% % \subtitle{Debugging RxJS-based Applications\\}
+% % \author{\vspace{0.5cm}Manuel Alabor}
+% % \institute{\small{Eastern Switzerland University\\ of Applied Sciences\\Rapperswil, Switzerland}}
+% % \date{\vspace{0.9cm}\small{16 November 2020}}
+
+% \begin{document}
+
+% \section*{Welcome}
+
+% \maketitle
+
+% % \note[itemize]{
+% % 	\item Welcome
+% % 	\item Debugging of RxJS-based Applications
+% % }
+
+% % \begin{frame}{Who Am I?}
+% % 	\begin{itemize}
+% % 		\item Foobar\bigskip
+% % 		\item Foobar\bigskip
+% % 		\item Foobar\bigskip
+% % 		\item Foobar\bigskip
+% % 	\end{itemize}
+% % \end{frame}
+
+% % % \begin{frame}[focus]
+% % % 	\includegraphics[width=\textwidth/3]{figures/rxjs-logo.png}
+% % % 	\\
+% % % 	\vspace{0.5cm}
+% % % 	\Huge{RxJS}
+% % % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+% % \section*{Introduction}
+
+% % \begin{frame}{}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+
+% % \begin{frame}{}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+% % \section{Interviews and War Stories}
+
+% % \begin{frame}{Interviews}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+
+% % \begin{frame}{War Stories}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+
+% % \begin{frame}{Results}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+% % \section{Observational Study}
+% % \begin{frame}{Hypothesis}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+
+% % \begin{frame}{Design}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+
+% % \begin{frame}{Problem Example}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+
+% % \begin{frame}{Results}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+% % \section{Conclusion}
+% % \begin{frame}{}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+
+% % \begin{frame}{Future Work}
+
+% % \end{frame}
+
+% % \note[itemize] {
+% % 	\item
+% % }
+
+
+
+% % % \note[itemize]{
+% % % 	\item This was my first seminar paper done
+% % % 	\item My goals:
+% % % 	\item \textbf{Learn} scientific work style
+% % % 	\item \textbf{Review} report
+% % % 	\item \textbf{Transfer} a topic to frontend engineering
+% % % 	\item \textbf{Write and present} my own research report\bigskip
+% % % 	\item To do so, Markus came up with an interesting paper:
+% % % }
+
+% % % \begin{frame}[focus]
+% % % 	\emph{``On the Positive Effect of Reactive Programming on Software Comprehension: An Empirical Study''}
+% % % 	\\\bigskip
+% % % 	\small{Salvaneschi et al. \cite{7827078}}
+% % % \end{frame}
+
+% % % \note[itemize]{
+% % % 	\item On the positive effect of reactive programming on software comprehension
+% % % 	\item An empirical study
+% % % 	\item Research Group around Guido Salvaneschi
+% % % 	\item 2015\bigskip
+% % % }
+
+% % % \subsection*{Research Questions}
+
+% % % \begin{frame}{RQ1: Design Sciences and \\Empirical Software Engineering}
+% % % 	\begin{enumerate}
+% % % 		\item[RQ1.1] Which \textbf{empirical research methods}, approaches and concepts \textbf{were applied} by Salvaneschi et al. \cite{7827078}?\bigskip
+% % % 		\item[RQ1.2] Are these research methods, approaches and concepts \textbf{applied well}, what could have been done better?\bigskip
+% % % 		\item[RQ1.3] \textbf{Do} Salvaneschi et al. \cite{7827078} \textbf{meet FAIR principles} \cite{2019arXiv190805986H} \cite{wilkinson:2016} with their work?
+
+% % % 	\end{enumerate}
+% % % \end{frame}
+
+% % % \note[itemize]{
+% % % 	\item \textbf{Answer} 7 research questions
+% % % 	\item Grouped in \textbf{2 sets} of research questions
+% % % 	\item First: Research Principles
+% % % 	\item Which \textbf{empirical research methods}?
+% % % 	\item Are they \textbf{applied well}?
+% % % 	\item Do they meet \textbf{FAIR} principles?
+% % % }
+
+% % % \section{Review of Salvaneschi et al.}
+% % % \note[itemize]{
+% % % 	\item In order to review Salvaneshi et al.:
+% % % 	\item Present you two score cards
+% % % 	\item One card per question set
+% % % }
+
+% % % \subsection*{Research Principle Score Card}
+% % % \begin{frame}{Research Principle Score Card}
+% % % 	\begin{exampleblock}{\faicon{thumbs-o-up} Empirical Software Engineering}
+% % % 		\begin{itemize}
+% % % 			\item \textbf{Careful} study \textbf{setup} and \textbf{execution}
+% % % 			\item \textbf{Transparent} description of \textbf{threats to validity}
+% % % 		\end{itemize}
+% % % 	\end{exampleblock}
+
+% % % 	\begin{alertblock}{\faicon{thumbs-o-down} Design Sciences}
+% % % 		\textbf{No evidence} for the \textbf{application} of \textbf{design sciences} found
+% % % 	\end{alertblock}
+
+% % % 	\begin{alertblock}{\faicon{thumbs-o-down} FAIR Research Principles}
+% % % 		Lack of \textbf{complementary information} violates \textbf{Reusability} principle
+% % % 	\end{alertblock}
+% % % \end{frame}
+
+% % % \note[itemize]{
+% % % 	\item \textbf{Empirical Software Engineering}: Well done, nothing to complain\bigskip
+% % % 	\item \textbf{Design Sciences}: No clear evidence for use
+% % % 	\item This is one study of many... Did they use Design Sciences for their high level planning?\bigskip
+% % % 	\item \textbf{FAIR}: Good, except: Complementary information is missing
+% % % 	\item Survey Tool and full code samples would improve value significantly
+% % % }
+
+
+% % % \subsection*{Synthetic Application}
+% % % \begin{frame}{Synthetic Application: Scenario}
+% % % 	\begin{columns}
+% % % 		\column{0.6\textwidth}
+% % % 			\begin{itemize}
+% % % 				\item \textbf{Fetch} and \textbf{combine remote} profile and avatar \textbf{resource}\bigskip
+% % % 				\item Avatar \textbf{depends} on profile resource\bigskip
+% % % 			\end{itemize}
+
+% % % 		\column{0.4\textwidth}
+% % % 			\begin{block}{S1: \textbf{Modelling Data Flow}}
+% % % 				\textbf{Fetch} a users \textbf{complete} profile \textbf{information} (name as well as their avatar picture) from \textbf{two} distinct \textbf{data sources}. The \textbf{profile} information \textbf{contains} required input to fetch the \textbf{avatar}. \textbf{Show} the combined information in the user interface \textbf{at once}.
+% % % 			\end{block}
+% % % 	\end{columns}
+% % % \end{frame}
+
+% % % \note[itemize]{
+% % % 	\item Synthetic application: Model data flow
+% % % 	\item Scenario: Show a users profile information with avatar
+% % % 	\item Fetch an combine two remote data sources
+% % % 	\item To fetch avatar, profile is required to be present\bigskip
+% % % 	\item With reactive programming, this looks like:
+% % % }
+
+% % % \begin{frame}[focus]
+% % % 	Q \& A
+% % % \end{frame}
+
+% % \appendix
+% % \begin{frame}[allowframebreaks]{References}
+% % 	\bibliographystyle{plain}
+% % 	\bibliography{bibliography}
+% % \end{frame}
+
+% \end{document}
