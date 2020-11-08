@@ -107,12 +107,13 @@
 
 \note[itemize] {
     \item Frustration -> Reason Research topic
-    \item There are concepts and solutions for RP debugging
+    \item There are good concepts and solutions for RP debugging
     \item Reactive Debugger, Scala \cite{10.1145/2884781.2884815}
-    \item Improved logging tools rxjs-spy
-    \item Visualizers rxviz, rxjs visualizer
+    \item Improved logging tools rxjs-spy \cite{rxjsspy}
+    \item Visualizers rxviz \cite{rxviz}
+    \item Visualizers rxfiddle \cite{10.1145/3180155.3180156}
     \item But why does nobody seem to use them?
-    \item Why are they not popular?
+    \item Why unpopular?
     \item -> Research Questions
 }
 
@@ -163,8 +164,8 @@
 
 \begin{frame}{Quotes}
     \begin{vfilleditems}
-		\item \textit{``[Reactive Programming is] a good way for \textbf{composing} multiple data sources.''}
-		\item \textit{``In \textbf{99\%} of all cases, I add \textbf{console.log} statements [\dots] trying to understand what's happening.''}
+		\item[\Large{``}] \textit{[Reactive Programming is] a good way for \textbf{composing} multiple data sources.}
+		\item[\Large{``}] \textit{In \textbf{99\%} of all cases, I add \textbf{console.log} statements [\dots] trying to understand what's happening.}
 	\end{vfilleditems}
 \end{frame}
 
@@ -208,7 +209,13 @@
 \end{frame}
 
 \note[itemize] {
-    \item Foo
+    \item Again: Common practice to modify code
+    \item Not only trace logs
+    \item Extraction of code parts to extraneous tools
+    \item Visualizers rx-viz \cite{rxviz}
+    \item Code sandboxes StackBlitz
+    \item Try to use debugger
+    \item Debuggers often not that useful
 }
 
 \subsection{Insights}
@@ -220,7 +227,7 @@
             \begin{itemize}
                 \item The ``\textbf{to hammer a screw}''-problem\bigskip
                 \item Tendency to \textbf{manual} code \textbf{modifications}\bigskip
-                \item \textbf{Pessimistic} opinions on debugging of RxJS-based applications
+                \item Rather \textbf{negative} experience with debugging RxJS-based applications
 	        \end{itemize}
         \end{column}
         \begin{column}{.4\linewidth}
@@ -234,10 +241,15 @@
 \end{frame}
 
 \note[itemize] {
-    \item ... todo
-    \item Based on this
-    \item Observational study to validate data
-    \item Using the following hypothesis:
+    \item Traditional debugger feels wrong
+    \item Ask a question which they cannot answer (hammer/screw) -> Stack trace
+    \item Fallback to manual code modification
+    \item Trace log statements
+    \item Extract pieces to sandboxes
+    \item Overall: Pessimistic view on debugging RxJS RP
+    \item Based on this:
+    \item Study to validate this...
+    \item Hypothesis coming up:
 }
 
 
@@ -245,13 +257,16 @@
 \subsection{Study Design}
 
 \begin{frame}[fragile]{Hypothesis}
-    \begin{quote}
-        If software engineers must solve an RxJS-based problem, then they \textbf{will instrument the code manually} in order to understand its behavior.
-    \end{quote}
+    \begin{vfilleditems}
+        \item[\Large{``}] If software engineers must solve an RxJS-based problem, then they \textbf{will instrument the code manually} in order to understand its behavior.
+    \end{vfilleditems}
 \end{frame}
 
 \note[itemize] {
-    \item Foo
+    \item Manual intervention repeating theme
+    \item Both Interviews and War Stories
+    \item Thats why focus on this in validation study
+    \item Dont care what kind (logs vs extraction)
 }
 
 \begin{frame}{Study Design}
@@ -358,49 +373,103 @@
     \item -> Trace logs
     \item Two tried traditional debugging
     \item No one extracted code
-    \item No one used additional libraries
-    \item On told afterwards: Would have been their next step
-    \item Based on this evidence: Hypothesis is correct
+    \item No one used additional tools
+    \item One told afterwards: Would have been their next step
+    \item Based on experiment data: Hypothesis is correct
 }
+
+\section{Conclusion}
 
 \begin{frame}[fragile]{Interpretation}
     \begin{vfilleditems}
-        \item \textbf{Four} professional software engineers
-        \item Two currently \textbf{work} with RxJS
-        \item Three have \textbf{two or more years} of \textbf{experience} with RxJS
-        \item One of them uses RxJS to develop \textbf{backend applications}
+        \item Engineers \textbf{know} RP debugging tools, but \textbf{do not use} them
+        \item Engineers use \textbf{imperative}, but actually require ``\textbf{reactive}'' debuggers
+        \item \textbf{Manual intervention} is the ``\textbf{last resort}''
     \end{vfilleditems}
 \end{frame}
 
 \note[itemize] {
-    \item All used manual trace logs
-    \item Two tried traditional debugging
-    \item No one extracted code
-    \item No one used additional libraries
-    \item On told afterwards: Would have been their next step
+    \item Interviews + War Stories + Study = ?
+    \item 7 of 14 peers know specific RxJS debugging tools
+    \item But they dont use them
+    \item Instead: Traditional tools \textbf{easily accessible}
+    \item Final way to go:
+    \item Trace logs and code extraction
 }
 
-
-\section{Conclusion}
-\begin{frame}{}
-
+\begin{frame}[fragile]{Answer}
+    \begin{enumerate}
+        \item[\color{gray}{RQ1}] \color{gray}{What challenges do software engineers face when debugging RxJS-based applications?}
+        \vfill\item[\Large{``}] \color{white}{The most significant challenge software engineers face [\dots] is to know \textbf{when} they should apply \textbf{what tool} to resolve their current problem in the \textbf{most efficient} way.}
+    \end{enumerate}
 \end{frame}
+
+\note[itemize] {
+    \item Challenge: What tool, when and how
+    \item Often: The "next best" as we saw: Traditional tools
+    \item Often: Modify code
+    \item Less often: Specific tools
+    \item What can we do about it?
+    \item Answer question 2
+}
+
+\begin{frame}[fragile]{Answer}
+    \begin{enumerate}
+        \item[\color{gray}{RQ2}] \color{gray}{How can the experience of software engineers during the debugging process of RxJS-based applications be improved?}
+        \vfill\item[\Large{``}] \color{white}{[\dots] \textbf{improve} the \textbf{experience} of debugging [\dots] by providing RP specific debugging utilities where software engineers expect them the most: \textbf{Fully integrated} [\dots] their IDE [\dots]}
+    \end{enumerate}
+\end{frame}
+
+\note[itemize] {
+    \item Improve the dev user experience
+    \item Lower the boundary to use the right tool
+    \item At the right time
+    \item Integrate the right tools where they are expected the most
+    \item Example: Async Stack Traces in Google Chrome \cite{chromeasync}
+}
 
 \section{Future Work}
+
 \begin{frame}[fragile]{Future Work}
     \begin{vfilleditems}
-        \item Manuel Alabor \cite{10.1145/2501654.2501666}
-        \item Manuel Alabor
-        \item Manuel Alabor
+        \item \textbf{Propose} and \textbf{implement} solution to \textbf{prevent} manual code \textbf{modification}
+        \item \textbf{Evaluate} proposal on \textbdf{effectiveness} to answer RQ3
     \end{vfilleditems}
 \end{frame}
+
+\note[itemize] {
+    \item Wraps up our plans for the future
+    \item Work on a concrete prototype
+    \item Find solution for trace log problem
+    \item Without manual intervention
+    \item Validate effectiveness and answer RQ3
+}
+
+\begin{frame}[fragile]{Sneak Preview}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=0.6\textheight]{figures/tweet-rxjs-debugging-extension.png}
+        \caption{\tiny{Source: \url{https://twitter.com/swissmanu/status/1313412280072232960}}}
+    \end{figure}
+\end{frame}
+
+\note[itemize] {
+    \item Small sneak preview
+    \item Things are progressing
+    \item Thank you for your time and attention!
+}
 
 \begin{frame}[plain, noframenumbering]
   \centering
   \vfill
-  {\fontsize{40}{50}\selectfont Q \& A}
+  {\fontsize{40}{50}\selectfont\color{white}{Q \& A}}
   \vfill
 \end{frame}
+
+\note[itemize] {
+    \item Happy for input
+    \item Happy to answer questions
+}
 
 \appendix
 \begin{frame}[allowframebreaks]{References}
