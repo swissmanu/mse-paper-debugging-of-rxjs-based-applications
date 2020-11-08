@@ -3,8 +3,10 @@
 \usepackage[T1]{fontenc}
 \usepackage{tikz}
 \usepackage{hyperref}
-
+\usepackage{pgfplots}
 \usepackage{pgfpages}
+
+\pgfplotsset{compat=1.17}
 \setbeameroption{show notes on second screen}
 % \pgfpagesuselayout{2 on 1}[a4paper,border shrink=10mm]
 
@@ -19,7 +21,7 @@
 \renewcommand{\appendixname}{\texorpdfstring{\translate{appendix}}{appendix}}
 
 \title[Debugging of RxJS-based Applications]{Getting rid of the \texttt{console.log}:\\Debugging of RxJS-based Applications}
-\author{Manuel Alabor, Markus Stolze}
+\author{Manuel Alabor and Markus Stolze}
 \institute{OST in Rapperswil, Switzerland}
 \date{\today}
 
@@ -38,6 +40,8 @@
 }
 
 \section{Introduction}
+
+\subsection{Why?}
 
 \begin{frame}[fragile]{Reactive Programming for the Web}
     \centering
@@ -112,6 +116,8 @@
     \item -> Research Questions
 }
 
+
+\subsection{Research Questions}
 \begin{frame}[fragile]{Research Questions}
     \begin{enumerate}
         \vfill\item[RQ1] \textbf{What challenges} do software engineers face when debugging RxJS-based applications?
@@ -122,8 +128,7 @@
 
 \note[itemize] {
     \item First: Collect and Validate information
-    \item How do engineers debug RxJS?
-    \item What do they like? Dislike?
+    \item Interviews and War Story Reports
     \item Validate this data in an observational study
     \item Second: Propose a solution to improve
     \item Third: Implement and validate solution
@@ -134,8 +139,45 @@
 
 \section{Interviews and War Stories}
 
+\subsection{Interviews}
 
+\begin{frame}[fragile]{One-to-One Interviews}
+	\begin{vfilleditems}
+		\item Interviewed five \textbf{Engineers}
+		\item How do they \textbf{use} Reactive Programming?
+		\item What do they \textbf{like},
+		\item ... and what \textbf{dislike} about it?
+	\end{vfilleditems}
+\end{frame}
 
+\note[itemize] {
+    \item We were interested in the overall, ...
+    \item the good ...
+    \item and bad experiences
+    \item Not yet debugging specific
+    \item Recruited through personal network
+    \item Talked to five engineers
+    \item 4 RxJS, 1 Scala Akka Streams
+    \item Most knew RxJS through Angular
+}
+
+\begin{frame}{Quotes}
+    \begin{vfilleditems}
+		\item \textit{``[Reactive Programming is] a good way for \textbf{composing} multiple data sources.''}
+		\item \textit{``In \textbf{99\%} of all cases, I add \textbf{console.log} statements [\dots] trying to understand what's happening.''}
+	\end{vfilleditems}
+\end{frame}
+
+\note[itemize] {
+    \item All interviewees were overall positive to RP
+    \item All value RP for complex data \textbf{dependencies}
+    \item and \textbf{transformations}
+    \item Concrete Quote about console log
+    \item Off the record: ``Debugging RP?''
+    \item ... well, then you are f***
+} 
+
+\subsection{War Stories}
 \begin{frame}[fragile]{Call for ``War Stories''}
     \begin{figure}[H]
         \centering
@@ -145,64 +187,199 @@
 \end{frame}
 
 \note[itemize] {
-    \item First: Collect and Validate information
-    \item How do engineers debug RxJS?
-    \item What do they like? Dislike?
-    \item Validate this data in an observational study
-    \item Second: Propose a solution to improve
-    \item Third: Implement and validate solution
-    \item Not part of this work
-    \item Already started with in current iteration
+    \item After first "overall" data collection
+    \item Interested in specific data about RxJS Debugging
+    \item Twitter and direct-email
+    \item 5 replies
+    \item RxJS core team member
+    \item Google developer experts
+    \item Fin Tech Engineers
 }
 
-\begin{frame}[fragile]{Getting Started with RQ1}
+\begin{frame}[fragile]{Report Extracts}
 	\begin{vfilleditems}
-		\item Talk to practitioners
-		\item 1:1 Interviews
-		\item Written ``War Story'' Reports
+		\item Traditional debugging utilities are \textbf{seldom sufficient}
+		\item Tendency to \textbf{manual} code \textbf{modifications}:
+		\begin{vfilleditems}
+		    \item Add \textbf{trace logs} with \texttt{console.log}
+		    \item \textbf{Extract} code parts to \textbf{sand boxed} environments
+		\end{vfilleditems}
 	\end{vfilleditems}
 \end{frame}
 
+\note[itemize] {
+    \item Foo
+}
 
-\begin{frame}{Interviews}
-	\begin{vfilleditems}
-		\item Informal interviews with five participants
-	\end{vfilleditems}
+\subsection{Insights}
+
+\begin{frame}[fragile]{Key Take Aways}
+    \begin{columns}[T]
+        \begin{column}{.6\linewidth}
+            \vspace{3em}
+            \begin{itemize}
+                \item The ``\textbf{to hammer a screw}''-problem\bigskip
+                \item Tendency to \textbf{manual} code \textbf{modifications}\bigskip
+                \item \textbf{Pessimistic} opinions on debugging of RxJS-based applications
+	        \end{itemize}
+        \end{column}
+        \begin{column}{.4\linewidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=.7\linewidth]{figures/hammer-screw.jpeg}
+                \caption{\tiny{Source: Manuel Alabor}}
+            \end{figure}
+        \end{column}
+    \end{columns}
 \end{frame}
 
-\begin{frame}{War Stories}
-	\begin{vfilleditems}
-		\item Request via Twitter and direct emails
-		\item Responses from five engineers, including one RxJS core team member
-	\end{vfilleditems}
-\end{frame}
-
-\begin{frame}{Results}
-
-\end{frame}
+\note[itemize] {
+    \item ... todo
+    \item Based on this
+    \item Observational study to validate data
+    \item Using the following hypothesis:
+}
 
 
 \section{Observational Study}
-\begin{frame}{Hypothesis}
-    If software engineers must solve an RxJS-based problem, then they \textbf{will instrument the code manually} in order to understand its behavior.
+\subsection{Study Design}
+
+\begin{frame}[fragile]{Hypothesis}
+    \begin{quote}
+        If software engineers must solve an RxJS-based problem, then they \textbf{will instrument the code manually} in order to understand its behavior.
+    \end{quote}
 \end{frame}
+
+\note[itemize] {
+    \item Foo
+}
 
 \begin{frame}{Study Design}
     \begin{vfilleditems}
-        \item Observational Study
-        \item Two Problems
-        \item 25 Minutes per Problem
-        \item 
+        \item \textbf{Observational Study}
+        \item \textbf{Briefing} upfront for every subject
+        \item \textbf{Uncontrolled} Environment
+        \item \textbf{Remote} moderation and execution
+        \item ``After Action'' \textbf{Survey}
     \end{vfilleditems}
 \end{frame}
 
-\begin{frame}{Problem Example}
+\note[itemize] {
+    \item Remotely conducted observational study
+    \item Execution on subjects computer
+    \item Individual dev environment
+    \item Mimic "Daily dev routine"
+    \item Interested in "How would you tackle RxJS debugging"
+    \item Two problems, 25 minutes each
+    \item ~1h total
+    \item Unattended survey afterwards -> RxJS experience data
+}
 
+\begin{frame}{Problem 1: Example}
+    \begin{columns}[b]
+        \begin{column}{.5\linewidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=.9\linewidth]{figures/problem1-code.png}
+                \caption{RxJS Observable}
+            \end{figure}
+        \end{column}
+        \begin{column}{.5\linewidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=.9\linewidth]{figures/problem1-ui.png}
+                \caption{User Interface}
+            \end{figure}
+        \end{column}
+    \end{columns}
 \end{frame}
 
-\begin{frame}{Results}
+\note[itemize] {
+    \item A problem consisted of:
+    \item Provided: \textbf{Code}, \textbf{Unit Tests}, \textbf{UI}
+    \item Task: Identify and Resolve Bugs
+    \item Task: "Speak out loud"
+    \item Of course: we did not care IF they actually resolve a problem
+    \item Collect as much data how subjects debug
+}
 
+\subsection{Study Execution}
+\begin{frame}{Subject Population}
+    \begin{vfilleditems}
+        \item \textbf{Four} professional software engineers
+        \item Two currently \textbf{work} with RxJS
+        \item Three have \textbf{two or more years} of \textbf{experience} with RxJS
+        \item One of them uses RxJS to develop \textbf{backend applications}
+    \end{vfilleditems}
 \end{frame}
+
+\note[itemize] {
+    \item Four engineers recruited from personal network
+    \item All use RxJS for frontend development
+    \item Only one for backend
+    \item Experienced population; most >2y
+    \item All: Trace logs
+    \item Two: Specialized loggers
+    \item Three: Debugger
+}
+
+\subsection{Study Results}
+
+\begin{frame}[fragile]{Observed Debugging Techniques}
+    \begin{figure}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    height=0.6\textheight,
+                    width=0.8\linewidth,
+                    xbar,
+                    xtick={0,1,2,3,4},
+                    xlabel={\# of Subjects},
+                    symbolic y coords={Add. Tools,Debugger,Trace Logs},
+                    ytick=data,
+                    enlarge y limits=0.5,
+                    enlargelimits=0.15,
+                    nodes near coords, nodes near coords align={horizontal}
+                ]
+                \addplot[
+                        fill=pureminimalistic@text@red,
+                        draw=pureminimalistic@text@red
+                    ]
+                    coordinates {
+                        (0,Add. Tools) (4,Trace Logs) (2,Debugger) 
+                    };
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
+\end{frame}
+
+\note[itemize] {
+    \item All modified/augmented source code manually
+    \item -> Trace logs
+    \item Two tried traditional debugging
+    \item No one extracted code
+    \item No one used additional libraries
+    \item On told afterwards: Would have been their next step
+    \item Based on this evidence: Hypothesis is correct
+}
+
+\begin{frame}[fragile]{Interpretation}
+    \begin{vfilleditems}
+        \item \textbf{Four} professional software engineers
+        \item Two currently \textbf{work} with RxJS
+        \item Three have \textbf{two or more years} of \textbf{experience} with RxJS
+        \item One of them uses RxJS to develop \textbf{backend applications}
+    \end{vfilleditems}
+\end{frame}
+
+\note[itemize] {
+    \item All used manual trace logs
+    \item Two tried traditional debugging
+    \item No one extracted code
+    \item No one used additional libraries
+    \item On told afterwards: Would have been their next step
+}
+
 
 \section{Conclusion}
 \begin{frame}{}
