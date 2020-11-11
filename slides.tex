@@ -4,9 +4,11 @@
 \usepackage{tikz}
 \usepackage{hyperref}
 \usepackage{pgfplots}
+\usepackage{pgf-pie}
 \usepackage{pgfpages}
 
 \pgfplotsset{compat=1.17}
+\usetikzlibrary{patterns}
 \setbeameroption{show notes on second screen}
 % \pgfpagesuselayout{2 on 1}[a4paper,border shrink=10mm]
 
@@ -20,7 +22,7 @@
 \usepackage{appendixnumberbeamer}
 \renewcommand{\appendixname}{\texorpdfstring{\translate{appendix}}{appendix}}
 
-\title[Debugging of RxJS-based Applications]{Getting rid of the \texttt{console.log}:\\Debugging of RxJS-based Applications}
+\title[Debugging of RxJS-based Applications]{The State of Debugging for RxJS\\``Debugging of RxJS-Based Applications''}
 \author{Manuel Alabor and Markus Stolze}
 \institute{OST in Rapperswil, Switzerland}
 \date{\today}
@@ -30,13 +32,14 @@
 \maketitle
 
 \note[itemize] {
-    \item Welcome everyone
+    \item Welcome
     \item I am Manuel
-    \item Frontend Software Engineer
-    \item Currently TypeScript, React, RxJS
-    \item Master Student
-    \item Research Topic: Debugging for Reactive Programming -> RxJS
-    \item -> Going to tell why this topic
+    \item Master Student, OST, Switzerland
+    \item I want to tell you a short story...
+    \item State of debugging for RxJS
+    \item You might think, well:
+    \item ``It has JS in its name''
+    \item JavaScript and Engineering?
 }
 
 \section{Introduction}
@@ -44,23 +47,24 @@
 \subsection{Why?}
 
 \begin{frame}[fragile]{Reactive Programming for the Web}
-    \centering
     \begin{figure}
         \centering
-        \includegraphics[height=\textheight/2]{figures/rxjs-logo.png}
-        \caption{RxJS \cite{rxjs}}
+        \includegraphics[height=0.6\textheight]{figures/frontend-engineers.jpg}
         \label{fig:rxjs}
     \end{figure}
 \end{frame}
 
 \note[itemize] {
-    \item What is RxJS?
-    \item One of the larger representatives
-    \item RP with JavaScript
-    \item You might heard of Angular \cite{angualrrxjs} backed by Google
-    \item Angular is based on RxJS
-    \item All the things we love about RP: Check
-    \item All the things we... dont love about RP: Check
+    \item Thats frontend stuff!
+    \item Are ``Frontend Engineers'' Engineers?
+    \item Because of things like RxJS...
+    \item Frontend Engineering came a long way!
+    \item RxJS is RP with JavaScript
+    \item Nice: TypeScript Interface
+    \item Nice: RxJS is core part of Googles Angular
+    \item Nice: Describe data flows
+    \item Wait? Sales pitch?
+    \item I have a story of frustration to tell: Debugging
 }
 
 \begin{frame}[fragile]{Debugging: First Intuition}
@@ -72,11 +76,12 @@
 \end{frame}
 
 \note[itemize] {
-    \item How to debug a problem? Well...
-    \item Add a breakpoint
-    \item Imperative programming debugging
-    \item Helps sometimes (lambda functions, ...)
-    \item Often useless (stack traces, program step controls...)
+    \item Back when i started with RP
+    \item Debug? Ha! Breakpoint!
+    \item Helped sometimes (lambda functions, ...)
+    \item Often felt lost though
+    \item Stack traces
+    \item program step controls: Operator? No: Internals!
     \item What else?
 }
 
@@ -89,15 +94,17 @@
 \end{frame}
 
 \note[itemize] {
-    \item After some time with RxJS
-    \item Stuff gets more complex
+    \item Especially when stuff gets complicated
     \item Debugging === Trace Logs
-    \item Sprinkle log statements throughout the program
-    \item Hope to get the right hint
-    \item Remove (hopefully) everything again
+    \item Sprinkle log statements
+    \item Analyze flood of logs
+    \item Find problem
+    \item Remove log states
+    \item DONT remove the bug fix ;)
+    \item This left me...
 }
 
-\begin{frame}[fragile]{Debugging: Can this be it?}
+\begin{frame}[fragile]{Really?}
     \begin{figure}[H]
         \centering
         \includegraphics[height=\textheight/2]{figures/person-shrugging_1f937.png}
@@ -106,80 +113,65 @@
 \end{frame}
 
 \note[itemize] {
-    \item Frustration -> Reason Research topic
-    \item There are good concepts and solutions for RP debugging
-    \item Reactive Debugger, Scala \cite{10.1145/2884781.2884815}
-    \item Improved logging tools rxjs-spy \cite{rxjsspy}
-    \item Visualizers rxviz \cite{rxviz}
-    \item Visualizers rxfiddle \cite{10.1145/3180155.3180156}
-    \item But why does nobody seem to use them?
-    \item Why unpopular?
-    \item -> Research Questions
+    \item Frustrated!
+    \item Mature Software Engineer has to feel different
+    \item Looked for existing solutions
+    \item Good concepts for other languages (Scala)
+    \item RxJS less stuff
+    \item Lets do this on our own!
+    \item -> Started with research questions
 }
 
 
 \subsection{Research Questions}
+
 \begin{frame}[fragile]{Research Questions}
     \begin{enumerate}
         \vfill\item[RQ1] \textbf{What challenges} do software engineers face when debugging RxJS-based applications?
         \vfill\item[RQ2] How can the \textbf{experience} of software engineers during the debugging process of RxJS-based applications \textbf{be improved}?
-        \vfill\item[\color{gray}{RQ3}] \color{gray}{What is the \textbf{impact of proposed solutions} on the debugging experience of software engineers?}
     \end{enumerate}
 \end{frame}
 
 \note[itemize] {
-    \item First: Collect and Validate information
-    \item Interviews and War Story Reports
-    \item Validate this data in an observational study
-    \item Second: Propose a solution to improve
-    \item Third: Implement and validate solution
-    \item Not part of this work
-    \item Already started with in current iteration
+    \item Before we can improve, if at all
+    \item We need data on what we should improve
+    \item Thats question 1
+    \item Based on this
+    \item Propose a concept to make dev experience better
+    \item Thats question 2
+    \item Lets get started!
 }
 
 
-\section{Interviews and War Stories}
+\section{Studies}
 
-\subsection{Interviews}
-
-\begin{frame}[fragile]{One-to-One Interviews}
-	\begin{vfilleditems}
-		\item Interviewed five \textbf{Engineers}
-		\item How do they \textbf{use} Reactive Programming?
-		\item What do they \textbf{like},
-		\item ... and what \textbf{dislike} about it?
-	\end{vfilleditems}
-\end{frame}
-
-\note[itemize] {
-    \item We were interested in the overall, ...
-    \item the good ...
-    \item and bad experiences
-    \item Not yet debugging specific
-    \item Recruited through personal network
-    \item Talked to five engineers
-    \item 4 RxJS, 1 Scala Akka Streams
-    \item Most knew RxJS through Angular
-}
-
-\begin{frame}{Quotes}
+\begin{frame}[fragile]{Road Map}
     \begin{vfilleditems}
-		\item[\Large{``}] \textit{[Reactive Programming is] a good way for \textbf{composing} multiple data sources.}
-		\item[\Large{``}] \textit{In \textbf{99\%} of all cases, I add \textbf{console.log} statements [\dots] trying to understand what's happening.}
-	\end{vfilleditems}
+        \item Two qualitative studies
+        \begin{enumerate}
+            \vfill\item Preparatory study using \textbf{interviews} and \textbf{``war story'' reports}
+            \vfill\item \textbf{Controlled experiment} to validate previously identified findings
+        \end{enumerate}
+    \end{vfilleditems}
 \end{frame}
 
 \note[itemize] {
-    \item All interviewees were overall positive to RP
-    \item All value RP for complex data \textbf{dependencies}
-    \item and \textbf{transformations}
-    \item Concrete Quote about console log
-    \item Off the record: ``Debugging RP?''
-    \item ... well, then you are f***
-} 
+    \item Worked with 14 software engineering professionals
+    \item Conducted interviews
+    \item Collected written reports
+    \item Then validated this with controlled experiment
+}
 
-\subsection{War Stories}
-\begin{frame}[fragile]{Call for ``War Stories''}
+\subsection{Study 1: Interviews and War Stories}
+
+\begin{frame}[plain, noframenumbering]{Study 1: Preparation}
+  \centering
+  \vfill
+  {\fontsize{30}{40}\selectfont\color{white}{Interviews\\and War Stories}}
+  \vfill
+\end{frame}
+
+\begin{frame}[fragile]{Call for Participants}
     \begin{figure}[H]
         \centering
         \includegraphics[height=0.6\textheight]{figures/tweet-interview.png}
@@ -188,72 +180,137 @@
 \end{frame}
 
 \note[itemize] {
-    \item After first "overall" data collection
-    \item Interested in specific data about RxJS Debugging
-    \item Twitter and direct-email
-    \item 5 replies
-    \item RxJS core team member
-    \item Google developer experts
-    \item Fin Tech Engineers
+    \item Recruiting via Twitter and Email
+    \item Personal Network
+    \item 10 participants
+    \item Daily users of RP
+    \item One RxJS Core team member
+    \item Two Google Dev Experts on Angular
 }
 
-\begin{frame}[fragile]{Report Extracts}
+\begin{frame}[fragile]{Five One-to-One Interviews}
 	\begin{vfilleditems}
-		\item Traditional debugging utilities are \textbf{seldom sufficient}
-		\item Tendency to \textbf{manual} code \textbf{modifications}:
-		\begin{vfilleditems}
-		    \item Add \textbf{trace logs} with \texttt{console.log}
-		    \item \textbf{Extract} code parts to \textbf{sand boxed} environments
-		\end{vfilleditems}
+		\item How do you \textbf{use} Reactive Programming?
+		\item Which aspects do you \textbf{like} on Reactive Programming?
+		\item Which do you \textbf{dislike}?
 	\end{vfilleditems}
 \end{frame}
 
 \note[itemize] {
-    \item Again: Common practice to modify code
-    \item Not only trace logs
-    \item Extraction of code parts to extraneous tools
-    \item Visualizers rx-viz \cite{rxviz}
-    \item Code sandboxes StackBlitz
-    \item Try to use debugger
-    \item Debuggers often not that useful
+    \item Interviews had no focus on debugging yet
+    \item Interested in experience with RP
+    \item Pros
+    \item Cons
+    \item Pain Points
 }
 
-\subsection{Insights}
-
-\begin{frame}[fragile]{Key Take Aways}
-    \begin{columns}[T]
-        \begin{column}{.6\linewidth}
-            \vspace{3em}
-            \begin{itemize}
-                \item The ``\textbf{to hammer a screw}''-problem\bigskip
-                \item Tendency to \textbf{manual} code \textbf{modifications}\bigskip
-                \item Rather \textbf{negative} experience with debugging RxJS-based applications
-	        \end{itemize}
-        \end{column}
-        \begin{column}{.4\linewidth}
-            \begin{figure}
-                \centering
-                \includegraphics[width=.7\linewidth]{figures/hammer-screw.jpeg}
-                \caption{\tiny{Source: Manuel Alabor}}
-            \end{figure}
-        \end{column}
-    \end{columns}
+\begin{frame}[fragile]{Five Written War Story Reports}
+	\begin{vfilleditems}
+		\item When did you \textbf{last} have to debug an RxJS-based Application?
+		\item Do you remember a specific \textbf{challenging} debugging situation?
+		\item How did you \textbf{solve} it? (If at all?)
+	\end{vfilleditems}
 \end{frame}
 
 \note[itemize] {
-    \item Traditional debugger feels wrong
-    \item Ask a question which they cannot answer (hammer/screw) -> Stack trace
-    \item Fallback to manual code modification
-    \item Trace log statements
-    \item Extract pieces to sandboxes
-    \item Overall: Pessimistic view on debugging RxJS RP
-    \item Based on this:
-    \item Study to validate this...
-    \item Hypothesis coming up:
+    \item This time: Focused on debugging
+    \item Hear about specific situations
+    \item They should recall particular scenario
+    \item Step by step
+    \item What problems did they face tool?
+    \item How did they overcome them?
+}
+
+\begin{frame}[fragile]{Mentioned Debugging Techniques}
+    \begin{figure}
+        \centering
+        \begin{tikzpicture}
+            \pie[
+                cloud,
+                sum=10,
+                after number={\textvisiblespace times},
+                text=inside,
+                radius=3,
+                rotate=100,
+                color={pureminimalistic@text@red}
+            ]{
+                3/Debugger,
+                5/Trace Logs,
+                2/Add. Tool
+            }
+        \end{tikzpicture}
+    \end{figure}
+\end{frame}
+
+
+\note[itemize] {
+    \item Lengthy answers
+    \item Repeating themes
+    \item RP is awesome for composing complex data flows
+    \item That aside
+    \item Debugging is hard
+    \item Unsatisfying traditional debuggers
+    \item Most often manual trace logs
+    \item Or code extraction to to external tools
+}
+
+{
+\setbeamercolor{background canvas}{bg=pureminimalistic@text@white}
+\setbeamercolor{frametitle}{bg=pureminimalistic@text@white}
+\setbeamercolor{normal text}{fg=pureminimalistic@text@black}
+\begin{frame}[fragile, plain]{Key Take Aways}
+    \begin{figure}
+        \centering
+        \includegraphics[width=.7\textheight]{figures/rxjs-red-reveal-pattern.png}
+        \caption{\tiny{Source: Manuel Alabor}}
+    \end{figure}
+\end{frame}
+
+\note[itemize] {
+    \item What do we get from this?
+    \item Engineers use manual code modification
+    \item Either trace logs
+    \item Or extraction to external tools
+    \item But why?
+    \item Because traditional tools fail them
+    \item These tools cant see through RxJS abstractions
+}
+
+\begin{frame}[fragile, plain]{Key Take Aways}
+    \begin{figure}
+        \centering
+        \includegraphics[width=.7\textheight]{figures/rxjs-red-reveal-pattern-lens.png}
+        \caption{\tiny{Source: Manuel Alabor}}
+    \end{figure}
+\end{frame}
+
+\note[itemize] {
+    \item Hence, if given the correct filter
+    \item In other words, a tool that sees through RxJS
+    \item They could debug with less manual intervention
+    \item Improve efficiency
+    \item Improve quality because no code changes
+    \item If manual code modification is really common practice...
+}
 }
 
 
-\section{Observational Study}
+\section{Study 2: Observational Study}
+
+\begin{frame}[plain, noframenumbering]{Study 2: Observational Study}
+    \centering
+    \vfill
+    {\fontsize{30}{40}\selectfont\color{white}{Controlled Experiment}}
+    \vfill
+\end{frame}
+
+
+\note[itemize] {
+    \item Is something we had to validate
+    \item In a Controlled Experiment
+    \item Obviously, we created hypothesis after previous findings...
+}
+
 \subsection{Study Design}
 
 \begin{frame}[fragile]{Hypothesis}
@@ -263,10 +320,9 @@
 \end{frame}
 
 \note[itemize] {
-    \item Manual intervention repeating theme
-    \item Both Interviews and War Stories
-    \item Thats why focus on this in validation study
-    \item Dont care what kind (logs vs extraction)
+    \item Open to all manual modifications
+    \item trace logs
+    \item extracts
 }
 
 \begin{frame}{Study Design}
@@ -284,7 +340,6 @@
     \item Execution on subjects computer
     \item Individual dev environment
     \item Mimic "Daily dev routine"
-    \item Interested in "How would you tackle RxJS debugging"
     \item Two problems, 25 minutes each
     \item ~1h total
     \item Unattended survey afterwards -> RxJS experience data
@@ -311,14 +366,14 @@
 
 \note[itemize] {
     \item A problem consisted of:
-    \item Provided: \textbf{Code}, \textbf{Unit Tests}, \textbf{UI}
+    \item TypeScript \textbf{Code}, \textbf{Unit Tests}, runnable \textbf{UI}
+    \item Goal: "We want to know how you debug!"
     \item Task: Identify and Resolve Bugs
     \item Task: "Speak out loud"
-    \item Of course: we did not care IF they actually resolve a problem
-    \item Collect as much data how subjects debug
 }
 
 \subsection{Study Execution}
+
 \begin{frame}{Subject Population}
     \begin{vfilleditems}
         \item \textbf{Four} professional software engineers
@@ -330,17 +385,14 @@
 
 \note[itemize] {
     \item Four engineers recruited from personal network
-    \item All use RxJS for frontend development
-    \item Only one for backend
     \item Experienced population; most >2y
-    \item All: Trace logs
-    \item Two: Specialized loggers
-    \item Three: Debugger
+    \item All use RxJS for frontend development
+    \item One also for backend
 }
 
 \subsection{Study Results}
 
-\begin{frame}[fragile]{Observed Debugging Techniques}
+\begin{frame}[fragile]{Typically Used vs. Observed Uses}
     \begin{figure}
         \centering
         \begin{tikzpicture}
@@ -349,19 +401,34 @@
                     width=0.8\linewidth,
                     xbar,
                     xtick={0,1,2,3,4},
-                    xlabel={\# of Subjects},
                     symbolic y coords={Add. Tools,Debugger,Trace Logs},
                     ytick=data,
                     enlarge y limits=0.5,
                     enlargelimits=0.15,
-                    nodes near coords, nodes near coords align={horizontal}
+                    nodes near coords, nodes near coords align={horizontal},
+                    legend pos=south east,
+                    legend style={fill=none,at={(0.5,-0.2)},anchor=north},
+                    legend cell align={left},
+                    reverse legend
                 ]
+                
+                \addlegendentry{\# of subjects were observed using}
                 \addplot[
                         fill=pureminimalistic@text@red,
                         draw=pureminimalistic@text@red
                     ]
                     coordinates {
-                        (0,Add. Tools) (4,Trace Logs) (2,Debugger) 
+                        (0,Add. Tools) (4,Trace Logs) (2,Debugger)
+                    };
+                
+                \addlegendentry{\# of subjects typically use}
+                \addplot[
+                        pattern=crosshatch dots,
+                        pattern color=pureminimalistic@text@red,
+                        draw=pureminimalistic@text@red
+                    ]
+                    coordinates {
+                        (2,Add. Tools) (4,Trace Logs) (3,Debugger)
                     };
             \end{axis}
         \end{tikzpicture}
@@ -369,32 +436,34 @@
 \end{frame}
 
 \note[itemize] {
-    \item All modified/augmented source code manually
-    \item -> Trace logs
-    \item Two tried traditional debugging
-    \item No one extracted code
-    \item No one used additional tools
-    \item One told afterwards: Would have been their next step
-    \item Based on experiment data: Hypothesis is correct
+    \item Based on survey and experiment
+    \item Able to compare typically vs observed
+    \item Trace logs: 100\% used and told to typically use
+    \item Debugger: Some small difference, not all use typically
+    \item Interpretation: Already gave up on debugger?
+    \item Largest discrepancy: Add. tools!
+    \item No one used them
+    \item \textbf{Even though survey told they usually do!}
+    \item Even if they had personal dev setup at home
+    \item Therefore, we reason...
 }
 
 \section{Conclusion}
 
 \begin{frame}[fragile]{Interpretation}
     \begin{vfilleditems}
-        \item Engineers \textbf{know} RP debugging tools, but \textbf{do not use} them
-        \item Engineers use \textbf{imperative}, but actually require ``\textbf{reactive}'' debuggers
-        \item \textbf{Manual intervention} is the ``\textbf{last resort}''
+        \item If Engineers \textbf{know} about RxJS debugging tools, they \textbf{do not use} them
+        \item \textbf{Manual code modification} is common practice
+        \item \textbf{Imperative} debuggers cannot handle RxJS abstractions
     \end{vfilleditems}
 \end{frame}
 
 \note[itemize] {
-    \item Interviews + War Stories + Study = ?
-    \item 7 of 14 peers know specific RxJS debugging tools
-    \item But they dont use them
-    \item Instead: Traditional tools \textbf{easily accessible}
-    \item Final way to go:
-    \item Trace logs and code extraction
+    \item Knowing about tools seems not enough
+    \item Is there a \textbf{boundary} that keeps engineers from using them?
+    \item Eventually, tendency to trace logs and code extraction
+    \item Repeated theme: Traditional debuggers cannot help in all cases
+    \item In summary, this builds basis for answer to RQ1
 }
 
 \begin{frame}[fragile]{Answer}
@@ -416,7 +485,7 @@
 \begin{frame}[fragile]{Answer}
     \begin{enumerate}
         \item[\color{gray}{RQ2}] \color{gray}{How can the experience of software engineers during the debugging process of RxJS-based applications be improved?}
-        \vfill\item[\Large{``}] \color{white}{[\dots] \textbf{improve} the \textbf{experience} of debugging [\dots] by providing RP specific debugging utilities where software engineers expect them the most: \textbf{Fully integrated} [\dots] their IDE [\dots]}
+        \vfill\item[\Large{``}] \color{white}{[\dots] \textbf{improve} the \textbf{experience} of debugging [\dots] by providing RP specific debugging utilities where software engineers expect them the most: \textbf{Fully integrated} [\dots into] their IDE [\dots]}
     \end{enumerate}
 \end{frame}
 
@@ -425,7 +494,9 @@
     \item Lower the boundary to use the right tool
     \item At the right time
     \item Integrate the right tools where they are expected the most
-    \item Example: Async Stack Traces in Google Chrome \cite{chromeasync}
+    \item Example: Async Stack Traces in Google Chrome
+    \item Dont look for it: Its there where it belongs.
+    \item Hence, outlook to future work...
 }
 
 \section{Future Work}
@@ -433,16 +504,16 @@
 \begin{frame}[fragile]{Future Work}
     \begin{vfilleditems}
         \item \textbf{Propose} and \textbf{implement} solution to \textbf{prevent} manual code \textbf{modification}
-        \item \textbf{Evaluate} proposal on \textbdf{effectiveness} to answer RQ3
+        \item \textbf{Evaluate} proposal on \textbdf{effectiveness} in follow up study
     \end{vfilleditems}
 \end{frame}
 
 \note[itemize] {
-    \item Wraps up our plans for the future
     \item Work on a concrete prototype
-    \item Find solution for trace log problem
-    \item Without manual intervention
-    \item Validate effectiveness and answer RQ3
+    \item Find solution for manual code modification scenarios
+    \item Without manual intervention required
+    \item Validate effectiveness in another study iteration
+    \item One more thing...
 }
 
 \begin{frame}[fragile]{Sneak Preview}
@@ -471,9 +542,9 @@
     \item Happy to answer questions
 }
 
-\appendix
-\begin{frame}[allowframebreaks]{References}
-	\printbibliography
-\end{frame}
+% \appendix
+% \begin{frame}[allowframebreaks]{References}
+% 	\printbibliography
+% \end{frame}
 
 \end{document}
