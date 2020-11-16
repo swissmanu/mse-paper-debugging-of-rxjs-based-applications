@@ -231,20 +231,23 @@
 \begin{frame}[fragile]{Scope}
     \begin{columns}[T]
         \begin{column}{.4\linewidth}
-            
-            \begin{vfilleditems}
+            \begin{itemize}
                 \item Five \textbf{Interviews}\vspace{1em}
-                \item General \textbf{Experience} with Reactive Programming\vspace{0.5em}
-                \item What do you \textbf{like}?\vspace{0.5em}
-                \item What do you \textbf{dislike}?
-        	\end{vfilleditems}
+                \begin{itemize}
+                    \item General \textbf{Experience} with Reactive Programming\vspace{0.7em}
+                    \item What do you \textbf{like}?\vspace{0.7em}
+                    \item What do you \textbf{dislike}?
+                \end{itemize}
+        	\end{itemize}
         \end{column}
         \begin{column}{.4\linewidth}
-            \begin{vfilleditems}
+            \begin{itemize}
                 \item Five War Story \textbf{Reports}\vspace{1em}
-        		\item Recall a specific \textbf{challenging} debugging situation?\vspace{0.5em}
-        		\item How did you \textbf{solve} it?
-        	\end{vfilleditems}
+                \begin{itemize}
+            		\item Recall a specific \textbf{challenging} debugging situation?\vspace{0.7em}
+            		\item How did you \textbf{solve} it?
+        		\end{itemize}
+        	\end{itemize}
         \end{column}
     \end{columns}
 \end{frame}
@@ -282,10 +285,7 @@
 
 
 \note[itemize] {
-    \item Lengthy answers
     \item Repeating themes
-    \item RP is awesome for composing complex data flows
-    \item That aside
     \item Debugging is hard
     \item Unsatisfying traditional debuggers
     \item Most often manual trace logs
@@ -550,21 +550,6 @@
     \item Find solution for manual code modification scenarios
     \item Without manual intervention required
     \item Validate effectiveness in another study iteration
-    \item One more thing...
-}
-
-\begin{frame}[fragile]{Sneak Preview}
-    \begin{figure}[H]
-        \centering
-        \includegraphics[height=0.6\textheight]{figures/tweet-rxjs-debugging-extension.png}
-        \caption{\tiny{Source: \url{https://twitter.com/swissmanu/status/1313412280072232960}}}
-    \end{figure}
-\end{frame}
-
-\note[itemize] {
-    \item Small sneak preview
-    \item Things are progressing
-    \item Thank you for your time and attention!
 }
 
 \begin{frame}[plain, noframenumbering]
@@ -590,5 +575,30 @@
     {\fontsize{30}{40}\selectfont\color{white}{Backup Slides}}
     \vfill
 \end{frame}
+
+\begin{frame}[fragile]{Future Work PoC: Add Probe}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=0.6\textheight]{figures/tweet-rxjs-debugging-extension.png}
+        \caption{\tiny{Source: \url{https://twitter.com/swissmanu/status/1313412280072232960}}}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Future Work PoC: Monitor}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=0.7\textheight]{figures/backup-screenshots/step5-2.png}
+        \caption{Empty Monitor Pane (right)}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Future Work PoC: Output}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=0.7\textheight]{figures/backup-screenshots/step8.png}
+        \caption{Monitor Pane with Output (right)}
+    \end{figure}
+\end{frame}
+
 
 \end{document}
